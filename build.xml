@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<project name="fyLib" default="compress">
+    <target name="concat">
+        <concat destfile="../fy.js" encoding="UTF-8" outputencoding="UTF-8">
+            <path path="fy.core.js"/>
+            <path path="fy.util.js"/>
+            <!-- <path path="fy.encode.js"/> -->
+            <path path="fy.jqueryPlugins.js"/>
+            <path path="fy.baseClasses.js"/>
+            <path path="fy.ComboBase.js"/>
+            <path path="fy.dateChooser.js"/>
+            <path path="fy.dateField.js"/>
+            <path path="fy.autoCompleteField.js"/>
+            <path path="fy.accordion.js"/>
+            <path path="fy.toolTip.js"/>
+            <path path="fy.contextMenu.js"/>
+            <path path="fy.datagrid.js"/>
+            <path path="fy.form.listElement.js"/>
+            <path path="fy.form.miscFn.js"/>
+            <path path="fy.list.js"/>
+            <path path="fy.popup.js"/>
+            <path path="fy.tab.js"/>
+            <path path="fy.tree.js"/>
+            <path path="fy.treeField.js"/>
+            <path path="fy.progressBar.js"/>
+        </concat>
+    </target>
+	<target name="compress" depends="concat">
+		<exec executable="cmd" failonerror="true">
+			<arg line="/c E:/SDK/nodejs/node_modules/npm/uglifyjs.cmd ../fy.js > ../fy.min.js" />
+		</exec>
+	</target>
+	<!-- <property name="core.files" value="fy.core.js, fy.baseClasses.js" />
+	<property name="target.files" value="fy.fullpack.js, fy.fullpack.min.js" />
+	<target name="build">
+		<concat destfile="fy.fullpack.js" encoding="UTF-8" outputencoding="UTF-8">
+			<filelist dir="." files="${core.files}" />
+			<fileset dir="." includes="fy.*.js" excludes="${core.files},${target.files}" />
+		</concat>
+	</target> -->
+</project>

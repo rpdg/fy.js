@@ -46,6 +46,7 @@
 
 	Tree.prototype = {
 		createHandler : function (json) {
+			this.created = true ;
 			var that = this;
 			this._selectedItem = null ;
 			//add event listener

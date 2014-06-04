@@ -19,8 +19,13 @@
 		//如果是从空容器创建的，将jq对象指定到<table>控件上
 		if (this.jq[0].tagName.toLowerCase() !== 'table')
 			this.jq = $('<table id="' + jq[0].id + '_table" class="fui-datagrid"></table>').appendTo(this.jq);
-		else
-			this.jq.addClass("fui-datagrid");
+		else{
+			log(this.jq , this.jq[0].id);
+
+			//this.jq.addClass("fui-datagrid");
+			this.jq.replaceWith('<table id="' + jq[0].id + '_table" class="fui-datagrid"></table>');
+		}
+
 
 		this.table = this.jq;
 

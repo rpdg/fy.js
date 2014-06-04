@@ -653,14 +653,14 @@
 
 			var template = sets.template , cache = { name:template } ,
 				nullShown = sets['null'] || '' ;
-				pnter = /\w+[:=]+\w+/g ,
+				pnter = /{\w+(:=)+\w+}/g ,
 				rnderFns = template.match(pnter),
 				renderEvalStr = 'row[":index"]=i;';
 
 			if (rnderFns) {
 				var _attr , _ndex  , keyName ;
 				for (var fs = 0; fs < rnderFns.length; fs++) {
-					_attr = rnderFns[fs];
+					_attr = rnderFns[fs].substr(1 , rnderFns[fs].length-2);
 					_ndex = _attr.indexOf(":=");
 					keyName = _attr.substr(0, _ndex) ;
 					renderEvalStr += "row['" + _attr + "']=scope['" + _attr.substr(_ndex + 2) + "'](row['" + keyName + "'] , i , row ,'"+keyName+"') ;";

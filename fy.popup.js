@@ -27,7 +27,10 @@
 		create:function (sets) {
 			if (typeof this.onInit === 'function') this.onInit();
 
+			//log.warn(this.jq[0]);
+
 			this.boxy = new Boxy(this.jq, sets);
+
 			this.jq = this.boxy.boxy;
 
 

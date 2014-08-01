@@ -146,6 +146,7 @@
 				var go = this.onBeforeOpen();
 				if (go === false) return this;
 			}
+			this.position() ;
 			this.target.stop(true, true).slideDown(90);
 			this.openHandler();
 			return this;

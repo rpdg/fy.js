@@ -245,9 +245,10 @@
 		} ,
 
 		show:function(){
-			/*var offset = this.jq.offset() , 
+			/*var offset = this.jq.offset() ,
 				top = offset.top - this.tooltip_height - this.sets.offsetY ,
 				left = offset.left - this.tooltip_width - this.sets.offsetX ;*/
+
 			this.$tip.stop(true,true).fadeIn(200);
 			return this;
 		} ,

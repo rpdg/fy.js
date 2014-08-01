@@ -20,10 +20,13 @@
 		if (this.jq[0].tagName.toLowerCase() !== 'table')
 			this.jq = $('<table id="' + jq[0].id + '_table" class="fui-datagrid"></table>').appendTo(this.jq);
 		else{
-			log(this.jq , this.jq[0].id);
-
-			//this.jq.addClass("fui-datagrid");
-			this.jq.replaceWith('<table id="' + jq[0].id + '_table" class="fui-datagrid"></table>');
+			this.jq.addClass("fui-datagrid");
+			//fix webkit addClass redraw bug
+			if(fy.browser.webkit){
+				var tmp = $('<br>') ;
+				this.jq.replaceWith(tmp) ;
+				tmp.replaceWith(this.jq) ;
+			}
 		}
 
 
@@ -54,7 +57,8 @@
 
 
 		//add event listener
-		this.tbody.delegate("td", "click.fy", function (evt) {
+		var selectEvt = sets.selectEvent||'click' ;
+		this.tbody.delegate("td", selectEvt , function (evt) {
 			//log($(evt.currentTarget).parents("tr")[0].rowIndex);
 			that.selectHandler(evt, $(evt.currentTarget).parents("tr")[0].rowIndex - that.titleBars);
 		});
@@ -167,8 +171,12 @@
 		createHandler:function (json) {
 			this.created = true ;
 			this.paginate(json , true) ;
-			this.sortColumn(json , true);
-			this.configEditable(json , true);
+
+			if(this.columns){
+				this.sortColumn(json , true);
+				this.configEditable(json , true);
+			}
+
 
 			if (typeof this.onCreate === 'function') {
 				this.onCreate(json);
@@ -229,7 +237,7 @@
 
 			this.paginate(json , isInCreating) ;
 			////this.sortColumn(json , isInCreating);
-			this.configEditable(json , isInCreating);
+			if(this.columns) this.configEditable(json , isInCreating);
 
 
 			if (typeof this.onUpdate === 'function') this.onUpdate(json , isInCreating);
@@ -333,7 +341,7 @@
 						if(isInCreating) {
 							this.cmdCheckAll = this.thead.find("th").eq(i).find('input') ;
 							//log('dddd' , i , this.cols(0) , $(this.cols(i).find(':checkbox') , this.tbody)) ;
-							this.cmdCheckAll.syncCheckBoxGroup("td.cellIndex_0>:checkbox" , this.tbody);
+							this.cmdCheckAll.syncCheckBoxGroup("td.cellIndex_0>:checkbox:enabled" , this.tbody);
 						}
 						this.cmdCheckAll.prop("checked" , false) ;
 						break;
@@ -350,22 +358,23 @@
 			}
 		},
 		makeTHeader:function (sets) {
-			var i = 0, l = sets.columns.length , cols = [] , th = []  ;
-			for (; i < l; i++) {
-				var bool = false ;
-				//cols[i] = '<col style="'+(sets.columns[i].width? 'width:'+sets.columns[i].width+'px;':'' ) + (sets.columns[i].align? 'text-align:'+sets.columns[i].align+';' : '') +'" />' ;
-				if(sets.columns[i].cmd) {
-					bool = true ;
-					sets.columns[i].width = '30' ;
+			var i = 0, l = sets.columns?sets.columns.length :0 , cols = [] , th = []  ;
 
-					if(sets.columns[i].cmd === 'checkAll')
-						sets.columns[i].text = '<label><input type="checkbox" name="'+ sets.columns[i].src +'" value="chk_'+i+'"> '+ (sets.columns[i].text||'') + '</label>';
+			for (; i < l; i++) {
+				var bool = false  , col = sets.columns[i];
+				//cols[i] = '<col style="'+(col.width? 'width:'+col.width+'px;':'' ) + (col.align? 'text-align:'+col.align+';' : '') +'" />' ;
+				if(col.cmd) {
+					bool = true ;
+					col.width = '30' ;
+
+					if(col.cmd === 'checkAll')
+						col.text = '<label><input type="checkbox" name="'+ col.src +'" value="chk_'+i+'"> '+ (col.text||'') + '</label>';
 					else
-						sets.columns[i].text = '<input type="hidden" name="'+ sets.columns[i].src +'" value="chk_'+i+'">';
+						col.text = '<input type="hidden" name="'+ col.src +'" value="chk_'+i+'">';
 				}
 
-				th[i] = '<th data-osrc="' + sets.columns[i].src + '"'+(bool?' style="text-overflow:clip;"':'')+'>' + (sets.columns[i].text || 'column_' + i) + '</th>';
-				cols[i] = "width:" + (sets.columns[i].width ? sets.columns[i].width+"px;" : "auto;min-width:16px;");
+				th[i] = '<th data-osrc="' + (typeof col.sortable ==='string'? col.sortable: col.src) + '"'+(bool?' style="text-overflow:clip;"':'')+'>' + (col.text || 'column_' + i) + '</th>';
+				cols[i] = "width:" + (col.width ? col.width+"px;" : "auto;min-width:16px;");
 			}
 			var tbHeaderTr = (sets.header) ? '<tr class="fyGridHeadText"><th colspan="' + (l || '1') + '">' + sets.header + '</th></tr>' : '';
 
@@ -399,31 +408,41 @@
 
 		},
 		makeTemplate: function (obj) {
-			var tmp = [] , render , name , i = 0, l = obj.columns.length;
+			var tmp = [] , render , name , i = 0, l = obj.columns?obj.columns.length :0 ;
 			obj.bindOptions = $.extend({itemRender:{}}, obj.bindOptions);
+
 			for (; i < l; i++) {
-				if(obj.columns[i].group) {
+				var col = obj.columns[i] ;
+
+				if(col.group) {
 					if(!this.group) this.group = [i] ;
 					else this.group.push(i) ;
 				}
 
-				if(obj.columns[i].cmd){
-					if(obj.columns[i].cmd === 'checkAll')
-						tmp[i] = '<td data-osrc="'+obj.columns[i].src+'" class="font-center cellIndex_'+i+'">' +
-							'<input type="checkbox" name="chk_'+i+'" value="{' + obj.columns[i].src + '}"></td>' ;
-					else tmp[i] = '<td data-osrc="'+obj.columns[i].src+'" class="font-center cellIndex_'+i+'">' +
-						'<input type="radio" name="chk_'+i+'" value="{' + obj.columns[i].src + '}"></td>' ;
+				var cls = col.className?(' '+col.className):'' ;
+				if(col.cmd){
+					if(col.cmd === 'checkAll')
+						tmp[i] = '<td data-osrc="'+col.src+'" class="font-center cellIndex_'+i+'">' +
+							'<input type="checkbox" name="chk_'+i+'" value="{' + col.src + '}"></td>' ;
+					else tmp[i] = '<td data-osrc="'+col.src+'" class="font-center cellIndex_'+i+'">' +
+						'<input type="radio" name="chk_'+i+'" value="{' + col.src + '}"></td>' ;
 				}
 				else{
-					if (typeof obj.columns[i].renderer === 'function') {
-						name = obj.columns[i].src + '_Renderer' + (++idSeed) ;
+					if (typeof col.renderer === 'function') {
+						name = col.src + '_Renderer' + (++idSeed) ;
 						render = ':=' + name ;
-						obj.bindOptions.itemRender[name] = obj.columns[i].renderer;
+						obj.bindOptions.itemRender[name] = col.renderer;
 					}
 					else render = "";
 
-					var classAlign = (obj.columns[i].align ? "font-" + obj.columns[i].align.toLowerCase() : "");
-					tmp[i] = '<td data-osrc="'+obj.columns[i].src+'" class="'+classAlign+' cellIndex_'+i+'">{' + obj.columns[i].src + render + '}</td>';
+					var tt = '' ;
+					if(cls && col.title===undefined) col.title=true ;
+					if(col.title === true) tt = ' title="{'+col.src + render +'}"' ;
+					else if(typeof col.title ==='string') tt = ' title="'+col.title.replace(/"/g , '\\"')+'"' ;
+
+					var classAlign = (col.align ? "font-" + col.align.toLowerCase() : "");
+
+					tmp[i] = '<td '+tt+' data-osrc="'+col.src+'" class="'+classAlign+' cellIndex_'+i + cls +'">{' + col.src + render + '}</td>';
 				}
 			}
 			return '<tr>' + tmp.join('') + '</tr>';
@@ -451,7 +470,9 @@
 			else
 				return this.thead.find("th");
 		},
-
+		hideColumn: function(i){
+			this.th(i).add(this.cols(i)).hide() ;
+		} ,
 		rows:function (i) {
 			if (i !== undefined) return this.tbody.find("tr").eq(parseInt(i, 10) || 0);
 			else return this.tbody.find("tr");

@@ -78,15 +78,15 @@
 		//
 		fieldsToJson:function () {
 			var o = {} , a;
-			/*if (this[0].tagName !== "FORM") {
+			if (this[0].tagName !== "FORM") {
 				var tmp = $('<form/>').append(this.clone());
 				a = tmp.serializeArray();
 				tmp = null ;
 			}
 			else {
 				a = this.serializeArray();
-			}*/
-			a = this.serializeArray() ;
+			}
+			//a = this.serializeArray() ;
 
 			jQuery.each(a, function() {
 				var i = this.name.indexOf("[]") ,
@@ -652,7 +652,7 @@
 			//alert('boundCache.make.caller');
 
 			var template = sets.template , cache = { name:template } ,
-				nullShown = sets['null'] || '' ;
+				nullShown = sets['nullShown'] || '' ;
 				pnter = /{\w+(:=)+\w+}/g ,
 				rnderFns = template.match(pnter),
 				renderEvalStr = 'row[":index"]=i;';
@@ -670,7 +670,7 @@
 			var pattern = /\{(\w*[:]*[=]*\w+)\}(?!})/g ,
 				//ods = template.match(pattern) ,
 				str = template.replace(pattern, function (match, key, i) {
-					return '\'+(row[\'' + key + '\']===null?\''+nullShown+'\':row[\'' + key + '\'])+\'' ;
+					return '\'+((row[\'' + key + '\']===null||row[\'' + key + '\']===undefined)?\''+nullShown+'\':row[\'' + key + '\'])+\'' ;
 				});
 
 			renderEvalStr += 'var out=\'' + str + '\';return out;';
@@ -685,7 +685,7 @@
 			if (sets.onBound) cache.onBound = sets.onBound;
 			cache.joiner = sets.joiner || '';
 			cache.storeData = !!sets.storeData ;
-			cache['null'] = nullShown ;
+			//cache.nullShown = nullShown ;
 
 			return cache;
 		},
@@ -709,7 +709,7 @@
 	// sets.onBound  : [event]
 	// sets.joiner : 各个结果的连接字符，默认空
 	// sets.storeData : 是否将过滤后的绑定数组保存于jq对象的data("bound-array")当中
-	// set['null'] : 将值为null的属性作何种显示，默认显示为empty string
+	// set.nullShown : 将值为null的属性作何种显示，默认显示为empty string
 	jQuery.fn.bindList = function (sets) {
 		var _this_ = this[0] , cacheId = _this_.id || _this_.uniqueID || (function () {
 			_this_.id = boundCache.newId();

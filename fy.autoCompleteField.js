@@ -62,6 +62,7 @@
 				that.close() ;
 			}) ;
 			//
+
 			that.jq.bind("keyup.fyDropdown" , function(evt){
 				if(!that.enabled) return ;
 				var val = $.trim(that.jq.val()) ;
@@ -92,9 +93,9 @@
 					filter.call(that , sets) ;
 				}
 				return false;
-			}).bind('blur.fyDropdown' , function(){
+			})/*.bind('blur.fyDropdown' , function(){
 				that.close();
-			}) ;
+			})*/ ;
 		} ;
 
 		//sets.target = $('<div class="autoComplete"></div>').append(this.list.jq).appendTo("body");

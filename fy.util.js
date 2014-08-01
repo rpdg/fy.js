@@ -64,10 +64,11 @@
 	fy.server.add = function(urlHashSet , override) {
 		var that = fy.server , unwritable = !override;
 
-		if(typeof urlHashSet === "string" && typeof url === "string") {
+		if(typeof urlHashSet === "string" && typeof override === "string") {
 			var p1 = urlHashSet ;
 			urlHashSet = {};
-			urlHashSet[p1] = url ;
+			urlHashSet[p1] = override ;
+			unwritable = true ;
 		}
 
 
@@ -77,7 +78,6 @@
 			}
 			else
 				that[key] = new srvFn(urlHashSet[key]);
-			//that[key] = new srvFn(urlHashSet[key]);
 		}
 		return that ;
 	};

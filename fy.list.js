@@ -57,6 +57,8 @@
 
 			//add event listener
 			this.jq.delegate("li", this.eventType, function (evt) {
+				//void event listener fires twice on label
+				if(evt.target.tagName === 'LABEL') return ;
 				that.selectHandler(evt, that.selectedIndex);
 			});
 

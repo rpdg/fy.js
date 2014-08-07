@@ -202,6 +202,7 @@
 		doTab: function (sets) {
 			var settings = jQuery.extend({initTabIndex: 0 , delay: 100 , eventType: "mouseenter"} , sets);
 			var oId = "#" + jQuery(this).attr("id");
+
 			var changeTab = function ($li , $div) {
 				//trace($li, $div);
 				$div.show().siblings("div.tabDivision:visible").hide();

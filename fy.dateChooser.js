@@ -35,7 +35,7 @@
 			//selectableRange : null ,
 			//yearFrom : 1900 ,
 			//yearTo : 2099 ,
-			sundayIsWeekend : false ,
+			sundayIsWeekend : true ,
 			dayNames : ["日", "一", "二", "三", "四", "五", "六"] ,
 			monthNames : null ,
 			symbols : ["年","月","周次"]

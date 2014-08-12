@@ -247,7 +247,9 @@
 		show:function(){
 			/*var offset = this.jq.offset() ,
 				top = offset.top - this.tooltip_height - this.sets.offsetY ,
-				left = offset.left - this.tooltip_width - this.sets.offsetX ;*/
+				left = offset.left - this.tooltip_width - this.sets.offsetX ;.css({
+			 top : top , left : left
+			 })*/
 
 			this.$tip.stop(true,true).fadeIn(200);
 			return this;

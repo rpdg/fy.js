@@ -879,7 +879,12 @@ Boxy.prototype = {
 
 
 		this.visible = true;
-		this.boxy.find('.close:first').focus();
+
+		var btn = this.boxy.find('.fyBtnImportant') ;
+		if(btn.length) btn.eq(0).focus() ;
+		/*else{
+			this.boxy.find('.close:first').focus();
+		}*/
 		this._fire('afterShow');
 		return this;
 	},

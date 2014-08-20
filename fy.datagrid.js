@@ -622,6 +622,7 @@
 		} ,
 		empty : function(){
 			this.tbody.html('');
+			this.data = null ;
 			return this;
 		},
 		setTitle:function(str){

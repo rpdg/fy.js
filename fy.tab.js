@@ -263,10 +263,15 @@
 		var def = {
 			eventType:"click",
 			selectedIndex: 0 ,
-			labelField : 'label'
+			labelField : 'label' ,
+			bindOptions : {
+				itemRender : {
+					chkDisable : function(d){return d?'class="tabDisabled"':'';}
+				}
+			}
 		} ;
-		if(cfg.iconField) def.template = '<li><img class="tabIco" src="{'+ cfg.iconField +'}">{'+ (cfg.labelField || def.labelField) +'}</li>' ;
-		else def.template = '<li>{'+ (cfg.labelField || def.labelField) +'}</li>' ;
+		if(cfg.iconField) def.template = '<li {disabled:=chkDisable}><img class="tabIco" src="{'+ cfg.iconField +'}">{'+ (cfg.labelField || def.labelField) +'}</li>' ;
+		else def.template = '<li {disabled:=chkDisable}>{'+ (cfg.labelField || def.labelField) +'}</li>' ;
 
 		var sets = $.extend(def, cfg);
 
@@ -334,7 +339,8 @@
 				that.selectHandler.call(that , evt) ;
 			} ;
 
-			this.jq.on(this.eventType , "li" , fn);
+			//add event listener
+			this.jq.on(this.eventType , "li:not(.tabDisabled)" , fn);
 
 			if (typeof this.onCreate === 'function') this.onCreate(json) ;
 

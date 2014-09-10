@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <project name="fyLib" default="compress">
     <target name="concat">
-        <concat destfile="../fy.js" encoding="UTF-8" outputencoding="UTF-8">
+        <concat destfile="../../GreenOlive3/js/fy.js" encoding="UTF-8" outputencoding="UTF-8">
             <path path="fy.core.js"/>
             <path path="fy.util.js"/>
             <!-- <path path="fy.encode.js"/> -->
@@ -27,7 +27,7 @@
     </target>
 	<target name="compress" depends="concat">
 		<exec executable="cmd" failonerror="true">
-			<arg line="/c E:/SDK/nodejs/node_modules/npm/uglifyjs.cmd ../fy.js > ../fy.min.js" />
+			<arg line="/c E:/SDK/nodejs/node_modules/npm/uglifyjs.cmd ../../GreenOlive3/js/fy.js > ../../GreenOlive3/js/fy.min.js" />
 		</exec>
 	</target>
 	<!-- <property name="core.files" value="fy.core.js, fy.baseClasses.js" />

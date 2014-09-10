@@ -1,6 +1,9 @@
-(function (window , $ , fy , undefined) {
-	fy.EMPTY_FN = function(){};
-	fy.PREVENT_FN = function(){return false;} ;
+(function (window, $, fy, undefined) {
+	fy.EMPTY_FN = function () {
+	};
+	fy.PREVENT_FN = function () {
+		return false;
+	};
 
 
 	/*
@@ -14,172 +17,178 @@
 	 }
 	 */
 	var srvFn = function (url) {
-		this.url = fy.serverRootPath + url.replace(/^['/']/ , '');
+		this.url = fy.serverRootPath + url.replace(/^['/']/, '');
 		//this.xhr = $.ajaxSettings.xhr() ;
 	};
 	//map ajax functions to jQuery
-	function makeParam(data , callback , type){
-		var that = this ;
+	function makeParam(data, callback, type) {
+		var that = this;
 		//todo: here may want be optimized
-		var fn = function(json){
-					if (json.error) srvFn.prototype.handleError.call(that , json.error);
-					else (typeof data === 'function') ? data(json) : callback(json) ;
+		var fn = function (json) {
+				if (json.error) srvFn.prototype.handleError.call(that, json.error);
+				else (typeof data === 'function') ? data(json) : callback ? callback(json) : void(0);
 			} ,
-			param = callback ? data : null ,
-			vType = (typeof type === 'string')? type : (typeof callback === 'string' ? callback : undefined) ;
+			param = (typeof data != 'function')? data: null ,
+			vType = (typeof type === 'string') ? type : (typeof callback === 'string' ? callback : undefined);
 
-		return [this.url , param , fn , vType] ;
+		return [this.url , param , fn , vType];
 	}
+
 	srvFn.prototype = {
-		handleError :function(err){
-			if(typeof this.onError === 'function') this.onError(err);
-			else if(typeof fy.onAjaxError === 'function') {
-				if(fy.server.isLocal){
-					var actionCode = this.url.split('actionCode=') ;
-					if(actionCode.length > 1) actionCode = actionCode[1].split('&')[0] ;
-					else actionCode = false ;
-					if(actionCode) err = '[code]: <b>' + actionCode + '</b>, <br>' + err ;
+		handleError: function (err) {
+			if (typeof this.onError === 'function') this.onError(err);
+			else if (typeof fy.onAjaxError === 'function') {
+				if (fy.server.isLocal) {
+					var actionCode = this.url.split('actionCode=');
+					if (actionCode.length > 1) actionCode = actionCode[1].split('&')[0];
+					else actionCode = false;
+					if (actionCode) err = '[code]: <b>' + actionCode + '</b>, <br>' + err;
 				}
-				fy.onAjaxError.call(this, err) ;
+				fy.onAjaxError.call(this, err);
 			}
-		} ,
-		toString: function() {
+		},
+		toString: function () {
 			return this.url;
-		} ,
-		getJSON: function (data , callback) {
+		},
+		getJSON: function (data, callback) {
 			//log('native' , this.xhr);
-			return $.getJSON.apply(this , makeParam.call(this , data , callback , "json"));
-		} ,
-		get: function (data , callback , type) {
-			return $.get.apply(this , makeParam.call(this , data , callback, type));
-		} ,
-		post: function (data , callback, type) {
-			return $.post.apply(this , makeParam.call(this , data , callback, type));
+			return $.getJSON.apply(this, makeParam.call(this, data, callback, "json"));
+		},
+		get: function (data, callback, type) {
+			return $.get.apply(this, makeParam.call(this, data, callback, type));
+		},
+		post: function (data, callback, type) {
+			return $.post.apply(this, makeParam.call(this, data, callback, type));
+		},
+		postObj: function (obj, callback, type) {
+			return this.post({vo: JSON.stringify(obj)}, callback, type);
 		}
 	};
-	fy.server = function(urlSet , override){
-		if(urlSet) fy.server.add(urlSet , override) ;
-		return fy.server ;
+	fy.server = function (urlSet, override) {
+		if (urlSet) fy.server.add(urlSet, override);
+		return fy.server;
 	};
-	fy.server.add = function(urlHashSet , override) {
+	fy.server.add = function (urlHashSet, override) {
 		var that = fy.server , unwritable = !override;
 
-		if(typeof urlHashSet === "string" && typeof override === "string") {
-			var p1 = urlHashSet ;
+		if (typeof urlHashSet === "string" && typeof override === "string") {
+			var p1 = urlHashSet;
 			urlHashSet = {};
-			urlHashSet[p1] = override ;
-			unwritable = true ;
+			urlHashSet[p1] = override;
+			unwritable = true;
 		}
 
 
-		for(var key in urlHashSet){
-			if((key in that) && unwritable) {
+		for (var key in urlHashSet) {
+			if ((key in that) && unwritable) {
 				//throw new Error('重复定义 fy.server["'+key+'"] !' , 'fy.server.error') ;
 			}
 			else
 				that[key] = new srvFn(urlHashSet[key]);
 		}
-		return that ;
+		return that;
 	};
-	fy.server.isLocal = (location.hostname.indexOf('127.0.0.1')>-1 || location.hostname.indexOf('localhost')>-1) ;
-	fy.server.isLAN = (location.hostname.split(".")[0]in{192:1, 172:1, 10:1} || fy.server.isLocal ) ;
+	fy.server.isLocal = (location.hostname.indexOf('127.0.0.1') > -1 || location.hostname.indexOf('localhost') > -1);
+	fy.server.isLAN = (location.hostname.split(".")[0]in{192: 1, 172: 1, 10: 1} || fy.server.isLocal );
 
 	/*var SrvCalls = function(calls){
-		var l = calls.length , step = 0 ;
-		for(var i = 0;  i<l ; i++){
-			calls[i].getJSON()
-		}
-	};
-	SrvCalls.prototype.done = function(fn){
-		this.done = fn ;
-	};
+	 var l = calls.length , step = 0 ;
+	 for(var i = 0;  i<l ; i++){
+	 calls[i].getJSON()
+	 }
+	 };
+	 SrvCalls.prototype.done = function(fn){
+	 this.done = fn ;
+	 };
 
-	fy.server.when = function(calls){
-		return new SrvCalls(calls) ;
-	};*/
+	 fy.server.when = function(calls){
+	 return new SrvCalls(calls) ;
+	 };*/
 
 	/*(function() {
-		var a =  document.createElement('a');
-		a.href = url;
-		return {
-			source: url,
-			protocol: a.protocol.replace(':',''),
-			host: a.hostname,
-			port: a.port,
-			query: a.search,
-			params: (function(){
-				var ret = {},
-					seg = a.search.replace(/^\?/,'').split('&'),
-					len = seg.length, i = 0, s;
-				for (;i<len;i++) {
-					if (!seg[i]) { continue; }
-					s = seg[i].split('=');
-					ret[s[0]] = s[1];
-				}
-				return ret;
-			})(),
-			file: (a.pathname.match(/\/([^\/?#]+)$/i) || [,''])[1],
-			hash: a.hash.replace('#',''),
-			path: a.pathname.replace(/^([^\/])/,'/$1'),
-			relative: (a.href.match(/tps?:\/\/[^\/]+(.+)/) || [,''])[1],
-			segments: a.pathname.replace(/^\//,'').split('/')
-		};
-	})();*/
+	 var a =  document.createElement('a');
+	 a.href = url;
+	 return {
+	 source: url,
+	 protocol: a.protocol.replace(':',''),
+	 host: a.hostname,
+	 port: a.port,
+	 query: a.search,
+	 params: (function(){
+	 var ret = {},
+	 seg = a.search.replace(/^\?/,'').split('&'),
+	 len = seg.length, i = 0, s;
+	 for (;i<len;i++) {
+	 if (!seg[i]) { continue; }
+	 s = seg[i].split('=');
+	 ret[s[0]] = s[1];
+	 }
+	 return ret;
+	 })(),
+	 file: (a.pathname.match(/\/([^\/?#]+)$/i) || [,''])[1],
+	 hash: a.hash.replace('#',''),
+	 path: a.pathname.replace(/^([^\/])/,'/$1'),
+	 relative: (a.href.match(/tps?:\/\/[^\/]+(.+)/) || [,''])[1],
+	 segments: a.pathname.replace(/^\//,'').split('/')
+	 };
+	 })();*/
 
 	//default root path
-	fy.serverRootPath = "/" ;
+	fy.serverRootPath = "/";
 
 	//default ajax error message shown
-	fy.onAjaxError = function(err){
+	fy.onAjaxError = function (err) {
 		fy.alert(err.toString());
 	};
 
 	//a log tool
 	window.log = function (debug) {
-		if (debug){
-			if (!!window.console){
-				function mkArg(l){
-					var args = [] ;
+		if (debug) {
+			if (!!window.console) {
+				function mkArg(l) {
+					var args = [];
 					while (l--) args[l] = l;
-					return 'arguments[' + args.join("],arguments[") + ']' ;
+					return 'arguments[' + args.join("],arguments[") + ']';
 				}
-				window.log = function() {
-					eval('console.log('+ mkArg(arguments.length) +')');
+
+				window.log = function () {
+					eval('console.log(' + mkArg(arguments.length) + ')');
 				};
-				window.log.error = function(){
-					eval('console.error('+ mkArg(arguments.length) +')');
+				window.log.error = function () {
+					eval('console.error(' + mkArg(arguments.length) + ')');
 				};
-				window.log.warn = function(){
-					eval('console.warn('+ mkArg(arguments.length) +')');
+				window.log.warn = function () {
+					eval('console.warn(' + mkArg(arguments.length) + ')');
 				};
 			}
-			else{ 
+			else {
 				document.write('<div id="fylogTracer001"></div>');
 				var e = document.getElementById("fylogTracer001");
-				window.log = function() {
-					if (e.scrollHeight>600) e.innerHTML = '';
-					else e.innerHTML += "<p>" ;
+				window.log = function () {
+					if (e.scrollHeight > 600) e.innerHTML = '';
+					else e.innerHTML += "<p>";
 					for (var i = 0 , len = arguments.length; i < len; i++) {
-						e.innerHTML += (JSON.stringify(arguments[i])||arguments[i])+" " ;
+						e.innerHTML += (JSON.stringify(arguments[i]) || arguments[i]) + " ";
 					}
 					/*for (var i = 0, l = arguments.length ; i < l ; i++)
-					alert(JSON.stringify(arguments[i])) ;*/
+					 alert(JSON.stringify(arguments[i])) ;*/
 				}
 			}
 		}
 		else {
-			window.log = function(){} ;
-			window.log.warn = window.log.error = fy.EMPTY_FN ;
+			window.log = function () {
+			};
+			window.log.warn = window.log.error = fy.EMPTY_FN;
 		}
 	};
 
 	//string formatting util
-	fy.formatString = function (template , params) {
+	fy.formatString = function (template, params) {
 		if (arguments.length == 1)
 			return function () {
 				var args = $.makeArray(arguments);
 				args.unshift(template);
-				return $.validator.format.apply(this , args);
+				return $.validator.format.apply(this, args);
 			};
 		if (arguments.length > 2 && params.constructor != Array) {
 			params = $.makeArray(arguments).slice(1);
@@ -187,8 +196,8 @@
 		if (params.constructor != Array) {
 			params = [ params ];
 		}
-		$.each(params , function (i , n) {
-			template = template.replace(new RegExp("\\{" + i + "\\}" , "g") , n);
+		$.each(params, function (i, n) {
+			template = template.replace(new RegExp("\\{" + i + "\\}", "g"), n);
 		});
 		return template;
 	};
@@ -196,17 +205,16 @@
 	//json formatting
 	fy.formatJSON = (function () {
 		var pattern = /\{(\w*[:]*[=]*\w+)\}(?!})/g;
-		return function (template , json) {
-			return template.replace(pattern , function (match , key , value) {
+		return function (template, json) {
+			return template.replace(pattern, function (match, key, value) {
 				return json[key];
 			});
 		}
 	})();
 
 
-
 	//cookie processor
-	fy.cookie = function(name, value, options){
+	fy.cookie = function (name, value, options) {
 		if (typeof value != 'undefined') {
 			// name and value given, set cookie
 			options = options || {};
@@ -249,10 +257,10 @@
 					// Does this cookie string begin with the name we want?
 					if (cookie.substring(0, name.length + 1) == (name + '=')) {
 						// Get the cookie value
-						try{
+						try {
 							cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
 						}
-						catch (e){
+						catch (e) {
 							cookieValue = cookie.substring(name.length + 1);
 						}
 						break;
@@ -264,27 +272,28 @@
 				try {
 					cookieValue = jQuery.evalJSON(cookieValue);
 				}
-				catch (e) {}
+				catch (e) {
+				}
 			}
 			return cookieValue;
 		}
-	} ;
+	};
 
 	//can get url parameters by using fy.request["paramName"]
 	fy.request = (function () {
 		var ret = {}, a = window.location,
-			seg = a.search.replace(/^\?/ , '').split('&'),
+			seg = a.search.replace(/^\?/, '').split('&'),
 			len = seg.length, i = 0, s;
-		for (; i < len ; i++) {
+		for (; i < len; i++) {
 			if (!seg[i]) {
 				continue;
 			}
 			s = seg[i].split('=');
 			//ret[s[0]] = decodeURI(s[1]);
-			try{
-				ret[s[0]]= decodeURI(s[1]);
+			try {
+				ret[s[0]] = decodeURI(s[1]);
 			}
-			catch (e){
+			catch (e) {
 				ret[s[0]] = s[1];
 			}
 		}
@@ -302,13 +311,13 @@
 	};
 
 
-	fy.addSeconds = function(d , s){
-		return new Date(d.getTime() + s*1000) ;
-	} ;
-	fy.addDays = function(d , s){
-		return new Date(d.getTime() + s*24*3600*1000) ;
-	} ;
-	fy.daySpan = function(dateTo, dateFrom) {
+	fy.addSeconds = function (d, s) {
+		return new Date(d.getTime() + s * 1000);
+	};
+	fy.addDays = function (d, s) {
+		return new Date(d.getTime() + s * 24 * 3600 * 1000);
+	};
+	fy.daySpan = function (dateTo, dateFrom) {
 		return Math.round((dateTo.valueOf() - dateFrom.valueOf()) / 86400000);
 	};
 	fy.weekSpan = function (dateTo, dateFrom) {
@@ -328,10 +337,10 @@
 			"S": date.getMilliseconds() //millisecond   
 		};
 
-		if (/(y+)/.test(format)) 
+		if (/(y+)/.test(format))
 			format = format.replace(RegExp.$1, (date.getFullYear() + "").substr(4 - RegExp.$1.length));
 
-		for (var k in o) 
+		for (var k in o)
 			if (new RegExp("(" + k + ")").test(format))
 				format = format.replace(RegExp.$1, RegExp.$1.length == 1 ? o[k] : ("00" + o[k]).substr(("" + o[k]).length));
 
@@ -364,20 +373,20 @@
 			j = (j = i.length) > 3 ? j % 3 : 0;
 
 		var v = s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
-		return parseFloat(v , 10) ;
+		return parseFloat(v, 10);
 	};
 
 	//file size formater
 	fy.formatFilesize = function (filesize) {
 		if (filesize >= 1073741824) {
 			filesize = number_format(filesize / 1073741824, 2, '.', ',') + ' GB';
-		} 
+		}
 		else if (filesize >= 1048576) {
 			filesize = number_format(filesize / 1048576, 2, '.', '') + ' MB';
-		} 
+		}
 		else if (filesize >= 1024) {
 			filesize = number_format(filesize / 1024, 0) + ' KB';
-		} 
+		}
 		else {
 			//filesize = '< 1KB';
 			filesize = number_format(filesize, 0) + ' bytes';
@@ -385,13 +394,13 @@
 		return filesize;
 	};
 
-	fy.timeStamp = function(){
-		var n = new Date , f = new Date(2012 , 11 , 22);
-		return (n.valueOf() - f.valueOf()).toString() ;
-	} ;
+	fy.timeStamp = function () {
+		var n = new Date , f = new Date(2012, 11, 22);
+		return (n.valueOf() - f.valueOf()).toString();
+	};
 
-	fy.random = function(len){
-		return (Math.random() * Math.random()).toString().substr(2 , len||9) ;
+	fy.random = function (len) {
+		return (Math.random() * Math.random()).toString().substr(2, len || 9);
 	};
 
 	//Usage: fy.uuid()
@@ -424,7 +433,7 @@
 	})();
 
 	//tested not passed under webkit
-	fy.convertImageToBase64 = function(img) {
+	fy.convertImageToBase64 = function (img) {
 		// Create an empty canvas element
 		var canvas = document.createElement("canvas");
 		canvas.width = img.width;
@@ -444,45 +453,45 @@
 	};
 
 	//preload an image
-	fy.preloadImage = function(url, onLoad, onError) {
+	fy.preloadImage = function (url, onLoad, onError) {
 		var img = new Image();
-		img.onload = function(){
+		img.onload = function () {
 			img.onload = null;
-			if(typeof onLoad === "function") onLoad(img);
-			img = null ;
+			if (typeof onLoad === "function") onLoad(img);
+			img = null;
 		};
-		img.onerror = function(){
+		img.onerror = function () {
 			img.onerror = null;
-			img = null ;
-			if(typeof onError === "function") onError();
+			img = null;
+			if (typeof onError === "function") onError();
 		};
 		img.src = url;
 	};
 
 	//dynamically load a script or css
-	fy.loadFile = function(filename, filetype , onLoad, onError) {
-		onLoad = onLoad || fy.EMPTY_FN ;
-		onError = onError || fy.EMPTY_FN ;
-		var fileref ;
+	fy.loadFile = function (filename, filetype, onLoad, onError) {
+		onLoad = onLoad || fy.EMPTY_FN;
+		onError = onError || fy.EMPTY_FN;
+		var fileref;
 		if (filetype === "js") {
 			var ss = document.getElementsByTagName("script");
-			for(i = 0; i < ss.length; i++) {
-				if(ss[i].src && ss[i].src.indexOf(filename) != -1) {
+			for (i = 0; i < ss.length; i++) {
+				if (ss[i].src && ss[i].src.indexOf(filename) != -1) {
 					return onLoad();
 				}
 			}
 			fileref = document.createElement('script');
-			document.getElementsByTagName("head")[0].appendChild(fileref) ;
+			document.getElementsByTagName("head")[0].appendChild(fileref);
 			fileref.setAttribute("type", "text/javascript");
 			fileref.setAttribute("src", filename);
 		}
 		else if (filetype === "css") {
-			if(document.createStyleSheet){
+			if (document.createStyleSheet) {
 				fileref = document.createStyleSheet(filename);
 			}
-			else{
+			else {
 				fileref = document.createElement("link");
-				document.getElementsByTagName("head")[0].appendChild(fileref) ;
+				document.getElementsByTagName("head")[0].appendChild(fileref);
 				fileref.setAttribute("rel", "stylesheet");
 				fileref.setAttribute("type", "text/css");
 				fileref.setAttribute("href", filename);
@@ -490,10 +499,10 @@
 		}
 
 		fileref.onload = fileref.onreadystatechange = function () {
-			if(this.readyState && this.readyState == "loading") return;
+			if (this.readyState && this.readyState == "loading") return;
 			onLoad();
 			onLoad = null;
-		} ;
+		};
 		fileref.onerror = function () {
 			document.getElementsByTagName("head")[0].removeChild(fileref);
 			onError();
@@ -521,14 +530,14 @@
 	 *js HTML Encode
 	 */
 	fy.HTML = {
-		encode:function (html) {
+		encode: function (html) {
 			var temp = document.createElement("div");
 			temp.innerText ? (temp.innerText = html) : (temp.textContent = html);
 			var output = temp.innerHTML;
 			temp = null;
 			return output;
 		},
-		decode:function (html) {
+		decode: function (html) {
 			var temp = document.createElement("div");
 			temp.innerHTML = html;
 			var output = temp.innerText || temp.textContent;
@@ -536,14 +545,14 @@
 			return output;
 		},
 		//HTML des encode. (ascii)
-		desEncode:function(str) {
-			var res=[];
-			for(var i=0;i < str.length;i++)
-				res[i]=str.charCodeAt(i);
-			return "&#"+res.join(";&#")+";";
+		desEncode: function (str) {
+			var res = [];
+			for (var i = 0; i < str.length; i++)
+				res[i] = str.charCodeAt(i);
+			return "&#" + res.join(";&#") + ";";
 		},
 		//HTML hex encode.
-		hexEncode:function (str) {
+		hexEncode: function (str) {
 			var res = [];
 			for (var i = 0; i < str.length; i++)
 				res[i] = str.charCodeAt(i).toString(16);
@@ -551,7 +560,7 @@
 			return "&#x" + res.join(";&#x") + ";";
 		},
 		//仅对双字节和&编码
-		encodeSBC : function(s) {
+		encodeSBC: function (s) {
 			var r = "", c;
 			for (var i = 0; i < s.length; i++) {
 				c = s.charCodeAt(i);
@@ -560,7 +569,7 @@
 			return r;
 		},
 		//DES and HEX Decode 2in1
-		desHexDecode:function (str) {
+		desHexDecode: function (str) {
 			return str.replace(/&#(x)?([^&]{1,5});?/g, function ($, $1, $2) {
 				return String.fromCharCode(parseInt($2, $1 ? 16 : 10));
 			});
@@ -568,7 +577,7 @@
 		//全半角转换
 		/* *全角空格为12288，半角空格为32 *其他字符半角(33-126)与全角(65281-65374)的对应关系是：均相差65248 */
 		//转半角
-		toDBC:function (input) {
+		toDBC: function (input) {
 			var res = "", c;
 			for (var i = 0; i < input.length; i++) {
 				c = input.charCodeAt(i);
@@ -582,7 +591,7 @@
 			return res;
 		},
 		//转全角
-		toSBC:function (input) {
+		toSBC: function (input) {
 			var res = "", c;
 			for (var i = 0; i < input.length; i++) {
 				c = input.charCodeAt(i);
@@ -595,26 +604,28 @@
 			}
 			return res;
 		},
-		toUTF8 : function( str ) {
-			if( typeof( str ) !== "string" ) {
+		toUTF8: function (str) {
+			if (typeof( str ) !== "string") {
 				throw new TypeError("toUTF8 function only accept a string as its parameter.");
 			}
 			var ret = [];
 			var c1, c2, c3;
 			var cc = 0;
-			for( var i = 0, l = str.length; i < l; i++ ) {
+			for (var i = 0, l = str.length; i < l; i++) {
 				cc = str.charCodeAt(i);
-				if( cc > 0xFFFF ) { throw new Error("InvalidCharacterError"); }
-				if( cc > 0x80 ) {
-					if( cc < 0x07FF ) {
-						c1 = String.fromCharCode( ( cc >>>  6 ) | 0xC0 );
-						c2 = String.fromCharCode( ( cc & 0x3F ) | 0x80 );
-						ret.push( c1, c2 );
+				if (cc > 0xFFFF) {
+					throw new Error("InvalidCharacterError");
+				}
+				if (cc > 0x80) {
+					if (cc < 0x07FF) {
+						c1 = String.fromCharCode(( cc >>> 6 ) | 0xC0);
+						c2 = String.fromCharCode(( cc & 0x3F ) | 0x80);
+						ret.push(c1, c2);
 					} else {
-						c1 = String.fromCharCode(   ( cc >>> 12 )          | 0xE0 );
-						c2 = String.fromCharCode( ( ( cc >>>  6 ) & 0x3F ) | 0x80 );
-						c3 = String.fromCharCode(   ( cc          & 0x3F ) | 0x80 );
-						ret.push( c1, c2, c3 );
+						c1 = String.fromCharCode(( cc >>> 12 ) | 0xE0);
+						c2 = String.fromCharCode(( ( cc >>> 6 ) & 0x3F ) | 0x80);
+						c3 = String.fromCharCode(( cc & 0x3F ) | 0x80);
+						ret.push(c1, c2, c3);
 					}
 				} else {
 					ret.push(str[i]);
@@ -657,8 +668,6 @@
 	};
 
 
-
-
 	/*
 	 fy.util.validate  数据校验
 	 */
@@ -668,7 +677,7 @@
 		return !!string;
 	};
 	Validate.empty = function (string) {
-		return String(string).replace(/\s+/g , '').length == 0;
+		return String(string).replace(/\s+/g, '').length == 0;
 	};
 	Validate.required = function (str) {
 		return !Validate.empty(str);
@@ -679,24 +688,24 @@
 	Validate.url = function (string) {
 		return /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/i.test(string);
 	};
-	Validate.date = function (string , preutc) {
+	Validate.date = function (string, preutc) {
 		var date = Date.parse(string);
 		if (isFinite(date)) {
 			return true;
 		}
 		if (preutc) {
 			var now = new Date();
-			string = string.replace(/\d{4}/ , now.getFullYear());
+			string = string.replace(/\d{4}/, now.getFullYear());
 			date = Date.parse(string);
 			return isFinite(date);
 		}
 		return false;
 	};
-	Validate.time = function (string){
-		var checkValue = new RegExp("^/[0-2]{1}/[0-6]{1}:/[0-5]{1}/[0-9]{1}:/[0-5]{1}/[0-9]{1}") ;
-		return checkValue.test(string) ;
+	Validate.time = function (string) {
+		var checkValue = new RegExp("^/[0-2]{1}/[0-6]{1}:/[0-5]{1}/[0-9]{1}:/[0-5]{1}/[0-9]{1}");
+		return checkValue.test(string);
 	}
-	Validate.zip = function (string , plus4) {
+	Validate.zip = function (string, plus4) {
 		var pattern = plus4 ? /^\d{5}-\d{4}$/ : /^\d{5}$/;
 		return pattern.test(string);
 	};
@@ -709,7 +718,7 @@
 	Validate.numeric = function (string) {
 		return /^-?(?:\d+|\d{1,3}(?:,\d{3})+)?(?:\.\d+)?$/.test(string);
 	};
-	Validate.currency = function (string , us) {
+	Validate.currency = function (string, us) {
 		return /^\$-?(?:\d+|\d{1,3}(?:,\d{3})+)?(?:\.\d+)?$/.test(string);
 	};
 	Validate.ip = function (string) {
@@ -736,13 +745,13 @@
 	Validate.uppercase = function (string) {
 		return string.toUpperCase() == string;
 	};
-	Validate.minlength = function (string , length) {
+	Validate.minlength = function (string, length) {
 		return string.length >= length;
 	};
-	Validate.maxlength = function (string , length) {
+	Validate.maxlength = function (string, length) {
 		return string.length <= length;
 	};
-	Validate.between = function (string , min , max) {
+	Validate.between = function (string, min, max) {
 		return string.length >= min && string.length <= max;
 	};
 	//Expose to fy
@@ -750,28 +759,28 @@
 
 
 	//sort objective array on an attribute
-	fy.sortOn = function (arr , prop , sortCompareFunction) {
-		if (sortCompareFunction && typeof sortCompareFunction==='function') 
+	fy.sortOn = function (arr, prop, sortCompareFunction) {
+		if (sortCompareFunction && typeof sortCompareFunction === 'function')
 			return arr.sort(sortCompareFunction);
-		
+
 		else {
-			var dup = Array.prototype.slice.call(arr , 0);
+			var dup = Array.prototype.slice.call(arr, 0);
 			//var dup = arr.slice(0);
-			if(!arguments.length) return dup.sort();
+			if (!arguments.length) return dup.sort();
 			//var args = Array.prototype.slice.call(arguments);
 			return dup.sort(
-				function (a , b) {
-					var A = a[prop] , nA = isNaN(A) , B = b[prop] , nB = isNaN(B) ;
+				function (a, b) {
+					var A = a[prop] , nA = isNaN(A) , B = b[prop] , nB = isNaN(B);
 					//两者皆非number
-					if(nA && nB) {
-						if(A==='') return -1;
-						if(B==='') return 1;
+					if (nA && nB) {
+						if (A === '') return -1;
+						if (B === '') return 1;
 						return (A === B ? 0 : A > B ? 1 : -1);
 					}
 					//a[prop] 非 number, b[prop] 是 number
-					else if (nA) return -1 ;
+					else if (nA) return -1;
 					//a[prop] 是 number, b[prop] 非 number
-					else if (nB) return 1 ;
+					else if (nB) return 1;
 					//a[prop], b[prop]  均是 number
 					return A === B ? 0 : A > B ? 1 : -1;
 				}
@@ -786,25 +795,25 @@
 	// Sort by city, case-insensitive, A-Z
 	//homes.sort(sort_by('city', false, function(a){return a.toUpperCase()}));
 	/*
-	var sort_by = function(field, reverse, primer){
+	 var sort_by = function(field, reverse, primer){
 
-		var key = function (x) {return primer ? primer(x[field]) : x[field]};
+	 var key = function (x) {return primer ? primer(x[field]) : x[field]};
 
-		return function (a,b) {
-			var A = key(a), B = key(b);
-			return ((A < B) ? -1 : (A > B) ? +1 : 0) * [-1,1][+!!reverse];
-		}
-	}
-	*/
+	 return function (a,b) {
+	 var A = key(a), B = key(b);
+	 return ((A < B) ? -1 : (A > B) ? +1 : 0) * [-1,1][+!!reverse];
+	 }
+	 }
+	 */
 
 	//fy.is.Array([]) .or: fy.is.Date(new Date())
 	fy.is = {
-		types : ["Array","RegExp","Date","Number","String","Object","HTMLDocument"]
+		types: ["Array", "RegExp", "Date", "Number", "String", "Object", "HTMLDocument"]
 	};
-	for(var i=0,c; c= fy.is.types[i++]; ){
-		fy.is[c] = (function(type){
-			return function(obj){
-				return Object.prototype.toString.call(obj) == "[object "+type+"]";
+	for (var i = 0, c; c = fy.is.types[i++];) {
+		fy.is[c] = (function (type) {
+			return function (obj) {
+				return Object.prototype.toString.call(obj) == "[object " + type + "]";
 			}
 		})(c);
 	}
@@ -812,27 +821,27 @@
 
 	//Language Package sets
 	fy.setLanguage = function (languagePack, strId) {
-		var elem , document = window.document ;
+		var elem , document = window.document;
 		if (strId === undefined) {
 			var key;
 			for (key in languagePack) {
-				var x = key.indexOf("::") ;
-				if(x !== -1){
-					var id = key.substr(0,x) , tag = key.substr(x+2) ;
-					elem = $(tag , "#"+id) ;
-					for(var f = 0, g =elem.length ; f<g ; f++){
-						var el = elem[f] ;
+				var x = key.indexOf("::");
+				if (x !== -1) {
+					var id = key.substr(0, x) , tag = key.substr(x + 2);
+					elem = $(tag, "#" + id);
+					for (var f = 0, g = elem.length; f < g; f++) {
+						var el = elem[f];
 						//$(el).html(textObj[key][f]) ;
-						el.innerText?(el.innerText = languagePack[key][f]):(el.textContent = languagePack[key][f]) ;
+						el.innerText ? (el.innerText = languagePack[key][f]) : (el.textContent = languagePack[key][f]);
 					}
 				}
-				else{
-					x = key.indexOf("@") ;
-					if(x > -1){
-						var id = key.substr(0,x) , attr = key.substr(++x) ;
-						$("#"+id).attr(attr , languagePack[key]) ;
+				else {
+					x = key.indexOf("@");
+					if (x > -1) {
+						var id = key.substr(0, x) , attr = key.substr(++x);
+						$("#" + id).attr(attr, languagePack[key]);
 					}
-					else{
+					else {
 						elem = document.getElementById(key);
 						if (elem) $(elem).html(languagePack[key]);
 					}
@@ -852,53 +861,53 @@
 
 
 	//sim thread to void long-time-calculate locking
-	fy.thread = function(arr , param){
+	fy.thread = function (arr, param) {
 		var def = {
-				startIndex : 0 ,
-				caller : window ,
-				itemRender : null ,
-				stepLength: 5000 ,
-				onStart: null,
-				onProgress: null ,
-				onComplete: null
-		} ;
-		var sets = $.extend(def, param) ;
+			startIndex: 0,
+			caller: window,
+			itemRender: null,
+			stepLength: 5000,
+			onStart: null,
+			onProgress: null,
+			onComplete: null
+		};
+		var sets = $.extend(def, param);
 		var processor = sets.itemRender  , num = arr.length , timer = 0 , cur = 0;
 
 		//var fn = function(){handler(cur, sets.stepLength) ;};
 
-		if(sets.onStart) sets.onStart.call(sets.caller , arr);
-		handler(sets.startIndex , sets.stepLength) ;
+		if (sets.onStart) sets.onStart.call(sets.caller, arr);
+		handler(sets.startIndex, sets.stepLength);
 
-		function handler(){
-			var p = processor||false , that = sets.caller , stepLength = sets.stepLength ;
-			if(sets.onProgress) sets.onProgress.call(that , cur , arr);
+		function handler() {
+			var p = processor || false , that = sets.caller , stepLength = sets.stepLength;
+			if (sets.onProgress) sets.onProgress.call(that, cur, arr);
 			for (var i = 0; i < stepLength; i++) {
 				if (cur === num) {
-					if(sets.onComplete) sets.onComplete.call(that , arr);
-					sets = processor = arr = cur = stepLength = p = that = null ;
+					if (sets.onComplete) sets.onComplete.call(that, arr);
+					sets = processor = arr = cur = stepLength = p = that = null;
 					return;
 				}
 				else {
-					++cur ;
-					if(p) p.call(that , cur , arr[cur] , arr);
+					++cur;
+					if (p) p.call(that, cur, arr[cur], arr);
 				}
 			}
 
 			timer = setTimeout(handler, 0);
 		}
-	} ;
+	};
 
 
 	//benchmark for javascript function testing
-	fy.benchMark = function(fn, _loopTimes, _testTimes) {
+	fy.benchMark = function (fn, _loopTimes, _testTimes) {
 		var loopTimes = _loopTimes || 5000 ,
 			testTimes = _testTimes || 1;
 		if (testTimes === 1) return test();
 		else {
 			var t = 0;
 			for (var x = 0; x < testTimes; x++) t += test();
-			return t / testTimes ;
+			return t / testTimes;
 		}
 
 		function test() {
@@ -912,10 +921,10 @@
 	//check      : a function to return true/false
 	//proc       : a function which won't run until check() return true
 	//chkInterval: optional, checking interval, default value is 500ms
-	fy.delayExecute = function(check, proc, chkInterval) {
+	fy.delayExecute = function (check, proc, chkInterval) {
 		//default interval = 100ms
 		var x = chkInterval || 100;
-		var hnd = window.setInterval(function() {
+		var hnd = window.setInterval(function () {
 			//if check() return true,
 			//stop timer and execute proc()
 			if (check()) {
@@ -927,59 +936,66 @@
 
 	//handle some timer into one trigger
 	fy.timerManager = {
-		interval : 0 ,
-		timer:{},
-		has : function(id){
-			return (id in this.timer) ;
-		} ,
-		add:function (cfg) {
-			if(this.timer[cfg.id]) throw new Error("id conflict") ;
-			cfg.stamp = (new Date).getTime();
-			this.timer[cfg.id] = cfg ;
+		interval: 0,
+		timer: {},
+		has: function (id) {
+			return (id in this.timer);
+		},
+		once: function (cfg) {
+			if (this.timer[cfg.id]) throw new Error("id conflict");
+			cfg[':stamp'] = (new Date).getTime();
+			cfg[':once'] = true;
+			this.timer[cfg.id] = cfg;
 			return this;
 		},
-		remove:function (tar) {
-			var id ;
-			if(typeof tar === "string") id = tar;
-			else if(tar.id) id = tar.id;
+		add: function (cfg) {
+			if (this.timer[cfg.id]) throw new Error("id conflict");
+			cfg[':stamp'] = (new Date).getTime();
+			this.timer[cfg.id] = cfg;
+			return this;
+		},
+		remove: function (tar) {
+			var id;
+			if (typeof tar === "string") id = tar;
+			else if (tar.id) id = tar.id;
 
-			if(this.timer[id]) delete this.timer[id] ;
+			if (this.timer[id]) delete this.timer[id];
 			return this;
 		},
-		trigger:function () {
-			var tm = fy.timerManager.timer  ,key , act , now = (new Date).getTime();
-			for(key in tm){
-				act = tm[key] ;
-				if (now - act.stamp >= act.timeOut){
-					act.stamp = now ;
+		trigger: function () {
+			var tm = fy.timerManager.timer  , key , act , now = (new Date).getTime();
+			for (key in tm) {
+				act = tm[key];
+				if (now - act[':stamp'] >= act.timeOut) {
+					act[':stamp'] = now;
 					act.fn();
+					if (act[':once']) this.remove(cfg.id);
 				}
 			}
 			return this;
-		} ,
-		run : function(timeSpan){
-			if(this.interval) this.stop() ;
-			this.interval = setInterval(fy.timerManager.trigger , timeSpan||1000) ;
+		},
+		run: function (timeSpan) {
+			if (this.interval) this.stop();
+			this.interval = setInterval(fy.timerManager.trigger, timeSpan || 1000);
 			return this;
 		},
-		stop: function(){
-			if(this.interval){
-				clearInterval(this.interval) ;
-				this.interval = 0 ;
+		stop: function () {
+			if (this.interval) {
+				clearInterval(this.interval);
+				this.interval = 0;
 			}
 			return this;
 		}
 	};
 
 
-
-	var pfx = ["" , "webkit", "ms",  "moz", "o"] ;
-	fy.runPrefixMethod = function(obj, method) {
+	var pfx = ["" , "webkit", "ms", "moz", "o"];
+	fy.runPrefixMethod = function (obj, method) {
 		var p = 0, m, t;
 		while (p < pfx.length && !obj[m]) {
 			m = method;
 			if (pfx[p] === "") {
-				m = m.substr(0,1).toLowerCase() + m.substr(1);
+				m = m.substr(0, 1).toLowerCase() + m.substr(1);
 			}
 			m = pfx[p] + m;
 			t = typeof obj[m];
@@ -993,10 +1009,10 @@
 	};
 
 	var TAGNAMES = {//特定元素上的特定事件
-		'select':'input','change':'input',
-		'submit':'form','reset':'form',
-		'error':'img','load':'img','abort':'img'
-	} ;
+		'select': 'input', 'change': 'input',
+		'submit': 'form', 'reset': 'form',
+		'error': 'img', 'load': 'img', 'abort': 'img'
+	};
 
 	fy.isEventSupported = function isEventSupported(eventName, element) {
 		element = element || document.createElement(TAGNAMES[eventName] || 'div');
@@ -1031,27 +1047,27 @@
 	// 而判断浏览器版本只需用if(fy.browser.msie == 8)或if(fy.browser.firefox == 3)等形式
 	// 也可用 fy.browser.name 获取名称; fy.browser.version 取得版本
 	// based on https://github.com/gabceb/jquery-browser-plugin
-	var matched = (function( ua ) {
+	var matched = (function (ua) {
 		ua = ua.toLowerCase();
 
-		var match = /(opr)[\/]([\w.]+)/.exec( ua ) ||
-			/(chrome)[ \/]([\w.]+)/.exec( ua ) ||
+		var match = /(opr)[\/]([\w.]+)/.exec(ua) ||
+			/(chrome)[ \/]([\w.]+)/.exec(ua) ||
 			/(version)[ \/]([\w.]+).*(safari)[ \/]([\w.]+)/.exec(ua) ||
-			/(webkit)[ \/]([\w.]+)/.exec( ua ) ||
-			/(opera)(?:.*version|)[ \/]([\w.]+)/.exec( ua ) ||
-			/(msie) ([\w.]+)/.exec( ua ) ||
-			ua.indexOf("trident") >= 0 && /(rv)(?::| )([\w.]+)/.exec( ua ) ||
-			ua.indexOf("compatible") < 0 && /(mozilla)(?:.*? rv:([\w.]+)|)/.exec( ua ) ||
+			/(webkit)[ \/]([\w.]+)/.exec(ua) ||
+			/(opera)(?:.*version|)[ \/]([\w.]+)/.exec(ua) ||
+			/(msie) ([\w.]+)/.exec(ua) ||
+			ua.indexOf("trident") >= 0 && /(rv)(?::| )([\w.]+)/.exec(ua) ||
+			ua.indexOf("compatible") < 0 && /(mozilla)(?:.*? rv:([\w.]+)|)/.exec(ua) ||
 			[];
 
-		var platform_match = /(ipad)/.exec( ua ) ||
-			/(iphone)/.exec( ua ) ||
-			/(android)/.exec( ua ) ||
+		var platform_match = /(ipad)/.exec(ua) ||
+			/(iphone)/.exec(ua) ||
+			/(android)/.exec(ua) ||
 			/(windows phone)/.exec(ua) ||
-			/(win)/.exec( ua ) ||
-			/(mac)/.exec( ua ) ||
-			/(linux)/.exec( ua ) ||
-			/(cros)/i.exec( ua ) ||
+			/(win)/.exec(ua) ||
+			/(mac)/.exec(ua) ||
+			/(linux)/.exec(ua) ||
+			/(cros)/i.exec(ua) ||
 			[];
 
 		return {
@@ -1059,42 +1075,41 @@
 			version: match[ 2 ] || "0",
 			platform: platform_match[0] || ""
 		};
-	})( window.navigator.userAgent );
+	})(window.navigator.userAgent);
 
 	var browser = {};
 
-	if ( matched.browser ) {
-		browser[ matched.browser ] = true ;
-		browser.version = matched.version ;
-		browser.versionNumber = parseInt(matched.version, 10) ;
+	if (matched.browser) {
+		browser[ matched.browser ] = true;
+		browser.version = matched.version;
+		browser.versionNumber = parseInt(matched.version, 10);
 	}
 
-	if ( matched.platform) {
+	if (matched.platform) {
 		browser[ matched.platform ] = true
 	}
 
 	// Chrome, Opera 15+ and Safari are webkit based browsers
-	if ( browser.chrome || browser.opr || browser.safari) {
-		browser.webkit = true ;
+	if (browser.chrome || browser.opr || browser.safari) {
+		browser.webkit = true;
 	}
 
 	// IE11 has a new token so we will assign it msie to avoid breaking changes
-	if (browser.rv){
+	if (browser.rv) {
 		var ie = 'msie';
 		matched.browser = ie;
 		browser[ie] = true;
 	}
 
 	// Opera 15+ are identified as opr
-	if (browser.opr){
+	if (browser.opr) {
 		var opera = 'opera';
 		matched.browser = opera;
 		browser[opera] = true;
 	}
 
 	// Stock Android browsers are marked as Safari on Android.
-	if ( browser.safari && browser.android )
-	{
+	if (browser.safari && browser.android) {
 		var android = "android";
 
 		matched.browser = android;
@@ -1107,32 +1122,32 @@
 
 
 	//是否触摸屏 added by Lyu Pengfei
-	browser.touchable = fy.isEventSupported('touchstart', document) ;
+	browser.touchable = fy.isEventSupported('touchstart', document);
 
 	fy.browser = browser;
 
 	//replace into jQuery
-	$.browser = fy.browser ;
+	$.browser = fy.browser;
 
 
 	//
-	fy.deepClone = function(sObj){
+	fy.deepClone = function (sObj) {
 		//if(typeof sObj !== "object") return sObj;
 		/*var s = sObj.constructor === Array ? []:{} ;
-		for(var i in sObj) s[i] = fy.deepClone(sObj[i]);
-		return s;*/
-		return JSON.parse( JSON.stringify(sObj) ) ;
+		 for(var i in sObj) s[i] = fy.deepClone(sObj[i]);
+		 return s;*/
+		return JSON.parse(JSON.stringify(sObj));
 		//return (Object.clone)?Object.clone(sObj) : (sObj.constructor === Array ? sobj.slice(0) : jQuery.extend(true, {}, sObj) ) ;
-	} ;
+	};
 
 	//
-	fy.select = function(element){
-		var range ;
+	fy.select = function (element) {
+		var range;
 		if (fy.browser.msie) {
-			if(element.createTextRange) {
-				range = element.createTextRange() ;
+			if (element.createTextRange) {
+				range = element.createTextRange();
 			}
-			else{
+			else {
 				range = document.body.createTextRange();
 				range.collapse();
 				range.moveToElementText(element);
@@ -1142,12 +1157,12 @@
 			range.select();
 		}
 		else {
-			if(element.setSelectionRange){
+			if (element.setSelectionRange) {
 				element.focus();
 				//element.setSelectionRange(0 , -1);
 				element.select();
 			}
-			else{
+			else {
 				var selection = window.getSelection();
 				selection.setBaseAndExtent(element, 0, element, 1);
 			}
@@ -1175,100 +1190,100 @@
 			}
 		}
 		return str;
-	} ;
+	};
 
 
 	//修正浮点数计算误差
 	fy.calc = {
-			/*
-			 函数，加法函数，用来得到精确的加法结果
-			 说明：javascript的加法结果会有误差，在两个浮点数相加的时候会比较明显。这个函数返回较为精确的加法结果。
-			 参数：arg1：第一个加数；arg2第二个加数；d要保留的小数位数（可以不传此参数，如果不传则不处理小数位数）
-			 返回值：两数相加的结果
-			 */
-			add: function (arg1, arg2) {
-				arg1 = arg1.toString(), arg2 = arg2.toString();
-				var arg1Arr = arg1.split("."), arg2Arr = arg2.split("."), d1 = arg1Arr.length == 2 ? arg1Arr[1] : "", d2 = arg2Arr.length == 2 ? arg2Arr[1] : "";
-				var maxLen = Math.max(d1.length, d2.length);
-				var m = Math.pow(10, maxLen);
-				var result = Number(((arg1 * m + arg2 * m) / m).toFixed(maxLen));
-				var d = arguments[2];
-				return typeof d === "number" ? Number((result).toFixed(d)) : result ;
-			},
-			/*
-			 函数：减法函数，用来得到精确的减法结果
-			 说明：函数返回较为精确的减法结果。
-			 参数：arg1：第一个加数；arg2第二个加数；d要保留的小数位数（可以不传此参数，如果不传则不处理小数位数
-			 返回值：两数相减的结果
-			 */
-			sub: function (arg1, arg2) {
-				return Calc.Add(arg1, -Number(arg2), arguments[2]);
-			},
-			/*
-			 函数：乘法函数，用来得到精确的乘法结果
-			 说明：函数返回较为精确的乘法结果。
-			 参数：arg1：第一个乘数；arg2第二个乘数；d要保留的小数位数（可以不传此参数，如果不传则不处理小数位数)
-			 返回值：两数相乘的结果
-			 */
-			mul: function (arg1, arg2) {
-				var r1 = arg1.toString(), r2 = arg2.toString(), m, resultVal, d = arguments[2];
-				m = (r1.split(".")[1] ? r1.split(".")[1].length : 0) + (r2.split(".")[1] ? r2.split(".")[1].length : 0);
-				resultVal = Number(r1.replace(".", "")) * Number(r2.replace(".", "")) / Math.pow(10, m);
-				return typeof d !== "number" ? Number(resultVal) : Number(resultVal.toFixed(parseInt(d)));
-			},
-			/*
-			 函数：除法函数，用来得到精确的除法结果
-			 说明：函数返回较为精确的除法结果。
-			 参数：arg1：除数；arg2被除数；d要保留的小数位数（可以不传此参数，如果不传则不处理小数位数)
-			 返回值：arg1除于arg2的结果
-			 */
-			div: function (arg1, arg2) {
-				var r1 = arg1.toString(), r2 = arg2.toString(), m, resultVal, d = arguments[2];
-				m = (r2.split(".")[1] ? r2.split(".")[1].length : 0) - (r1.split(".")[1] ? r1.split(".")[1].length : 0);
-				resultVal = Number(r1.replace(".", "")) / Number(r2.replace(".", "")) * Math.pow(10, m);
-				return typeof d !== "number" ? Number(resultVal) : Number(resultVal.toFixed(parseInt(d)));
-			}
-		};
+		/*
+		 函数，加法函数，用来得到精确的加法结果
+		 说明：javascript的加法结果会有误差，在两个浮点数相加的时候会比较明显。这个函数返回较为精确的加法结果。
+		 参数：arg1：第一个加数；arg2第二个加数；d要保留的小数位数（可以不传此参数，如果不传则不处理小数位数）
+		 返回值：两数相加的结果
+		 */
+		add: function (arg1, arg2) {
+			arg1 = arg1.toString(), arg2 = arg2.toString();
+			var arg1Arr = arg1.split("."), arg2Arr = arg2.split("."), d1 = arg1Arr.length == 2 ? arg1Arr[1] : "", d2 = arg2Arr.length == 2 ? arg2Arr[1] : "";
+			var maxLen = Math.max(d1.length, d2.length);
+			var m = Math.pow(10, maxLen);
+			var result = Number(((arg1 * m + arg2 * m) / m).toFixed(maxLen));
+			var d = arguments[2];
+			return typeof d === "number" ? Number((result).toFixed(d)) : result;
+		},
+		/*
+		 函数：减法函数，用来得到精确的减法结果
+		 说明：函数返回较为精确的减法结果。
+		 参数：arg1：第一个加数；arg2第二个加数；d要保留的小数位数（可以不传此参数，如果不传则不处理小数位数
+		 返回值：两数相减的结果
+		 */
+		sub: function (arg1, arg2) {
+			return Calc.Add(arg1, -Number(arg2), arguments[2]);
+		},
+		/*
+		 函数：乘法函数，用来得到精确的乘法结果
+		 说明：函数返回较为精确的乘法结果。
+		 参数：arg1：第一个乘数；arg2第二个乘数；d要保留的小数位数（可以不传此参数，如果不传则不处理小数位数)
+		 返回值：两数相乘的结果
+		 */
+		mul: function (arg1, arg2) {
+			var r1 = arg1.toString(), r2 = arg2.toString(), m, resultVal, d = arguments[2];
+			m = (r1.split(".")[1] ? r1.split(".")[1].length : 0) + (r2.split(".")[1] ? r2.split(".")[1].length : 0);
+			resultVal = Number(r1.replace(".", "")) * Number(r2.replace(".", "")) / Math.pow(10, m);
+			return typeof d !== "number" ? Number(resultVal) : Number(resultVal.toFixed(parseInt(d)));
+		},
+		/*
+		 函数：除法函数，用来得到精确的除法结果
+		 说明：函数返回较为精确的除法结果。
+		 参数：arg1：除数；arg2被除数；d要保留的小数位数（可以不传此参数，如果不传则不处理小数位数)
+		 返回值：arg1除于arg2的结果
+		 */
+		div: function (arg1, arg2) {
+			var r1 = arg1.toString(), r2 = arg2.toString(), m, resultVal, d = arguments[2];
+			m = (r2.split(".")[1] ? r2.split(".")[1].length : 0) - (r1.split(".")[1] ? r1.split(".")[1].length : 0);
+			resultVal = Number(r1.replace(".", "")) / Number(r2.replace(".", "")) * Math.pow(10, m);
+			return typeof d !== "number" ? Number(resultVal) : Number(resultVal.toFixed(parseInt(d)));
+		}
+	};
 
 	//http://www.paulfree.com/28/javascript-array-filtering/
 	/*Array.prototype.where = function (f) {
-		var fn = f;
-		// if type of parameter is string
-		if (typeof f == "string")
-		// try to make it into a function
-			if (( fn = lambda(fn) ) == null)
-			// if fail, throw exception
-				throw "Syntax error in lambda string: " + f;
+	 var fn = f;
+	 // if type of parameter is string
+	 if (typeof f == "string")
+	 // try to make it into a function
+	 if (( fn = lambda(fn) ) == null)
+	 // if fail, throw exception
+	 throw "Syntax error in lambda string: " + f;
 
-		// initialize result array
-		var res = [];
-		var l = this.length;
-		// set up parameters for filter function call
-		var p = [ 0, 0, res ];
-		// append any pass-through parameters to parameter array
-		for (var i = 1; i < arguments.length; i++) p.push(arguments[i]);
-		// for each array element, pass to filter function
-		for (i = 0; i < l; i++) {
-			// skip missing elements
-			if (typeof this[ i ] == "undefined") continue;
-			// param1 = array element
-			p[ 0 ] = this[ i ];
-			// param2 = current indeex
-			p[ 1 ] = i;
-			// call filter function. if return true, copy element to results
-			if (!!fn.apply(this, p)) res.push(this[i]);
-		}
-		// return filtered result
-		return res;
-	};*/
+	 // initialize result array
+	 var res = [];
+	 var l = this.length;
+	 // set up parameters for filter function call
+	 var p = [ 0, 0, res ];
+	 // append any pass-through parameters to parameter array
+	 for (var i = 1; i < arguments.length; i++) p.push(arguments[i]);
+	 // for each array element, pass to filter function
+	 for (i = 0; i < l; i++) {
+	 // skip missing elements
+	 if (typeof this[ i ] == "undefined") continue;
+	 // param1 = array element
+	 p[ 0 ] = this[ i ];
+	 // param2 = current indeex
+	 p[ 1 ] = i;
+	 // call filter function. if return true, copy element to results
+	 if (!!fn.apply(this, p)) res.push(this[i]);
+	 }
+	 // return filtered result
+	 return res;
+	 };*/
 
 	/*
-	//var x = 3..n(5);
-	//alert(x);
-	Number.prototype.n = function (n) {
-		for(var i = +this, a = []; i <= n;) a.push(i++);
-		return a;
-	};*/
+	 //var x = 3..n(5);
+	 //alert(x);
+	 Number.prototype.n = function (n) {
+	 for(var i = +this, a = []; i <= n;) a.push(i++);
+	 return a;
+	 };*/
 
 	/*
 	 fy.adjustIframe = function (id) {
@@ -1284,42 +1299,41 @@
 	 iframe.onload = callback
 	 }
 	 }
-	*/
-
+	 */
 
 
 	/*
-	//IE9+ has array.indexOf
-	if (!Array.prototype.indexOf) {
-		Array.prototype.indexOf = function (searchElement, fromIndex) {
-		  if ( this === undefined || this === null ) {
-			throw new TypeError( '"this" is null or not defined' );
-		  }
+	 //IE9+ has array.indexOf
+	 if (!Array.prototype.indexOf) {
+	 Array.prototype.indexOf = function (searchElement, fromIndex) {
+	 if ( this === undefined || this === null ) {
+	 throw new TypeError( '"this" is null or not defined' );
+	 }
 
-		  var length = this.length >>> 0; // Hack to convert object.length to a UInt32
+	 var length = this.length >>> 0; // Hack to convert object.length to a UInt32
 
-		  fromIndex = +fromIndex || 0;
+	 fromIndex = +fromIndex || 0;
 
-		  if (Math.abs(fromIndex) === Infinity) {
-			fromIndex = 0;
-		  }
+	 if (Math.abs(fromIndex) === Infinity) {
+	 fromIndex = 0;
+	 }
 
-		  if (fromIndex < 0) {
-			fromIndex += length;
-			if (fromIndex < 0) {
-			  fromIndex = 0;
-			}
-		  }
+	 if (fromIndex < 0) {
+	 fromIndex += length;
+	 if (fromIndex < 0) {
+	 fromIndex = 0;
+	 }
+	 }
 
-		  for (;fromIndex < length; fromIndex++) {
-			if (this[fromIndex] === searchElement) {
-			  return fromIndex;
-			}
-		  }
+	 for (;fromIndex < length; fromIndex++) {
+	 if (this[fromIndex] === searchElement) {
+	 return fromIndex;
+	 }
+	 }
 
-		  return -1;
-		};
-	  }
-	*/
-})(window , jQuery , fy);
+	 return -1;
+	 };
+	 }
+	 */
+})(window, jQuery, fy);
 

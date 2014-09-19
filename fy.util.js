@@ -1,7 +1,6 @@
 (function (window, $, fy, undefined) {
-	fy.EMPTY_FN = function () {
-	};
-	fy.PREVENT_FN = function () {
+	fy.EMPTY_FN = $.noop ;
+	fy.PREVENT_FN = function(){
 		return false;
 	};
 
@@ -26,7 +25,7 @@
 		//todo: here may want be optimized
 		var fn = function (json) {
 				if (json.error) srvFn.prototype.handleError.call(that, json.error);
-				else (typeof data === 'function') ? data(json) : callback ? callback(json) : void(0);
+				else (typeof data === 'function') ? data(json) : (callback && typeof callback==='function') ? callback(json) : void(0);
 			} ,
 			param = (typeof data != 'function')? data: null ,
 			vType = (typeof type === 'string') ? type : (typeof callback === 'string' ? callback : undefined);
@@ -1242,6 +1241,14 @@
 			m = (r2.split(".")[1] ? r2.split(".")[1].length : 0) - (r1.split(".")[1] ? r1.split(".")[1].length : 0);
 			resultVal = Number(r1.replace(".", "")) / Number(r2.replace(".", "")) * Math.pow(10, m);
 			return typeof d !== "number" ? Number(resultVal) : Number(resultVal.toFixed(parseInt(d)));
+		} ,
+		/*
+		百分比，返回带%
+		*/
+		percent : function(p ,all , d){
+			d = (typeof d === 'undefined')?1:d ;
+			if(all==0) return '0%';
+			return Number(Math.round(p/all*10000)/100).toFixed(d)+'%' ;
 		}
 	};
 

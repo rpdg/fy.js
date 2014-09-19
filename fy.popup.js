@@ -491,7 +491,7 @@ jQuery.extend(Boxy, {
 			options = callback ;
 			callback = null ;
 		}
-		var pop = Boxy.ask(message, ['确定'], callback, options);
+		var pop = Boxy.ask(message, [options.btnOK?options.btnOK:'确定'], callback, options);
 		var btns = pop[0].eq(1).find("button") ;
 		btns.eq(0).addClass("fyBtnImportant") ;
 		return pop ;
@@ -500,10 +500,11 @@ jQuery.extend(Boxy, {
 	// displays an alert box with a given message, calling after callback iff
 	// user selects OK.
 	confirm: function(message, callback, options) {
-		var pop =  Boxy.ask(message, ['确定', '取消'], function(i , elem , arr) {
-			if (!i) return callback(i , elem , arr);
-			else return void(0);
-		}, options);
+		var pop =  Boxy.ask(message, [options.btnOK?options.btnOK:'确定', options.btnCancel?options.btnCancel:'取消'], function(i , evt , ifrWin) {
+			if (i===0) return callback(i , evt , ifrWin);
+			return void(0);
+		}, options );
+
 		var btns = pop[0].eq(1).find("button") ;
 		btns.eq(0).addClass("fyBtnImportant") ;
 		btns.eq(1).addClass("fyBtn") ;
@@ -519,6 +520,7 @@ jQuery.extend(Boxy, {
 
 		question = jQuery('<div class="question"></div>').append(question).appendTo('body') ;
 
+
 		//log('qqq' , question.outerHeight(true));
 
 		var wmh = jQuery(window).height()- 125 ;
@@ -530,19 +532,32 @@ jQuery.extend(Boxy, {
 
 		var body = jQuery('<div></div>').append(question);
 
+		body.ifrWin = (question.find('iframe').length > 0) ;
 		//log(body.appendTo('body').height(500));
 
 		var buttons = jQuery('<div class="answers"></div>');
 
 		buttons.html(jQuery.map(Boxy._values(answers), function(v , x) {
-			return '<button class="boxy-button" name="'+x+'">' + v + '</button>' ;
+			var cls = (x===0?'fyBtnImportant':'fyBtn');
+			return '<button class="boxy-button '+cls+'" name="'+x+'">' + v + '</button>' ;
 		}).join(' '));
 
-		jQuery('button', buttons).click(function() {
+		jQuery('button', buttons).click(function(evt) {
 			var clicked = this;
 			if (callback) {
+				var ifrWin ;
+
+				if(body.ifrWin) {
+					var iframe = question.find('iframe')[0];
+					ifrWin = iframe.contentWindow? iframe.contentWindow : iframe.contentDocument.defaultView;
+				}
+
 				var i = parseInt(clicked.name, 10) ;
-				var dontClose = callback(i , clicked , answers);
+
+				var dontClose = callback(i , evt , ifrWin);
+
+				ifrWin = null;
+
 				if(!dontClose) Boxy.get(clicked).hide();
 				//else keep the popup opening
 			}
@@ -1040,9 +1055,8 @@ Boxy.prototype = {
 			var self = this;
 			var tb = jQuery("<div class='title-bar'></div>").html("<h2>" + this.options.title + "</h2>");
 			tb[0].onselectstart = Boxy.PREVENT_FN;
-			var btnSets = jQuery('<div class="btnSets"></div>').appendTo(tb).mousedown(function(evt){
-				evt.stopPropagation();
-			}) ;
+
+			var btnSets = jQuery('<div class="btnSets"></div>').appendTo(tb) ;
 			if (this.options.minimizable) {
 				btnSets.append(jQuery("<a href='javascript:void(0)' class='min'></a>").html(this.options.minText));
 			}
@@ -1066,8 +1080,9 @@ Boxy.prototype = {
 					}
 				}
 				tb.mousedown(function (evt) {
-					//log(evt.button);
+					//log(evt.button , evt.target.tagName);
 					self.toTop();
+					if(evt.target.tagName==='A') return ;
 					if (evt.button < 2 && self.winState !== "max") {
 						tb.bind("mousemove.boxy", function (evt) {
 							tb.unbind("mousemove.boxy");

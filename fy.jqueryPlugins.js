@@ -851,7 +851,7 @@
 	$.PaginationCalculator = function(maxentries, opts) {
 		this.maxentries = maxentries;
 		this.opts = opts;
-	}
+	};
 
 	$.extend($.PaginationCalculator.prototype, {
 		/**
@@ -878,7 +878,7 @@
 	});
 
 	// Initialize jQuery object container for pagination renderers
-	$.PaginationRenderers = {}
+	$.PaginationRenderers = {};
 
 	/**
 	 * @class Default renderer for rendering pagination links
@@ -1020,7 +1020,7 @@
 		// -----------------------------------
 		// Initialize containers
 		// -----------------------------------
-		current_page = parseInt(opts.current_page);
+		current_page = parseInt(opts.current_page , 10);
 		containers.data('current_page', current_page);
 		// Create a sane value for maxentries and items_per_page
 		maxentries = (!maxentries || maxentries < 0)?1:maxentries;
@@ -1070,7 +1070,7 @@
 		if(opts.load_first_page) {
 			opts.callback(current_page, containers);
 		}
-	} // End of $.fn.pagination block
+	}; // End of $.fn.pagination block
 
 })(jQuery);
 
@@ -1080,6 +1080,10 @@
 /*
  * Jeditable - jQuery in place edit plugin
  *
+ * Copyright (c) 2006-2013 Mika Tuupola, Dylan Verheul
+ *
+ * Licensed under the MIT license:
+ *   http://www.opensource.org/licenses/mit-license.php
  *
  * Project home:
  *   http://www.appelsiini.net/projects/jeditable
@@ -1090,7 +1094,7 @@
  */
 
 /**
- * Version 1.7.1
+ * Version 1.7.3
  *
  * ** means there is basic unit tests for this parameter.
  *
@@ -1131,10 +1135,9 @@
  * @param Hash    options[ajaxoptions]  jQuery Ajax options. See docs.jquery.com.
  *
  */
+(function($) {
 
-(function ($) {
-
-	$.fn.editable = function (target, options) {
+	$.fn.editable = function(target, options) {
 
 		if ('disable' == target) {
 			$(this).data('disabled.editable', true);
@@ -1155,102 +1158,100 @@
 		var settings = $.extend({}, $.fn.editable.defaults, {target:target}, options);
 
 		/* setup some functions */
-		var plugin = $.editable.types[settings.type].plugin || fy.EMPTY_FN;
-		var submit = $.editable.types[settings.type].submit || fy.EMPTY_FN;
-		var buttons = $.editable.types[settings.type].buttons || $.editable.types['defaults'].buttons;
-		var content = $.editable.types[settings.type].content || $.editable.types['defaults'].content;
-		var element = $.editable.types[settings.type].element || $.editable.types['defaults'].element;
-		var reset = $.editable.types[settings.type].reset || $.editable.types['defaults'].reset;
-		var callback = settings.callback || fy.EMPTY_FN;
-		var onedit = settings.onedit || fy.EMPTY_FN;
-		var onsubmit = settings.onsubmit || fy.EMPTY_FN;
-		var onreset = settings.onreset || fy.EMPTY_FN;
-		var onerror = settings.onerror || reset;
+		var plugin   = $.editable.types[settings.type].plugin || $.noop;
+		var submit   = $.editable.types[settings.type].submit || $.noop;
+		var buttons  = $.editable.types[settings.type].buttons || $.editable.types['defaults'].buttons;
+		var content  = $.editable.types[settings.type].content || $.editable.types['defaults'].content;
+		var element  = $.editable.types[settings.type].element  || $.editable.types['defaults'].element;
+		var reset    = $.editable.types[settings.type].reset || $.editable.types['defaults'].reset;
+		var callback = settings.callback || $.noop;
+		var onedit   = settings.onedit   || $.noop;
+		var onsubmit = settings.onsubmit || $.noop;
+		var onreset  = settings.onreset  || $.noop;
+		var onerror  = settings.onerror  || reset;
 
-		/* show tooltip */
+		/* Show tooltip. */
 		if (settings.tooltip) {
 			$(this).attr('title', settings.tooltip);
 		}
 
-		settings.autowidth = 'auto' == settings.width;
+		settings.autowidth  = 'auto' == settings.width;
 		settings.autoheight = 'auto' == settings.height;
 
-		return this.each(function () {
+		return this.each(function() {
 
-			/* save this to self because this changes when scope changes */
+			/* Save this to self because this changes when scope changes. */
 			var self = this;
 
-			/* inlined block elements lose their width and height after first edit */
-			/* save them for later use as workaround */
-			var savedwidth = $(self).width();
+			/* Inlined block elements lose their width and height after first edit. */
+			/* Save them for later use as workaround. */
+			var savedwidth  = $(self).width();
 			var savedheight = $(self).height();
 
-			/* save so it can be later used by $.editable('destroy') */
+			/* Save so it can be later used by $.editable('destroy') */
 			$(this).data('event.editable', settings.event);
 
-			/* if element is empty add something clickable (if requested) */
+			/* If element is empty add something clickable (if requested) */
 			if (!$.trim($(this).html())) {
 				$(this).html(settings.placeholder);
 			}
 
-			$(this).bind(settings.event, function (e) {
+			$(this).bind(settings.event, function(e) {
 
-				/* abort if disabled for this element */
+				/* Abort if element is disabled. */
 				if (true === $(this).data('disabled.editable')) {
 					return;
 				}
 
-				/* prevent throwing an exeption if edit field is clicked again */
+				/* Prevent throwing an exeption if edit field is clicked again. */
 				if (self.editing) {
 					return;
 				}
 
-				/* abort if onedit hook returns false */
+				/* Abort if onedit hook returns false. */
 				if (false === onedit.apply(this, [settings, self])) {
 					return;
 				}
 
-				/* prevent default action and bubbling */
+				/* Prevent default action and bubbling. */
 				e.preventDefault();
 				e.stopPropagation();
 
-				/* remove tooltip */
+				/* Remove tooltip. */
 				if (settings.tooltip) {
 					$(self).removeAttr('title');
 				}
 
-				/* figure out how wide and tall we are, saved width and height */
-				/* are workaround for http://dev.jquery.com/ticket/2190 */
+				/* Figure out how wide and tall we are, saved width and height. */
+				/* Workaround for http://dev.jquery.com/ticket/2190 */
 				if (0 == $(self).width()) {
-					//$(self).css('visibility', 'hidden');
-					settings.width = savedwidth;
+					settings.width  = savedwidth;
 					settings.height = savedheight;
 				} else {
 					if (settings.width != 'none') {
 						settings.width =
-							settings.autowidth ? $(self).width() : settings.width;
+							settings.autowidth ? $(self).width()  : settings.width;
 					}
 					if (settings.height != 'none') {
 						settings.height =
 							settings.autoheight ? $(self).height() : settings.height;
 					}
 				}
-				//$(this).css('visibility', '');
 
-				/* remove placeholder text, replace is here because of IE */
-				if ($(this).html().toLowerCase().replace(/(;|")/g, '') ==
-					settings.placeholder.toLowerCase().replace(/(;|")/g, '')) {
+				/* Remove placeholder text, replace is here because of IE. */
+				if ($(this).html().toLowerCase().replace(/(;|"|\/)/g, '') ==
+					settings.placeholder.toLowerCase().replace(/(;|"|\/)/g, '')) {
 					$(this).html('');
 				}
 
-				self.editing = true;
-				self.revert = $(self).html();
+				self.editing    = true;
+				self.revert     = $(self).html();
 				$(self).html('');
 
-				/* create the form object */
+				/* Create the form object. */
 				var form = $('<form class="editableForm" />');
 
-				/* apply css or style or both */
+				/* Apply css or style or both. */
 				if (settings.cssclass) {
 					if ('inherit' == settings.cssclass) {
 						form.attr('class', $(self).attr('class'));
@@ -1262,35 +1263,28 @@
 				if (settings.style) {
 					if ('inherit' == settings.style) {
 						form.attr('style', $(self).attr('style'));
-						/* IE needs the second line or display wont be inherited */
+						/* IE needs the second line or display wont be inherited. */
 						form.css('display', $(self).css('display'));
 					} else {
 						form.attr('style', settings.style);
 					}
 				}
 
-				/* add main input element to form and store it in input */
+				/* Add main input element to form and store it in input. */
 				var input = element.apply(form, [settings, self]);
-				if(typeof settings.onKeydown === 'function')
-					input.bind("keydown.fy" , settings.onKeydown) ;
-				if(typeof settings.onKeyup === 'function')
-					input.bind("keyup.fy" , settings.onKeyup) ;
-				if(typeof settings.onKeypress === 'function')
-					input.bind("keypress.fy" , settings.onKeypress) ;
-				if(typeof settings.onBlur === 'function')
-					input.bind("blur.fy" , settings.onBlur) ;
-				if(typeof settings.onPaste === 'function')
-					input.bind("paste.fy" , settings.onPaste) ;
-				if(typeof settings.onFocus === 'function')
-					input.bind("focus.fy" , settings.onFocus) ;
-				if(typeof settings.onClick === 'function')
-					input.bind("click.fy" , settings.onClick) ;
+				if(typeof settings.onKeydown === 'function') input.bind("keydown.fy" , settings.onKeydown) ;
+				if(typeof settings.onKeyup === 'function') input.bind("keyup.fy" , settings.onKeyup) ;
+				if(typeof settings.onKeypress === 'function') input.bind("keypress.fy" , settings.onKeypress) ;
+				if(typeof settings.onBlur === 'function') input.bind("blur.fy" , settings.onBlur) ;
+				if(typeof settings.onPaste === 'function') input.bind("paste.fy" , settings.onPaste) ;
+				if(typeof settings.onFocus === 'function') input.bind("focus.fy" , settings.onFocus) ;
+				if(typeof settings.onClick === 'function') input.bind("click.fy" , settings.onClick) ;
 
-				/* set input content via POST, GET, given data or existing value */
+				/* Set input content via POST, GET, given data or existing value. */
 				var input_content;
 
 				if (settings.loadurl) {
-					var t = setTimeout(function () {
+					var t = setTimeout(function() {
 						input.disabled = true;
 						content.apply(form, [settings.loadtext, settings, self]);
 					}, 100);
@@ -1303,100 +1297,97 @@
 						$.extend(loaddata, settings.loaddata);
 					}
 					$.ajax({
-						type:settings.loadtype,
-						url:settings.loadurl,
-						data:loaddata,
-						async:false,
-						success:function (result) {
+						type : settings.loadtype,
+						url  : settings.loadurl,
+						data : loaddata,
+						async : false,
+						success: function(result) {
 							window.clearTimeout(t);
 							input_content = result;
 							input.disabled = false;
 						}
 					});
-				}
-				else if (settings.data) {
+				} else if (settings.data) {
 					input_content = settings.data;
 					if ($.isFunction(settings.data)) {
 						input_content = settings.data.apply(self, [self.revert, settings]);
 					}
-				}
-				else {
+				} else {
 					input_content = self.revert;
 				}
 				content.apply(form, [input_content, settings, self]);
 
 				input.attr('name', settings.name);
 
-				/* add buttons to the form */
+				/* Add buttons to the form. */
 				buttons.apply(form, [settings, self]);
 
-				/* add created form to self */
+				/* Add created form to self. */
 				$(self).append(form);
 
-				/* attach 3rd party plugin if requested */
+				/* Attach 3rd party plugin if requested. */
 				plugin.apply(form, [settings, self]);
 
-				/* focus to first visible form element */
+				/* Focus to first visible form element. */
 				$(':input:visible:enabled:first', form).focus();
 
-				/* highlight input contents when requested */
+				/* Highlight input contents when requested. */
 				if (settings.select) {
 					input.select();
 				}
 
 				/* discard changes if pressing esc */
-				input.keydown(function (e) {
+				input.keydown(function(e) {
 					if (e.keyCode == 27) {
 						e.preventDefault();
-						//self.reset();
 						reset.apply(form, [settings, self]);
 					}
 				});
 
-				/* discard, submit or nothing with changes when clicking outside */
-				/* do nothing is usable when navigating with tab */
+				/* Discard, submit or nothing with changes when clicking outside. */
+				/* Do nothing is usable when navigating with tab. */
 				var t;
 				if ('cancel' == settings.onblur) {
-					input.blur(function (e) {
-						/* prevent canceling if submit was clicked */
-						t = setTimeout(function () {
+					input.blur(function(e) {
+						/* Prevent canceling if submit was clicked. */
+						t = setTimeout(function() {
 							reset.apply(form, [settings, self]);
 						}, 500);
 					});
 				} else if ('submit' == settings.onblur) {
-					input.blur(function (e) {
-						/* prevent double submit if submit was clicked */
-						t = setTimeout(function () {
+					input.blur(function(e) {
+						/* Prevent double submit if submit was clicked. */
+						t = setTimeout(function() {
 							form.submit();
 						}, 200);
 					});
 				} else if ($.isFunction(settings.onblur)) {
-					input.blur(function (e) {
+					input.blur(function(e) {
 						settings.onblur.apply(self, [input.val(), settings]);
 					});
 				} else {
-					input.blur(function (e) {
+					input.blur(function(e) {
 						/* TODO: maybe something here */
 					});
 				}
 
-				form.submit(function (e) {
+				form.submit(function(e) {
 
 					if (t) {
 						clearTimeout(t);
 					}
 
-					/* do no submit */
+					/* Do no submit. */
 					e.preventDefault();
 
-					/* call before submit hook. */
-					/* if it returns false abort submitting */
+					/* Call before submit hook. */
+					/* If it returns false abort submitting. */
 					if (false !== onsubmit.apply(form, [settings, self])) {
-						/* custom inputs call before submit hook. */
-						/* if it returns false abort submitting */
+						/* Custom inputs call before submit hook. */
+						/* If it returns false abort submitting. */
 						if (false !== submit.apply(form, [settings, self])) {
 
-							/* check if given target is function */
+							/* Check if given target is function */
 							if ($.isFunction(settings.target)) {
 								//alert(1 + ':' + input.length);
 								var val ;
@@ -1411,7 +1402,7 @@
 								else{
 									val = input.val() ;
 								}
-								var str = settings.target.apply(self, [val , settings]);
+								var str = settings.target.apply(self, [val, settings]);
 								$(self).html(str);
 								self.editing = false;
 								callback.apply(self, [self.innerHTML, settings]);
@@ -1420,32 +1411,32 @@
 									$(self).html(settings.placeholder);
 								}
 							} else {
-								/* add edited content and id of edited element to POST */
+								/* Add edited content and id of edited element to POST. */
 								var submitdata = {};
 								submitdata[settings.name] = input.val();
 								submitdata[settings.id] = self.id;
-								/* add extra data to be POST:ed */
+								/* Add extra data to be POST:ed. */
 								if ($.isFunction(settings.submitdata)) {
 									$.extend(submitdata, settings.submitdata.apply(self, [self.revert, settings]));
 								} else {
 									$.extend(submitdata, settings.submitdata);
 								}
 
-								/* quick and dirty PUT support */
+								/* Quick and dirty PUT support. */
 								if ('PUT' == settings.method) {
 									submitdata['_method'] = 'put';
 								}
 
-								/* show the saving indicator */
+								/* Show the saving indicator. */
 								$(self).html(settings.indicator);
 
-								/* defaults for ajaxoptions */
+								/* Defaults for ajaxoptions. */
 								var ajaxoptions = {
-									type:'POST',
-									data:submitdata,
-									dataType:'html',
-									url:settings.target,
-									success:function (result, status) {
+									type    : 'POST',
+									data    : submitdata,
+									dataType: 'html',
+									url     : settings.target,
+									success : function(result, status) {
 										if (ajaxoptions.dataType == 'html') {
 											$(self).html(result);
 										}
@@ -1455,12 +1446,12 @@
 											$(self).html(settings.placeholder);
 										}
 									},
-									error:function (xhr, status, error) {
+									error   : function(xhr, status, error) {
 										onerror.apply(form, [settings, self, xhr]);
 									}
 								};
 
-								/* override with what is given in settings.ajaxoptions */
+								/* Override with what is given in settings.ajaxoptions. */
 								$.extend(ajaxoptions, settings.ajaxoptions);
 								$.ajax(ajaxoptions);
 
@@ -1468,25 +1459,25 @@
 						}
 					}
 
-					/* show tooltip again */
+					/* Show tooltip again. */
 					$(self).attr('title', settings.tooltip);
 
 					return false;
 				});
 			});
 
-			/* privileged methods */
-			this.reset = function (form) {
-				/* prevent calling reset twice when blurring */
+			/* Privileged methods */
+			this.reset = function(form) {
+				/* Prevent calling reset twice when blurring. */
 				if (this.editing) {
-					/* before reset hook, if it returns false abort reseting */
+					/* Before reset hook, if it returns false abort reseting. */
 					if (false !== onreset.apply(form, [settings, self])) {
 						$(self).html(self.revert);
-						self.editing = false;
+						self.editing   = false;
 						if (!$.trim($(self).html())) {
 							$(self).html(settings.placeholder);
 						}
-						/* show tooltip again */
+						/* Show tooltip again. */
 						if (settings.tooltip) {
 							$(self).attr('title', settings.tooltip);
 						}
@@ -1499,53 +1490,55 @@
 
 
 	$.editable = {
-		types:{
-			defaults:{
-				element:function (settings, original) {
+		types: {
+			defaults: {
+				element : function(settings, original) {
 					var input = $('<input type="hidden" />');
 					$(this).append(input);
 					return(input);
 				},
-				content:function (string, settings, original) {
+				content : function(string, settings, original) {
 					$(':input:first', this).val(string);
 				},
-				reset:function (settings, original) {
+				reset : function(settings, original) {
 					original.reset(this);
 				},
-				buttons:function (settings, original) {
-					var form = this;
+				buttons : function(settings, original) {
+					var form = this ;
 					if (settings.submit) {
-						/* if given html string use that */
+						var submit ;
+						/* If given html string use that. */
 						if (settings.submit.match(/>$/)) {
-							var submit = $(settings.submit).click(function () {
+							submit = $(settings.submit).click(function() {
 								if (submit.attr("type") != "submit") {
 									form.submit();
 								}
 							});
-							/* otherwise use button with given string as text */
+							/* Otherwise use button with given string as text. */
 						} else {
-							var submit = $('<button type="submit" />');
+							submit = $('<button type="submit" />');
 							submit.html(settings.submit);
 						}
 						$(this).append(submit);
 					}
 					if (settings.cancel) {
-						/* if given html string use that */
+						var cancel;
+						/* If given html string use that. */
 						if (settings.cancel.match(/>$/)) {
-							var cancel = $(settings.cancel);
+							cancel = $(settings.cancel);
 							/* otherwise use button with given string as text */
 						} else {
-							var cancel = $('<button type="cancel" />');
+							cancel = $('<button type="cancel" />');
 							cancel.html(settings.cancel);
 						}
 						$(this).append(cancel);
 
-						$(cancel).click(function (event) {
-							//original.reset();
+						$(cancel).click(function(event) {
+							var reset ;
 							if ($.isFunction($.editable.types[settings.type].reset)) {
-								var reset = $.editable.types[settings.type].reset;
+								reset = $.editable.types[settings.type].reset;
 							} else {
-								var reset = $.editable.types['defaults'].reset;
+								reset = $.editable.types['defaults'].reset;
 							}
 							reset.apply(form, [settings, original]);
 							return false;
@@ -1553,8 +1546,8 @@
 					}
 				}
 			},
-			text:{
-				element:function (settings, original) {
+			text: {
+				element : function(settings, original) {
 					var input = $('<input type="text" />');
 					if (settings.width != 'none') {
 						input.width(settings.width);
@@ -1564,7 +1557,7 @@
 					}
 					/* https://bugzilla.mozilla.org/show_bug.cgi?id=236791 */
 					//input[0].setAttribute('autocomplete','off');
-					input.attr('autocomplete', 'off');
+					input.attr('autocomplete','off');
 					$(this).append(input);
 					if(settings.mask) input.mask(settings.mask);
 					else if(settings.numberic){
@@ -1574,8 +1567,8 @@
 					return(input);
 				}
 			},
-			textarea:{
-				element:function (settings, original) {
+			textarea: {
+				element : function(settings, original) {
 					var textarea = $('<textarea />');
 					if (settings.rows) {
 						textarea.attr('rows', settings.rows);
@@ -1591,16 +1584,16 @@
 					return(textarea);
 				}
 			},
-			select:{
-				element:function (settings, original) {
+			select: {
+				element : function(settings, original) {
 					var select = $('<select />');
 					$(this).append(select);
 					return(select);
 				},
-				content:function (data, settings, original) {
+				content : function(data, settings, original) {
 					/* If it is string assume it is json. */
 					if (String == data.constructor) {
-						eval('var json = ' + data);
+						eval ('var json = ' + data);
 					} else {
 						/* Otherwise assume it is a hash already. */
 						var json = data;
@@ -1616,14 +1609,21 @@
 						$('select', this).append(option);
 					}
 					/* Loop option again to set selected. IE needed this... */
-					$('select', this).children().each(function () {
+					$('select', this).children().each(function() {
 						if ($(this).val() == json['selected'] ||
 							$(this).text() == $.trim(original.revert)) {
 							$(this).attr('selected', 'selected');
 						}
 					});
+					/* Submit on change if no submit button defined. */
+					if (!settings.submit) {
+						var form = this;
+						$('select', this).change(function() {
+							form.submit();
+						});
+					}
 				}
-			} ,
+			},
 			checkBox : {
 				element: function (sets, original) {
 					//log(1 , $(original).data("oldHTML")) ;
@@ -1650,28 +1650,26 @@
 		},
 
 		/* Add new input type */
-		addInputType:function (name, input) {
+		addInputType: function(name, input) {
 			$.editable.types[name] = input;
 		}
 	};
 
-	// publicly accessible defaults
+	/* Publicly accessible defaults. */
 	$.fn.editable.defaults = {
-		name:'value',
-		id:'id',
-		type:'text',
-		width:'auto',
-		height:'auto',
-		event:'click.editable',
-		onblur:'cancel',
-		loadtype:'GET',
-		loadtext:'Loading...',
-		placeholder:'Click to edit',
-		loaddata:{},
-		submitdata:{},
-		ajaxoptions:{}
+		name       : 'value',
+		id         : 'id',
+		type       : 'text',
+		width      : 'auto',
+		height     : 'auto',
+		event      : 'click.editable',
+		onblur     : 'cancel',
+		loadtype   : 'GET',
+		loadtext   : 'Loading...',
+		placeholder: 'Click to edit',
+		loaddata   : {},
+		submitdata : {},
+		ajaxoptions: {}
 	};
 
 })(jQuery);
-
-

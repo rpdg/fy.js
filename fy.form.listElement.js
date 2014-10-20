@@ -12,13 +12,12 @@
 
 	var ListBox = function(jq , sets) {
 		//initialize defaults
-		var tmpl = '<option value="{'+(sets.value||'value')+'}">{'+(sets.text||'text')+'}</option>' ,
+		var tmpl = '<option value="{'+(sets.value||'value')+'}">{'+ (sets.text||'text') +'}</option>' ,
 			cfg = $.extend({
 				template: tmpl ,
 				elementName : ('fyElem_'+(++idSeed))
 			} , sets) ,
 			that = this ;
-
 
 		//call super constructor
 		ListBox.parent.call(this , jq , cfg) ;
@@ -82,7 +81,8 @@
 		} ,
 		getText : function(){
 			var jp = this.jq[0] ;
-			return jp.options[jp.selectedIndex].text ;
+			if(jp.options.length) return jp.options[jp.selectedIndex].text ;
+			return null;
 		}
 	};
 

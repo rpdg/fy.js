@@ -1,9 +1,7 @@
 ;
 (function (window, $, fy, undefined) {
-	var oDay = new Date ,
-		today = new Date(oDay.getFullYear() , oDay.getMonth() , oDay.getDate() ) ,
-		schoolOpen = adjustSchoolOpen(today) ;
 
+	var today , schoolOpen ;
 
 	function adjustSchoolOpen(day){
 		var sd , tsd ;
@@ -24,6 +22,22 @@
 
 
 	var DateChooser = function(jq, cfg){
+
+		if(!(today && schoolOpen)){
+			if(window.sys && window.sys.sysInfo){
+				today = new Date(sys.sysInfo.date) ;
+				schoolOpen = fy.parseDate(sys.sysInfo.schoolOpen) ;
+				//console.log(today , schoolOpen)
+			}
+			else{
+				var oDay = new Date ;
+				today = new Date(oDay.getFullYear() , oDay.getMonth() , oDay.getDate() ) ;
+				schoolOpen = adjustSchoolOpen(today) ;
+			}
+		}
+
+
+
 		var sets = $.extend({
 			today : today ,
 			schoolOpen : schoolOpen,
@@ -62,11 +76,7 @@
 
 		this.today = (typeof sets.today === "string" ? fy.parseDate(sets.today) : sets.today) ;
 
-
-		if(cfg.schoolOpen)
-			this.schoolOpen = (typeof sets.schoolOpen === "string" ? fy.parseDate(sets.schoolOpen) : sets.schoolOpen) ;
-		else
-			this.schoolOpen = adjustSchoolOpen(this.today);
+		this.schoolOpen = (typeof sets.schoolOpen === "string" ? fy.parseDate(sets.schoolOpen) : sets.schoolOpen) ;
 
 
 		this.begin = null;
@@ -85,6 +95,7 @@
 		//this.makeCalendar(sets);
 		this.lastDrawn = {} ;
 		this.create(sets);
+
 	};
 	DateChooser.prototype = {
 		// 最后一个参数日期可以不指定, 如果指定则会自动选中那个日期,

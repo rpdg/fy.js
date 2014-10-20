@@ -175,6 +175,9 @@
 			this.target.unbind('.dropDownHide');
 
 			if (typeof this.onClose === 'function') this.onClose.apply(this, arguments);
+		} ,
+		getText : function(){
+			return $.trim(this.jq.val());
 		}
 	};
 

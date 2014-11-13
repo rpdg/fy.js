@@ -16,7 +16,8 @@
 	 }
 	 */
 	var srvFn = function (url) {
-		this.url = fy.serverRootPath + url.replace(/^['/']/, '');
+		if(url.indexOf('http://')===0||url.indexOf('https://')===0) this.url = url ;
+		else this.url = fy.serverRootPath + url.replace(/^['/']/, '');
 		//this.xhr = $.ajaxSettings.xhr() ;
 	};
 	//map ajax functions to jQuery

@@ -76,7 +76,7 @@
 			});
 		},
 		//
-		fieldsToJson:function () {
+		fieldsToJson:function() {
 			var o = {} , a;
 			if (this[0].tagName !== "FORM") {
 				var tmp = $('<form/>').append(this.clone());
@@ -278,7 +278,7 @@
 			}
 		}
 
-		this.each(function (){
+		return this.each(function (){
 			$(this)
 				.attr('maxlength', is + ds + (sep === null ? 0 : 1) + (neg === '' ? 0 : 1 ))
 				.val($(this).val() ? $(this).val().replace('.',sep) : $(this).val())
@@ -695,6 +695,126 @@
 		remove:function (id) {
 			delete this[id];
 		}
+	};
+
+	// bindUrl : depend on jQuery.pagination v2.2+ (if use data-page) & jQuery.bindList
+	// url : server address which returns a JSON node list
+	// search : the search conditions
+	// loader : the loading-animate-jqObj
+	// stepRun : boolean value, whether the jq auto fetch the first-page or not
+	// pagination : pagination-settings , the page-info placement (jq-obj)  attached
+	// renderer : {render.template , render.itemRender , render.itemFilter }  in accord with the bindList-plugin
+	// has 4 events:  onInit(jq) / onStart(jq , pageIndex) / onNoRecord(jq , pageIndex) / onComplete(jq , pageIndex)
+	// Server returned dataList structure: { data:[...JSON list] , page:{rowCount:int , pageCount , pageSize , pageIndex} }
+	var fns = {
+		setup: function (sets, jq, cacheId) {
+			var cache = boundCache.make(sets.renderer);
+			jQuery.extend(sets, cache);
+
+			if (sets.pagination) {
+				sets.isRst = true;
+				if (!cache.pagination || !set.pagination.callback) {
+					sets.pagination.callback = function (__pageIndex, __paginationContainer) {
+						var __cache = boundCache[cacheId];
+						if (__cache.isRst) __cache.isRst = false;
+						else fns.fetchPage(__pageIndex, jq, __cache);
+						return false;
+					}
+				}
+			}
+
+			boundCache[cacheId] = sets;
+
+			// run onInit Event function
+			if (typeof(sets.onInit) === 'function') {
+				sets.onInit.call(jq);
+			}
+
+			return !sets.stepRun;
+		},
+
+		fetchPage: function (pageIndex, jq, cacheHandler) {
+			var cache = (typeof(cacheHandler) === 'string' ? boundCache[cacheHandler] : cacheHandler);
+			//alert('cache:====>'+JSON.stringify(cache));
+
+			var loader = cache.loader,
+				pagination = cache.pagination,
+				search = cache.search || {};
+
+			//prepare a new search
+			search.pageIndex = pageIndex || 0;
+			//search._r_ = (new Date).getTime() ; // eques to: $.ajaxSetup({ cache : false } );
+
+			if (typeof(cache.onStart) === 'function') {
+				cache.onStart.call(jq, search);
+			}
+
+			//jq.empty() ;
+
+			if (loader)  loader.show();
+
+			jQuery.getJSON(cache.url, search, function (objs) {
+				if (loader) loader.hide();
+
+				var list = objs.data ? objs.data : objs, pageInfo = objs.page;
+				if (list.length == 0) {
+					if (typeof(cache.onNoRecord) === 'function') {
+						cache.onNoRecord.call(jq, search);
+					}
+					else {
+						if (pagination) {
+							pagination.placement.text("无符合条件的记录");
+						}
+					}
+				}
+				else {
+					//var render = cache.renderer;
+					//render.list = list ;
+					jq.bindList(list);
+					//init pagination
+					if (pagination && cache.isRst) {
+						pagination.placement.pagination(pageInfo.rowCount, pagination);
+					}
+				}
+				//run onComplete-function
+				if (typeof(cache.onComplete) === 'function') {
+					cache.onComplete.call(jq , objs.data , pageInfo);
+				}
+			});
+
+			return false;
+		},
+
+		reset: function (_, jq, cache) {
+			cache.isRst = true;
+			return !cache.stepRun;
+		},
+
+		setValue: function (vals, jq, cache) {
+			jQuery.extend(cache, vals);
+			cache.isRst = true;
+			return !cache.stepRun;
+		}
+	};
+	jQuery.fn.bindUrl = function (todo, sets) {
+		var _fns = fns;
+		var fitThis = this[0],
+			fitId = fitThis.id || fitThis.uniqueID,
+			fitCache;
+		if (todo != "setup") {
+			fitCache = boundCache[fitId];
+		}
+		else {
+			if (!fitId) {
+				fitId = fitThis.id = boundCache.newId();
+			}
+			fitCache = fitId;
+		}
+		var _run = _fns[todo] || _fns['fetchPage'];
+		if (_run(sets, this, fitCache)) {
+			_fns.fetchPage(0, this, fitCache);
+		}
+		return this;
 	};
 
 
@@ -1352,14 +1472,14 @@
 						/* Prevent canceling if submit was clicked. */
 						t = setTimeout(function() {
 							reset.apply(form, [settings, self]);
-						}, 500);
+						}, 30);
 					});
 				} else if ('submit' == settings.onblur) {
 					input.blur(function(e) {
 						/* Prevent double submit if submit was clicked. */
 						t = setTimeout(function() {
 							form.submit();
-						}, 200);
+						}, 20);
 					});
 				} else if ($.isFunction(settings.onblur)) {
 					input.blur(function(e) {

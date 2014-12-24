@@ -62,6 +62,13 @@
 		},
 		postObj: function (obj, callback, type) {
 			return this.post({vo: JSON.stringify(obj)}, callback, type);
+		} ,
+		postValue : function(obj, callback, type) {
+			for(var key in obj){
+				var v = {} ;
+				v[key] = JSON.stringify(obj[key]) ;
+				return this.post(v, callback, type);
+			}
 		}
 	};
 	fy.server = function (urlSet, override) {
@@ -330,8 +337,9 @@
 		var o = {
 			"M+": date.getMonth() + 1, //month   
 			"d+": date.getDate(), //date
-			"h+": date.getHours(), //hour   
-			"m+": date.getMinutes(), //minute   
+			"h+": (date.getHours()>12?date.getHours()-12:date.getHours()), //hour 12
+			"H+": date.getHours(), //hour 24
+			"m+": date.getMinutes(), //minute
 			"s+": date.getSeconds(), //second   
 			"q+": Math.floor((date.getMonth() + 3) / 3), //quarter   
 			"S": date.getMilliseconds() //millisecond   
@@ -348,16 +356,18 @@
 	};
 
 	fy.parseDate = function (str, formater) {
-		var format = formater || 'yyyy-mm-dd'; // default format
+		var format = formater || 'yyyy-MM-dd HH:mm:ss'; // default format
 		var parts = str.match(/(\d+)/g),
 			i = 0,
 			fmt = {};
 		// extract date-part indexes from the format
-		format.toLowerCase().replace(/(yyyy|dd|mm)/g, function (part) {
+		format.replace(/(yyyy|dd|MM|HH|hh|mm|ss)/g, function (part) {
 			fmt[part] = i++;
 		});
+		//
+		if(!fmt['HH'] && fmt['hh']) fmt['HH'] = fmt['hh'] ;
 
-		return new Date(parts[fmt['yyyy']], parts[fmt['mm']] - 1, parts[fmt['dd']]);
+		return new Date(parts[fmt['yyyy']]||0, (parts[fmt['MM']]||1)-1 , parts[fmt['dd']]||0 , parts[fmt['HH']]||0, parts[fmt['mm']]||0, parts[fmt['ss']]||0);
 	};
 
 	//number formater
@@ -530,6 +540,9 @@
 	 *js HTML Encode
 	 */
 	fy.HTML = {
+		clean : function(str){
+			return $('<div>' + str + '</div>').text() ;
+		} ,
 		encode: function (html) {
 			var temp = document.createElement("div");
 			temp.innerText ? (temp.innerText = html) : (temp.textContent = html);
@@ -1089,6 +1102,16 @@
 		browser[ matched.platform ] = true
 	}
 
+	// These are all considered mobile platforms, meaning they run a mobile browser
+	if ( browser.android || browser.ipad || browser.iphone || browser[ "windows phone" ] ) {
+		browser.mobile = true;
+	}
+
+	// These are all considered desktop platforms, meaning they run a desktop browser
+	if ( browser.cros || browser.mac || browser.linux || browser.win ) {
+		browser.desktop = true;
+	}
+
 	// Chrome, Opera 15+ and Safari are webkit based browsers
 	if (browser.chrome || browser.opr || browser.safari) {
 		browser.webkit = true;
@@ -1217,7 +1240,7 @@
 		 返回值：两数相减的结果
 		 */
 		sub: function (arg1, arg2) {
-			return Calc.Add(arg1, -Number(arg2), arguments[2]);
+			return fy.calc.add(arg1, -Number(arg2), arguments[2]);
 		},
 		/*
 		 函数：乘法函数，用来得到精确的乘法结果
@@ -1248,7 +1271,7 @@
 		*/
 		percent : function(p ,all , d){
 			d = (typeof d === 'undefined')?1:d ;
-			if(all==0) return '0%';
+			if(all==0) return 'NaN%';
 			return Number(Math.round(p/all*10000)/100).toFixed(d)+'%' ;
 		}
 	};

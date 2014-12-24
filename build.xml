@@ -27,7 +27,7 @@
     </target>
 	<target name="compress" depends="concat">
 		<exec executable="cmd" failonerror="true">
-			<arg line="/c E:/SDK/nodejs/node_modules/npm/uglifyjs.cmd ../../GreenOlive3/js/fy.js > ../../GreenOlive3/js/fy.min.js" />
+			<arg line="/c node E:\SDK\nodejs\node_modules\uglify-js\bin\uglifyjs ../../GreenOlive3/js/fy.js  -m -o ../../GreenOlive3/js/fy.min.js" />
 		</exec>
 	</target>
 	<!-- <property name="core.files" value="fy.core.js, fy.baseClasses.js" />

@@ -538,8 +538,16 @@ jQuery.extend(Boxy, {
 		var buttons = jQuery('<div class="answers"></div>');
 
 		buttons.html(jQuery.map(Boxy._values(answers), function(v , x) {
-			var cls = (x===0?'fyBtnImportant':'fyBtn');
-			return '<button class="boxy-button '+cls+'" name="'+x+'">' + v + '</button>' ;
+			var cls, txt ;
+			if(typeof v === 'string') {
+				cls = (x===0?'fyBtnImportant':'fyBtn');
+				txt = v ;
+			}
+			else {
+				cls = v.className||'' ;
+				txt = v.text || '';
+			}
+			return '<button class="boxy-button '+cls+'" name="'+x+'">' + txt + '</button>' ;
 		}).join(' '));
 
 		jQuery('button', buttons).click(function(evt) {

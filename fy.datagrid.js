@@ -144,10 +144,10 @@
 
 						//on change event
 						this.pageSelector.bind('change' , function(){
-							that.pageSize = that.param.pageSize = this.options[this.selectedIndex].value ;
-							that.pageIndex = that.param.pageIndex = 0;
-							that.update();
-							return false;
+							that.pageSize = that.param.pageSize = parseInt(this.options[this.selectedIndex].value , 10) ;
+							that.pageIndex = that.param.pageIndex = 0 ;
+							that.update() ;
+							return false ;
 						});
 					}
 
@@ -373,8 +373,8 @@
 						col.text = '<input type="hidden" name="'+ col.src +'" value="chk_'+i+'">';
 				}
 
-				th[i] = '<th data-osrc="' + (typeof col.sortable ==='string'? col.sortable: col.src) + '"'+(bool?' style="text-overflow:clip;"':'')+'>' + (col.text || 'column_' + i) + '</th>';
-				cols[i] = "width:" + (col.width ? col.width+"px;" : "auto;min-width:16px;");
+				th[i] = '<th data-osrc="' + (typeof col.sortable ==='string'? col.sortable: col.src) + '" style="'+(bool?' text-overflow:clip;"':'')+'min-width:'+(col.minWidth||16)+'px;">' + (col.text || 'column_' + i) + '</th>';
+				cols[i] = "width:" + (col.width ? col.width+"px;" : "auto; ");
 			}
 			var tbHeaderTr = (sets.header) ? '<tr class="fyGridHeadText"><th colspan="' + (l || '1') + '">' + sets.header + '</th></tr>' : '';
 

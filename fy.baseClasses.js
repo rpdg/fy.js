@@ -27,8 +27,6 @@
 	};
 
 	fy.register("DisplayObject", DisplayObject);
-})(window, jQuery, fy);
-
 
 /* AjaxDisplayObject
 	所有可异步载入数据的控件类的基类，不应在程序中显式创建此类的实例
@@ -45,7 +43,6 @@
 	@event onUpdate
 	@event onError
 */
-;(function (window, $, fy) {
 	var AjaxDisplayObject = function (jq , cfg){
 		//定义属性
 		this.jq = jq ;
@@ -166,7 +163,6 @@
 
 	//注册到fy
 	fy.register("AjaxDisplayObject" , AjaxDisplayObject);
-})(window, jQuery, fy);
 
 
 
@@ -189,7 +185,6 @@
 	@method toJSON
 */
 ;
-(function (window, $, fy) {
 
 	//类构造函数
 	var ListBase = function (jq , sets){

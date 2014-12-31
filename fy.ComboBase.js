@@ -76,13 +76,15 @@
 	};
 	ComboBase.prototype = {
 		position:function () {
-			var $t = this.jq ,
-				$c = this.target ,
+			var $t = this.jq ,  //input
+				$c = this.target , //drop down
 				offset = $t.offset();
 
-			var top = offset.top + $t.outerHeight();
+			var top = offset.top + $t.outerHeight(), ch = $c.outerHeight();
 
-			if (top + $c.outerHeight() > $(document).outerHeight()) top = offset.top - $c.outerHeight();
+			if (top + ch > $(document).outerHeight()  &&  offset.top > ch) {
+				top = offset.top - $c.outerHeight();
+			}
 
 			$c.css({
 				top:top,

@@ -77,13 +77,16 @@
 		},
 		//
 		fieldsToJson:function() {
-			var o = {} , a;
+			var o = {} , a, form ;
+
 			if (this[0].tagName !== "FORM") {
 				var tmp = $('<form/>').append(this.clone());
+				form = tmp ;
 				a = tmp.serializeArray();
 				tmp = null ;
 			}
 			else {
+				form = this ;
 				a = this.serializeArray();
 			}
 			//a = this.serializeArray() ;
@@ -93,6 +96,10 @@
 					isArr = !(i===-1) ,
 					prop = isArr? this.name.substr(0,i) : this.name ,
 					val = jQuery.trim(this.value + "") || '' ;
+
+				if(form.find('[name="'+this.name+'"]').eq(0).attr('type')==='number'){
+					val = parseFloat(val , 10) ;
+				}
 
 				if (o[prop]) {
 					if (!o[prop].push) o[prop] = [o[prop]];
@@ -106,6 +113,8 @@
 					else o[prop] = val ;
 				}
 			});
+
+			form = null;
 			return o;
 		},
 		jsonToFields:function (jsonObject) {
@@ -136,7 +145,7 @@
 					$(this).val(val);
 				}
 				else {
-					if (val === undefined) val = "";
+					if (val === undefined || val===null) val = "";
 					this.value = val;
 				}
 			});
@@ -958,7 +967,7 @@
  *
  * This plugin needs at least jQuery 1.4.2
  *
- * @author Gabriel Birke (https://github.com/gbirke/jquery_pagination)
+ * @author Gabriel Birke (birke *at* d-scribe *dot* de)
  * @version 2.2
  * @param {int} maxentries Number of entries to paginate
  * @param {Object} opts Several options (see README for documentation)
@@ -1007,7 +1016,7 @@
 		this.maxentries = maxentries;
 		this.opts = opts;
 		this.pc = new $.PaginationCalculator(maxentries, opts);
-	}
+	};
 	$.extend($.PaginationRenderers.defaultRenderer.prototype, {
 		/**
 		 * Helper function for generating a single link (or a span tag if it's the current page)
@@ -1099,7 +1108,7 @@
 			next_show_always:true,
 			renderer:"defaultRenderer",
 			show_if_single_page:false,
-			load_first_page: true ,
+			load_first_page:true,
 			callback:function(){return false;}
 		},opts||{});
 
@@ -1140,7 +1149,7 @@
 		// -----------------------------------
 		// Initialize containers
 		// -----------------------------------
-		current_page = parseInt(opts.current_page , 10);
+		current_page = parseInt(opts.current_page, 10);
 		containers.data('current_page', current_page);
 		// Create a sane value for maxentries and items_per_page
 		maxentries = (!maxentries || maxentries < 0)?1:maxentries;

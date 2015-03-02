@@ -11,14 +11,16 @@
 	 @usage: fy.server["userList"].getJSON(param , callback);
 	 服务器返回 JSON 数据包的基本格式
 	 {
-	 data : [], // object, array , ect.
-	 error: 0 // or: null/false, or "access forbidden" etc.
+	    data : [], // object, array , ect.
+	    error: 0 // or: null/false, or "access forbidden" etc.
 	 }
 	 */
 	var srvFn = function (url) {
 		if(url.indexOf('http://')===0||url.indexOf('https://')===0) this.url = url ;
 		else this.url = fy.serverRootPath + url.replace(/^['/']/, '');
 		//this.xhr = $.ajaxSettings.xhr() ;
+		this.unlimited = false ;
+		this.accessable = true;
 	};
 	//map ajax functions to jQuery
 	function makeParam(data, callback, type) {
@@ -27,6 +29,8 @@
 		var fn = function (json) {
 				if (json.error) srvFn.prototype.handleError.call(that, json.error);
 				else (typeof data === 'function') ? data(json) : (callback && typeof callback==='function') ? callback(json) : void(0);
+				that.accessable = true ;
+				that = null ;
 			} ,
 			param = (typeof data != 'function')? data: null ,
 			vType = (typeof type === 'string') ? type : (typeof callback === 'string' ? callback : undefined);
@@ -47,27 +51,37 @@
 				fy.onAjaxError.call(this, err);
 			}
 		},
-		toString: function () {
+		toString: function(){
 			return this.url;
 		},
 		getJSON: function (data, callback) {
 			//log('native' , this.xhr);
-			return $.getJSON.apply(this, makeParam.call(this, data, callback, "json"));
+			if(this.accessable || this.unlimited){
+				this.accessable = false ;
+				return $.getJSON.apply(this, makeParam.call(this, data, callback, "json"));
+			}
 		},
 		get: function (data, callback, type) {
-			return $.get.apply(this, makeParam.call(this, data, callback, type));
+			if(this.accessable || this.unlimited) {
+				this.accessable = false;
+				return $.get.apply(this, makeParam.call(this, data, callback, type));
+			}
 		},
 		post: function (data, callback, type) {
-			return $.post.apply(this, makeParam.call(this, data, callback, type));
+			if(this.accessable || this.unlimited) {
+				this.accessable = false;
+				return $.post.apply(this, makeParam.call(this, data, callback, type));
+			}
 		},
 		postObj: function (obj, callback, type) {
 			return this.post({vo: JSON.stringify(obj)}, callback, type);
 		} ,
 		postValue : function(obj, callback, type) {
-			for(var key in obj){
-				var v = {} ;
-				v[key] = JSON.stringify(obj[key]) ;
+			for (var key in obj) {
+				var v = {};
+				v[key] = JSON.stringify(obj[key]);
 				return this.post(v, callback, type);
+				//break;
 			}
 		}
 	};
@@ -78,6 +92,7 @@
 	fy.server.add = function (urlHashSet, override) {
 		var that = fy.server , unwritable = !override;
 
+		//fy.server.add('key' , 'url');
 		if (typeof urlHashSet === "string" && typeof override === "string") {
 			var p1 = urlHashSet;
 			urlHashSet = {};
@@ -112,6 +127,8 @@
 	 return new SrvCalls(calls) ;
 	 };*/
 
+
+	// <---
 	/*(function() {
 	 var a =  document.createElement('a');
 	 a.href = url;
@@ -370,6 +387,20 @@
 		return new Date(parts[fmt['yyyy']]||0, (parts[fmt['MM']]||1)-1 , parts[fmt['dd']]||0 , parts[fmt['HH']]||0, parts[fmt['mm']]||0, parts[fmt['ss']]||0);
 	};
 
+	//Json Date to String
+	fy.parseJsonDate = function (str , format) {
+		if(!str) return '' ;
+		var d ;
+		if(str.indexOf('/Date(')!=-1) {
+			str = parseInt(str.substr(6) , 10);// + sys.timeZone * 60000 ;
+			d = new Date(str) ;
+		}
+		else{
+			d = new Date(Date.parse(str) + sys.timeZone * 60000) ;
+		}
+		return fy.formatDate(d, format) ;
+	};
+
 	//number formater
 	var number_format = fy.formatNumber = function (number, decimals, dec_point, thousands_sep) {
 		// * usage: fy.numberFormat(1234.5678, 2, '.', '');
@@ -535,6 +566,20 @@
 		}
 	};
 
+	fy.cache = function(key , value){
+		if(!top.window['__CACHE__']) top.window['__CACHE__'] = {} ;
+		var ch = top.window['__CACHE__'] ;
+		if(typeof value !=='undefined'){
+			ch[key] = value ;
+		}
+		return ch[key] ;
+	} ;
+	fy.removeCache = function(key){
+		if(!top.window['__CACHE__']) return ;
+		var ch = top.window['__CACHE__'] ;
+		if(key) delete ch[key] ;
+		else top.window['__CACHE__'] = {};
+	} ;
 
 	/*
 	 *js HTML Encode
@@ -680,6 +725,14 @@
 		}
 	};
 
+	fy.printIframe = function(iframeWin){
+		if(fy.browser.msie) {
+			iframeWin.document.execCommand('print', false, null);
+		}
+		else{
+			iframeWin.print();
+		}
+	};
 
 	/*
 	 fy.util.validate  数据校验

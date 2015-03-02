@@ -523,9 +523,9 @@
 
 							if ($th.data("sortType") === "desc") {
 								that.json.data.reverse();
-								$th.find(".spSortableTH").text(" (▾)");
+								$th.find(".spSortableTH").text(" ▾");
 							}
-							else $th.find(".spSortableTH").text(" (▴)");
+							else $th.find(".spSortableTH").text(" ▴");
 
 							that.bindData(that.json , false);
 						});

@@ -59,14 +59,14 @@
 				.wrap('<span style="display: inline-block;vertical-align: middle;"></span>')
 				.parents('span:first') ;
 
-			this.ereaser = $('<div style="font:Arial 12px;color:#d00;float:left;margin:5px 0 0 -26px ;width:8px;line-height:12px;cursor:pointer;display:none;">x</div>')
+			var eraser = $('<div style="font:Arial 12px;color:#d00;float:left;margin:5px 0 0 -26px ;width:8px;line-height:12px;cursor:pointer;display:none;">x</div>')
 				.appendTo(this.wrapper)
 				.click(function(){
 					if(!that.jq.prop('disabled')) that.jq.val('') ;
 				});
 
 			this.wrapper.hover(function(){
-				that.ereaser.toggle() ;
+				eraser.toggle() ;
 			}) ;
 		}
 

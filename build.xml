@@ -6,6 +6,7 @@
             <path path="fy.util.js"/>
             <!-- <path path="fy.encode.js"/> -->
             <path path="fy.jqueryPlugins.js"/>
+            <path path="noty.full.234.js"/>
             <path path="fy.baseClasses.js"/>
             <path path="fy.ComboBase.js"/>
             <path path="fy.dateChooser.js"/>

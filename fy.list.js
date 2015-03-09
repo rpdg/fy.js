@@ -9,9 +9,11 @@
 	var List = function (jq, cfg) {
 		//initialize defaults
 		var def = {
-			textSrc:"text",
-			selectedIndex:-1,
-			bindOptions:{}
+			textSrc : "text",
+			selectedIndex : -1,
+			bindOptions : {} ,
+			selectedClass : "current" ,
+			eventType : "click.fy"
 		};
 		var renderer = '' ,
 			sets = $.extend(def , cfg);
@@ -29,9 +31,9 @@
 		List.parent.call(this, jq, sets);
 
 		//self attributes
-		this.selectedClass = sets.selectedClass || "current";
+		this.selectedClass = sets.selectedClass;
 		this.selectedIndex = sets.selectedIndex;
-		this.eventType = "click.fy";
+		this.eventType = sets.eventType ;
 		this.title = sets.title;
 		//如果是从空容器创建的，将jq对象指定到<ul>控件上
 		if (this.jq[0].tagName !== 'UL')
@@ -56,10 +58,10 @@
 			}
 
 			//add event listener
-			this.jq.delegate("li", this.eventType, function (evt) {
+			this.jq.delegate("li", this.eventType, function (evt , isAuto) {
 				//void event listener fires twice on label
 				if(evt.target.tagName === 'LABEL') return ;
-				that.selectHandler(evt, that.selectedIndex);
+				that.selectHandler(evt , !!isAuto);
 			});
 
 			if (this.selectedIndex !== -1) {
@@ -78,11 +80,11 @@
 		},
 		setSelectedIndex:function (i) {
 			//this.selectedIndex = i;
-			this.items.eq(i).trigger(this.eventType);
+			this.items.eq(i).trigger(this.eventType , true);
 			return this;
 		},
 
-		selectHandler:function (evt) {
+		selectHandler:function (evt , isAuto) {
 			var cur = this.items.index(evt.currentTarget);
 			if (cur === this.selectedIndex && this.prevIndex != -1) return;
 
@@ -91,7 +93,7 @@
 			this.items.eq(this.prevIndex).removeClass(this.selectedClass);
 			$(evt.currentTarget).addClass(this.selectedClass);
 
-			if (typeof this.onSelect === 'function') this.onSelect(evt);
+			if (typeof this.onSelect === 'function') this.onSelect(evt , isAuto);
 		}
 	};
 

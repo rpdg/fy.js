@@ -60,18 +60,21 @@
 				this.accessable = false ;
 				return $.getJSON.apply(this, makeParam.call(this, data, callback, "json"));
 			}
+			//else throw new Error('Server function unusable now, may be you should set property "unlimited" to true.');
 		},
 		get: function (data, callback, type) {
 			if(this.accessable || this.unlimited) {
 				this.accessable = false;
 				return $.get.apply(this, makeParam.call(this, data, callback, type));
 			}
+			//else throw new Error('Server function unusable now, may be you should set property "unlimited" to true.');
 		},
 		post: function (data, callback, type) {
 			if(this.accessable || this.unlimited) {
 				this.accessable = false;
 				return $.post.apply(this, makeParam.call(this, data, callback, type));
 			}
+			//else throw new Error('Server function unusable now, may be you should set property "unlimited" to true.');
 		},
 		postObj: function (obj, callback, type) {
 			return this.post({vo: JSON.stringify(obj)}, callback, type);
@@ -1116,29 +1119,32 @@
 	var matched = (function (ua) {
 		ua = ua.toLowerCase();
 
-		var match = /(opr)[\/]([\w.]+)/.exec(ua) ||
-			/(chrome)[ \/]([\w.]+)/.exec(ua) ||
-			/(version)[ \/]([\w.]+).*(safari)[ \/]([\w.]+)/.exec(ua) ||
-			/(webkit)[ \/]([\w.]+)/.exec(ua) ||
-			/(opera)(?:.*version|)[ \/]([\w.]+)/.exec(ua) ||
-			/(msie) ([\w.]+)/.exec(ua) ||
-			ua.indexOf("trident") >= 0 && /(rv)(?::| )([\w.]+)/.exec(ua) ||
-			ua.indexOf("compatible") < 0 && /(mozilla)(?:.*? rv:([\w.]+)|)/.exec(ua) ||
+		var match = /(edge)\/([\w.]+)/.exec( ua ) ||
+			/(opr)[\/]([\w.]+)/.exec( ua ) ||
+			/(chrome)[ \/]([\w.]+)/.exec( ua ) ||
+			/(version)(applewebkit)[ \/]([\w.]+).*(safari)[ \/]([\w.]+)/.exec( ua ) ||
+			/(webkit)[ \/]([\w.]+).*(version)[ \/]([\w.]+).*(safari)[ \/]([\w.]+)/.exec( ua ) ||
+			/(webkit)[ \/]([\w.]+)/.exec( ua ) ||
+			/(opera)(?:.*version|)[ \/]([\w.]+)/.exec( ua ) ||
+			/(msie) ([\w.]+)/.exec( ua ) ||
+			ua.indexOf("trident") >= 0 && /(rv)(?::| )([\w.]+)/.exec( ua ) ||
+			ua.indexOf("compatible") < 0 && /(mozilla)(?:.*? rv:([\w.]+)|)/.exec( ua ) ||
 			[];
 
-		var platform_match = /(ipad)/.exec(ua) ||
-			/(iphone)/.exec(ua) ||
-			/(android)/.exec(ua) ||
-			/(windows phone)/.exec(ua) ||
-			/(win)/.exec(ua) ||
-			/(mac)/.exec(ua) ||
-			/(linux)/.exec(ua) ||
-			/(cros)/i.exec(ua) ||
+		var platform_match = /(ipad)/.exec( ua ) ||
+			/(ipod)/.exec( ua ) ||
+			/(iphone)/.exec( ua ) ||
+			/(android)/.exec( ua ) ||
+			/(windows phone)/.exec( ua ) ||
+			/(win)/.exec( ua ) ||
+			/(mac)/.exec( ua ) ||
+			/(linux)/.exec( ua ) ||
+			/(cros)/.exec( ua ) ||
 			[];
 
 		return {
-			browser: match[ 3 ] || match[ 1 ] || "",
-			version: match[ 2 ] || "0",
+			browser: match[ 5 ] || match[ 3 ] || match[ 1 ] || "",
+			version: match[ 2 ] || match[ 4 ] || "0",
 			platform: platform_match[0] || ""
 		};
 	})(window.navigator.userAgent);
@@ -1156,7 +1162,7 @@
 	}
 
 	// These are all considered mobile platforms, meaning they run a mobile browser
-	if ( browser.android || browser.ipad || browser.iphone || browser[ "windows phone" ] ) {
+	if ( browser.android || browser.ipad || browser.iphone || browser.ipod || browser[ "windows phone" ]) {
 		browser.mobile = true;
 	}
 
@@ -1171,7 +1177,8 @@
 	}
 
 	// IE11 has a new token so we will assign it msie to avoid breaking changes
-	if (browser.rv) {
+	// IE12 disguises itself as Chrome, but adds a new Edge token.
+	if (browser.rv || browser.edge ) {
 		var ie = 'msie';
 		matched.browser = ie;
 		browser[ie] = true;

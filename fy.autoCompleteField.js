@@ -44,10 +44,15 @@
 			that = this ;
 
 		this.enabled = sets.enabled ;
+		this.presist = false ;
 		this.list = fy('<ul class="combo-dropDown autoComplete"><li class="fLightGray">loading...</li></ul>').list(sets) ;
-		this.list.onSelect = function(){
+		this.list.onSelect = function(evt , isAuto){
+			//log(evt , isAuto);
 			var li = this.getSelectedItem() ;
 			that.jq.val($.text(li)) ;
+
+			//by user mouse click
+			if(!isAuto) that.close() ;
 		};
 
 
@@ -58,8 +63,10 @@
 			this.jq.css({
 				//maxHeight : this.items.length? this.items.eq(0).css("line-height")*sets.maxEntries : 120 ,
 				width: that.jq.width()
-			}).click(function(){
-				that.close() ;
+			}).mouseenter(function(){
+				that.presist = true ;
+			}).mouseleave(function(){
+				that.presist = false ;
 			}) ;
 			//
 
@@ -93,9 +100,9 @@
 					filter.call(that , sets) ;
 				}
 				return false;
-			})/*.bind('blur.fyDropdown' , function(){
-				that.close();
-			})*/ ;
+			}).bind('blur.fyDropdown' , function(){
+				if(!that.presist) that.close();
+			}) ;
 		} ;
 
 		//sets.target = $('<div class="autoComplete"></div>').append(this.list.jq).appendTo("body");

@@ -325,9 +325,9 @@ jQuery.fn.boxy = function(options) {
 // Boxy Class
 
 function Boxy(element, options) {
-
-	this.boxy = jQuery(Boxy.WRAPPER).attr("id" , 'boxy_' + Math.random());
-	jQuery.data(this.boxy[0], 'boxy', this);
+	this.boxyId = 'boxy_' + Math.random() ;
+	this.boxy = jQuery(Boxy.WRAPPER).attr("id" , this.boxyId) ;
+	jQuery.data(this.boxy[0], 'boxy', this) ;
 
 	this.visible = false;
 	this.options = jQuery.extend({}, Boxy.DEFAULTS, options || {});
@@ -821,7 +821,7 @@ Boxy.prototype = {
 			//save original window size and set the restore button
 			this.btnMax.data("size" , rst).removeClass("max").text(this.options.restoreText).addClass("restore") ;
 			var self = this ;
-			win.bind("resize.boxy" , function() {
+			win.bind("resize.boxy"+this.boxyId , function() {
 				self.maximum();
 			});
 			//bring window to (0,0,top-Z-index) ;
@@ -851,7 +851,7 @@ Boxy.prototype = {
 
 	restoreSize : function(){
 		this.winState = "normal" ;
-		$(window).unbind("resize.boxy");
+		$(window).unbind("resize.boxy"+this.boxyId);
 		var old = this.btnMax.removeClass("restore").text(this.options.maxText).addClass("max").data("size");
 		this.resize(old.w , old.h).moveTo(old.l, old.t);
 	} ,
@@ -1015,7 +1015,7 @@ Boxy.prototype = {
 
 	unload: function() {
 		this._fire('beforeUnload');
-		this.boxy.remove();
+		jQuery.removeData(this.boxy[0]) ;
 		if (this.options.actuator) {
 			jQuery.data(this.options.actuator, 'active.boxy', false);
 		}
@@ -1023,11 +1023,14 @@ Boxy.prototype = {
 
 		if (this.options.maximizable) {
 			if(this.winState) {
-				$(window).unbind("resize.boxy");
-				jQuery.data(this.btnMax, 'size', false);
+				$(window).unbind("resize.boxy"+this.boxyId);
+				jQuery.removeData(this.btnMax);
 				this.btnMax = null;
 			}
 		}
+
+		this.getInner().find('.title-bar').unbind().find('.btnSets').unbind();
+		this.boxy.remove();
 	},
 
 	// Move this dialog box above all other boxy instances
@@ -1116,7 +1119,6 @@ Boxy.prototype = {
 							];
 
 
-							jQuery(document).bind("mousemove.boxy", Boxy._handleDrag);
 							if(!document.addEventListener) {
 								Boxy.dragConfigured[0].setCapture();
 								/*self.boxy.css({
@@ -1125,7 +1127,8 @@ Boxy.prototype = {
 								self.boxy.hide(0);
 							}
 
-							jQuery(document).bind("mouseup.boxy", function () {
+							jQuery(document).bind("mousemove.boxy", Boxy._handleDrag)
+								.bind("mouseup.boxy", function () {
 								if (self.winState !== "max" && Boxy.dragging) {
 									Boxy.dragConfigured.hide();
 									jQuery(document).unbind(".boxy");

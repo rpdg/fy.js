@@ -84,6 +84,9 @@
 
 		if(cfg.selectedDate)
 			this.selectedDate = (typeof sets.selectedDate === "string" ? fy.parseDate(sets.selectedDate) : sets.selectedDate)  ;
+		/*else if(cfg.selectedDate===false || cfg.selectedDate===null){
+			//
+		}*/
 		else
 			this.selectedDate = this.today ;
 

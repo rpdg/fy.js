@@ -1,6 +1,6 @@
 (function (window, $, fy, undefined) {
-	fy.EMPTY_FN = $.noop ;
-	fy.PREVENT_FN = function(){
+	fy.EMPTY_FN = $.noop;
+	fy.PREVENT_FN = function () {
 		return false;
 	};
 
@@ -11,15 +11,15 @@
 	 @usage: fy.server["userList"].getJSON(param , callback);
 	 服务器返回 JSON 数据包的基本格式
 	 {
-	    data : [], // object, array , ect.
-	    error: 0 // or: null/false, or "access forbidden" etc.
+	 data : [], // object, array , ect.
+	 error: 0 // or: null/false, or "access forbidden" etc.
 	 }
 	 */
 	var srvFn = function (url) {
-		if(url.indexOf('http://')===0||url.indexOf('https://')===0) this.url = url ;
+		if (url.indexOf('http://') === 0 || url.indexOf('https://') === 0) this.url = url;
 		else this.url = fy.serverRootPath + url.replace(/^['/']/, '');
 		//this.xhr = $.ajaxSettings.xhr() ;
-		this.unlimited = false ;
+		this.unlimited = false;
 		this.accessable = true;
 	};
 	//map ajax functions to jQuery
@@ -28,14 +28,14 @@
 		//todo: here may want be optimized
 		var fn = function (json) {
 				if (json.error) srvFn.prototype.handleError.call(that, json.error);
-				else (typeof data === 'function') ? data(json) : (callback && typeof callback==='function') ? callback(json) : void(0);
-				that.accessable = true ;
-				that = null ;
-			} ,
-			param = (typeof data != 'function')? data: null ,
+				else (typeof data === 'function') ? data(json) : (callback && typeof callback === 'function') ? callback(json) : void(0);
+				that.accessable = true;
+				that = null;
+			},
+			param = (typeof data != 'function') ? data : null,
 			vType = (typeof type === 'string') ? type : (typeof callback === 'string' ? callback : undefined);
 
-		return [this.url , param , fn , vType];
+		return [this.url, param, fn, vType];
 	}
 
 	srvFn.prototype = {
@@ -51,35 +51,38 @@
 				fy.onAjaxError.call(this, err);
 			}
 		},
-		toString: function(){
+		toString: function () {
 			return this.url;
 		},
 		getJSON: function (data, callback) {
 			//log('native' , this.xhr);
-			if(this.accessable || this.unlimited){
-				this.accessable = false ;
+			if (this.accessable || this.unlimited) {
+				this.accessable = false;
 				return $.getJSON.apply(this, makeParam.call(this, data, callback, "json"));
 			}
 			//else throw new Error('Server function unusable now, may be you should set property "unlimited" to true.');
 		},
 		get: function (data, callback, type) {
-			if(this.accessable || this.unlimited) {
+			if (this.accessable || this.unlimited) {
 				this.accessable = false;
 				return $.get.apply(this, makeParam.call(this, data, callback, type));
 			}
 			//else throw new Error('Server function unusable now, may be you should set property "unlimited" to true.');
 		},
 		post: function (data, callback, type) {
-			if(this.accessable || this.unlimited) {
+			if (this.accessable || this.unlimited) {
 				this.accessable = false;
 				return $.post.apply(this, makeParam.call(this, data, callback, type));
 			}
 			//else throw new Error('Server function unusable now, may be you should set property "unlimited" to true.');
 		},
-		postObj: function (obj, callback, type) {
-			return this.post({vo: JSON.stringify(obj)}, callback, type);
-		} ,
-		postValue : function(obj, callback, type) {
+		postParam: function (obj, callback, type) {
+			return this.postValue({actionParam: obj}, callback, type);
+		},
+		postVO: function (obj, callback, type) {
+			return this.postValue({vo: obj}, callback, type);
+		},
+		postValue: function (obj, callback, type) {
 			for (var key in obj) {
 				var v = {};
 				v[key] = JSON.stringify(obj[key]);
@@ -93,7 +96,7 @@
 		return fy.server;
 	};
 	fy.server.add = function (urlHashSet, override) {
-		var that = fy.server , unwritable = !override;
+		var that = fy.server, unwritable = !override;
 
 		//fy.server.add('key' , 'url');
 		if (typeof urlHashSet === "string" && typeof override === "string") {
@@ -194,7 +197,7 @@
 				window.log = function () {
 					if (e.scrollHeight > 600) e.innerHTML = '';
 					else e.innerHTML += "<p>";
-					for (var i = 0 , len = arguments.length; i < len; i++) {
+					for (var i = 0, len = arguments.length; i < len; i++) {
 						e.innerHTML += (JSON.stringify(arguments[i]) || arguments[i]) + " ";
 					}
 					/*for (var i = 0, l = arguments.length ; i < l ; i++)
@@ -221,7 +224,7 @@
 			params = $.makeArray(arguments).slice(1);
 		}
 		if (params.constructor != Array) {
-			params = [ params ];
+			params = [params];
 		}
 		$.each(params, function (i, n) {
 			template = template.replace(new RegExp("\\{" + i + "\\}", "g"), n);
@@ -352,12 +355,14 @@
 		return Math.ceil((d + dateFrom.getDay()) / 7);
 	};
 
+	fy.timeZone = (new Date).getTimezoneOffset();
+
 	fy.formatDate = function (date, formater) {
 		var format = formater || 'yyyy-MM-dd'; // default format
 		var o = {
 			"M+": date.getMonth() + 1, //month   
 			"d+": date.getDate(), //date
-			"h+": (date.getHours()>12?date.getHours()-12:date.getHours()), //hour 12
+			"h+": (date.getHours() > 12 ? date.getHours() - 12 : date.getHours()), //hour 12
 			"H+": date.getHours(), //hour 24
 			"m+": date.getMinutes(), //minute
 			"s+": date.getSeconds(), //second   
@@ -385,23 +390,59 @@
 			fmt[part] = i++;
 		});
 		//
-		if(!fmt['HH'] && fmt['hh']) fmt['HH'] = fmt['hh'] ;
+		if (!fmt['HH'] && fmt['hh']) fmt['HH'] = fmt['hh'];
 
-		return new Date(parts[fmt['yyyy']]||0, (parts[fmt['MM']]||1)-1 , parts[fmt['dd']]||0 , parts[fmt['HH']]||0, parts[fmt['mm']]||0, parts[fmt['ss']]||0);
+		return new Date(parts[fmt['yyyy']] || 0, (parts[fmt['MM']] || 1) - 1, parts[fmt['dd']] || 0, parts[fmt['HH']] || 0, parts[fmt['mm']] || 0, parts[fmt['ss']] || 0);
 	};
 
+
+	(function () {
+		var D = new Date('2011-06-02T09:34:29+02:00');
+		if (!D || +D !== 1307000069000) {
+			fy.parseIsoDate = function (s) {
+				var day, tz,
+					rx = /^(\d{4}\-\d\d\-\d\d([tT ][\d:\.]*)?)([zZ]|([+\-])(\d\d):(\d\d))?$/,
+					p = rx.exec(s) || [];
+				if (p[1]) {
+					day = p[1].split(/\D/);
+					for (var i = 0, L = day.length; i < L; i++) {
+						day[i] = parseInt(day[i], 10) || 0;
+					}
+
+					day[1] -= 1;
+					day = new Date(Date.UTC.apply(Date, day));
+					if (!day.getDate()) return NaN;
+					if (p[5]) {
+						tz = (parseInt(p[5], 10) * 60);
+						if (p[6]) tz += parseInt(p[6], 10);
+						if (p[4] == '+') tz *= -1;
+						if (tz) day.setUTCMinutes(day.getUTCMinutes() + tz);
+					}
+					return day;
+				}
+				return NaN;
+			}
+		}
+		else {
+			fy.parseIsoDate = function (s) {
+				return new Date(s);
+			}
+		}
+	})();
+
 	//Json Date to String
-	fy.parseJsonDate = function (str , format) {
-		if(!str) return '' ;
-		var d ;
-		if(str.indexOf('/Date(')!=-1) {
-			str = parseInt(str.substr(6) , 10);// + sys.timeZone * 60000 ;
-			d = new Date(str) ;
+	fy.parseJsonDate = function (str, format) {
+		if (!str) return '';
+		var d;
+		if (str.indexOf('/Date(') != -1) {
+			str = parseInt(str.substr(6), 10);
+			d = new Date(str);
 		}
-		else{
-			d = new Date(Date.parse(str) + sys.timeZone * 60000) ;
+		else {
+			d = fy.parseIsoDate(str);
 		}
-		return fy.formatDate(d, format) ;
+		d = fy.addSeconds(d, fy.timeZone * 60);
+		return fy.formatDate(d, format);
 	};
 
 	//number formater
@@ -439,7 +480,7 @@
 	};
 
 	fy.timeStamp = function () {
-		var n = new Date , f = new Date(2012, 11, 22);
+		var n = new Date, f = new Date(2012, 11, 22);
 		return (n.valueOf() - f.valueOf()).toString();
 	};
 
@@ -569,28 +610,34 @@
 		}
 	};
 
-	fy.cache = function(key , value){
-		if(!top.window['__CACHE__']) top.window['__CACHE__'] = {} ;
-		var ch = top.window['__CACHE__'] ;
-		if(typeof value !=='undefined'){
-			ch[key] = value ;
+	fy.cache = function (key, value) {
+		if (!top.window['__CACHE__']) top.window['__CACHE__'] = {};
+		var ch = top.window['__CACHE__'];
+		if (typeof value !== 'undefined') {
+			ch[key] = value;
 		}
-		return ch[key] ;
-	} ;
-	fy.removeCache = function(key){
-		if(!top.window['__CACHE__']) return ;
-		var ch = top.window['__CACHE__'] ;
-		if(key) delete ch[key] ;
+		return ch[key];
+	};
+	fy.removeCache = function (key) {
+		if (!top.window['__CACHE__']) return;
+		var ch = top.window['__CACHE__'];
+		if (key) delete ch[key];
 		else top.window['__CACHE__'] = {};
-	} ;
+	};
 
+	fy.cleanValueObject = function (vo) {
+		for (var key in vo)
+			if (key.indexOf(":") > -1) delete vo[key];
+
+		return vo;
+	};
 	/*
 	 *js HTML Encode
 	 */
 	fy.HTML = {
-		clean : function(str){
-			return $('<div>' + str + '</div>').text() ;
-		} ,
+		clean: function (str) {
+			return $('<div>' + str + '</div>').text();
+		},
 		encode: function (html) {
 			var temp = document.createElement("div");
 			temp.innerText ? (temp.innerText = html) : (temp.textContent = html);
@@ -728,11 +775,11 @@
 		}
 	};
 
-	fy.printIframe = function(iframeWin){
-		if(fy.browser.msie) {
+	fy.printIframe = function (iframeWin) {
+		if (fy.browser.msie) {
 			iframeWin.document.execCommand('print', false, null);
 		}
-		else{
+		else {
 			iframeWin.print();
 		}
 	};
@@ -839,7 +886,7 @@
 			//var args = Array.prototype.slice.call(arguments);
 			return dup.sort(
 				function (a, b) {
-					var A = a[prop] , nA = isNaN(A) , B = b[prop] , nB = isNaN(B);
+					var A = a[prop], nA = isNaN(A), B = b[prop], nB = isNaN(B);
 					//两者皆非number
 					if (nA && nB) {
 						if (A === '') return -1;
@@ -890,13 +937,13 @@
 
 	//Language Package sets
 	fy.setLanguage = function (languagePack, strId) {
-		var elem , document = window.document;
+		var elem, document = window.document;
 		if (strId === undefined) {
 			var key;
 			for (key in languagePack) {
 				var x = key.indexOf("::");
 				if (x !== -1) {
-					var id = key.substr(0, x) , tag = key.substr(x + 2);
+					var id = key.substr(0, x), tag = key.substr(x + 2);
 					elem = $(tag, "#" + id);
 					for (var f = 0, g = elem.length; f < g; f++) {
 						var el = elem[f];
@@ -907,7 +954,7 @@
 				else {
 					x = key.indexOf("@");
 					if (x > -1) {
-						var id = key.substr(0, x) , attr = key.substr(++x);
+						var id = key.substr(0, x), attr = key.substr(++x);
 						$("#" + id).attr(attr, languagePack[key]);
 					}
 					else {
@@ -941,7 +988,7 @@
 			onComplete: null
 		};
 		var sets = $.extend(def, param);
-		var processor = sets.itemRender  , num = arr.length , timer = 0 , cur = 0;
+		var processor = sets.itemRender, num = arr.length, timer = 0, cur = 0;
 
 		//var fn = function(){handler(cur, sets.stepLength) ;};
 
@@ -949,7 +996,7 @@
 		handler(sets.startIndex, sets.stepLength);
 
 		function handler() {
-			var p = processor || false , that = sets.caller , stepLength = sets.stepLength;
+			var p = processor || false, that = sets.caller, stepLength = sets.stepLength;
 			if (sets.onProgress) sets.onProgress.call(that, cur, arr);
 			for (var i = 0; i < stepLength; i++) {
 				if (cur === num) {
@@ -970,7 +1017,7 @@
 
 	//benchmark for javascript function testing
 	fy.benchMark = function (fn, _loopTimes, _testTimes) {
-		var loopTimes = _loopTimes || 5000 ,
+		var loopTimes = _loopTimes || 5000,
 			testTimes = _testTimes || 1;
 		if (testTimes === 1) return test();
 		else {
@@ -980,7 +1027,7 @@
 		}
 
 		function test() {
-			var t1 = new Date , i = 0;
+			var t1 = new Date, i = 0;
 			for (; i < loopTimes; i++) fn();
 			return ((new Date).getTime() - t1.getTime());
 		}
@@ -1032,7 +1079,7 @@
 			return this;
 		},
 		trigger: function () {
-			var tm = fy.timerManager.timer  , key , act , now = (new Date).getTime();
+			var tm = fy.timerManager.timer, key, act, now = (new Date).getTime();
 			for (key in tm) {
 				act = tm[key];
 				if (now - act[':stamp'] >= act.timeOut) {
@@ -1058,7 +1105,7 @@
 	};
 
 
-	var pfx = ["" , "webkit", "ms", "moz", "o"];
+	var pfx = ["", "webkit", "ms", "moz", "o"];
 	fy.runPrefixMethod = function (obj, method) {
 		var p = 0, m, t;
 		while (p < pfx.length && !obj[m]) {
@@ -1119,32 +1166,32 @@
 	var matched = (function (ua) {
 		ua = ua.toLowerCase();
 
-		var match = /(edge)\/([\w.]+)/.exec( ua ) ||
-			/(opr)[\/]([\w.]+)/.exec( ua ) ||
-			/(chrome)[ \/]([\w.]+)/.exec( ua ) ||
-			/(version)(applewebkit)[ \/]([\w.]+).*(safari)[ \/]([\w.]+)/.exec( ua ) ||
-			/(webkit)[ \/]([\w.]+).*(version)[ \/]([\w.]+).*(safari)[ \/]([\w.]+)/.exec( ua ) ||
-			/(webkit)[ \/]([\w.]+)/.exec( ua ) ||
-			/(opera)(?:.*version|)[ \/]([\w.]+)/.exec( ua ) ||
-			/(msie) ([\w.]+)/.exec( ua ) ||
-			ua.indexOf("trident") >= 0 && /(rv)(?::| )([\w.]+)/.exec( ua ) ||
-			ua.indexOf("compatible") < 0 && /(mozilla)(?:.*? rv:([\w.]+)|)/.exec( ua ) ||
+		var match = /(edge)\/([\w.]+)/.exec(ua) ||
+			/(opr)[\/]([\w.]+)/.exec(ua) ||
+			/(chrome)[ \/]([\w.]+)/.exec(ua) ||
+			/(version)(applewebkit)[ \/]([\w.]+).*(safari)[ \/]([\w.]+)/.exec(ua) ||
+			/(webkit)[ \/]([\w.]+).*(version)[ \/]([\w.]+).*(safari)[ \/]([\w.]+)/.exec(ua) ||
+			/(webkit)[ \/]([\w.]+)/.exec(ua) ||
+			/(opera)(?:.*version|)[ \/]([\w.]+)/.exec(ua) ||
+			/(msie) ([\w.]+)/.exec(ua) ||
+			ua.indexOf("trident") >= 0 && /(rv)(?::| )([\w.]+)/.exec(ua) ||
+			ua.indexOf("compatible") < 0 && /(mozilla)(?:.*? rv:([\w.]+)|)/.exec(ua) ||
 			[];
 
-		var platform_match = /(ipad)/.exec( ua ) ||
-			/(ipod)/.exec( ua ) ||
-			/(iphone)/.exec( ua ) ||
-			/(android)/.exec( ua ) ||
-			/(windows phone)/.exec( ua ) ||
-			/(win)/.exec( ua ) ||
-			/(mac)/.exec( ua ) ||
-			/(linux)/.exec( ua ) ||
-			/(cros)/.exec( ua ) ||
+		var platform_match = /(ipad)/.exec(ua) ||
+			/(ipod)/.exec(ua) ||
+			/(iphone)/.exec(ua) ||
+			/(android)/.exec(ua) ||
+			/(windows phone)/.exec(ua) ||
+			/(win)/.exec(ua) ||
+			/(mac)/.exec(ua) ||
+			/(linux)/.exec(ua) ||
+			/(cros)/.exec(ua) ||
 			[];
 
 		return {
-			browser: match[ 5 ] || match[ 3 ] || match[ 1 ] || "",
-			version: match[ 2 ] || match[ 4 ] || "0",
+			browser: match[5] || match[3] || match[1] || "",
+			version: match[2] || match[4] || "0",
 			platform: platform_match[0] || ""
 		};
 	})(window.navigator.userAgent);
@@ -1152,22 +1199,22 @@
 	var browser = {};
 
 	if (matched.browser) {
-		browser[ matched.browser ] = true;
+		browser[matched.browser] = true;
 		browser.version = matched.version;
 		browser.versionNumber = parseInt(matched.version, 10);
 	}
 
 	if (matched.platform) {
-		browser[ matched.platform ] = true
+		browser[matched.platform] = true
 	}
 
 	// These are all considered mobile platforms, meaning they run a mobile browser
-	if ( browser.android || browser.ipad || browser.iphone || browser.ipod || browser[ "windows phone" ]) {
+	if (browser.android || browser.ipad || browser.iphone || browser.ipod || browser["windows phone"]) {
 		browser.mobile = true;
 	}
 
 	// These are all considered desktop platforms, meaning they run a desktop browser
-	if ( browser.cros || browser.mac || browser.linux || browser.win ) {
+	if (browser.cros || browser.mac || browser.linux || browser.win) {
 		browser.desktop = true;
 	}
 
@@ -1178,7 +1225,7 @@
 
 	// IE11 has a new token so we will assign it msie to avoid breaking changes
 	// IE12 disguises itself as Chrome, but adds a new Edge token.
-	if (browser.rv || browser.edge ) {
+	if (browser.rv || browser.edge) {
 		var ie = 'msie';
 		matched.browser = ie;
 		browser[ie] = true;
@@ -1258,7 +1305,7 @@
 		if (oLen * 2 <= len) {
 			return str;
 		}
-		for (var i = 0 , charLen = 0; i < oLen; i++) {
+		for (var i = 0, charLen = 0; i < oLen; i++) {
 			if (str.charCodeAt(i) > 256) {
 				charLen += 2;
 				if (charLen > len) {
@@ -1274,6 +1321,85 @@
 		}
 		return str;
 	};
+
+	fy.quickSort = (function () {
+
+		function partition(array, left, right) {
+			var cmp = array[right - 1],
+				minEnd = left,
+				maxEnd;
+			for (maxEnd = left; maxEnd < right - 1; maxEnd += 1) {
+				if (array[maxEnd] <= cmp) {
+					swap(array, maxEnd, minEnd);
+					minEnd += 1;
+				}
+			}
+			swap(array, minEnd, right - 1);
+			return minEnd;
+		}
+
+		function swap(array, i, j) {
+			var temp = array[i];
+			array[i] = array[j];
+			array[j] = temp;
+			return array;
+		}
+
+		function quickSort(array, left, right) {
+			if (left < right) {
+				var p = partition(array, left, right);
+				quickSort(array, left, p);
+				quickSort(array, p + 1, right);
+			}
+			return array;
+		}
+
+		return function (array) {
+			return quickSort(array, 0, array.length);
+		};
+	}());
+
+	fy.heapSort = (function () {
+		function heapify(array, index, heapSize) {
+			var left = 2 * index + 1,
+				right = 2 * index + 2,
+				largest = index;
+
+			if (left < heapSize && array[left] > array[index])
+				largest = left;
+
+			if (right < heapSize && array[right] > array[largest])
+				largest = right;
+
+			if (largest !== index) {
+				var temp = array[index];
+				array[index] = array[largest];
+				array[largest] = temp;
+				heapify(array, largest, heapSize);
+			}
+		}
+
+		function buildMaxHeap(array) {
+			for (var i = Math.floor(array.length / 2); i >= 0; i -= 1) {
+				heapify(array, i, array.length);
+			}
+			return array;
+		}
+
+		return function (array) {
+			var size = array.length,
+				temp;
+			buildMaxHeap(array);
+			for (var i = array.length - 1; i > 0; i -= 1) {
+				temp = array[0];
+				array[0] = array[i];
+				array[i] = temp;
+				size -= 1;
+				heapify(array, 0, size);
+			}
+			return array;
+		};
+	}());
 
 
 	//修正浮点数计算误差
@@ -1320,19 +1446,49 @@
 		 参数：arg1：除数；arg2被除数；d要保留的小数位数（可以不传此参数，如果不传则不处理小数位数)
 		 返回值：arg1除于arg2的结果
 		 */
-		div: function (arg1, arg2) {
+		div: function (arg1, arg2, d) {
 			var r1 = arg1.toString(), r2 = arg2.toString(), m, resultVal, d = arguments[2];
 			m = (r2.split(".")[1] ? r2.split(".")[1].length : 0) - (r1.split(".")[1] ? r1.split(".")[1].length : 0);
 			resultVal = Number(r1.replace(".", "")) / Number(r2.replace(".", "")) * Math.pow(10, m);
 			return typeof d !== "number" ? Number(resultVal) : Number(resultVal.toFixed(parseInt(d)));
-		} ,
+		},
 		/*
-		百分比，返回带%
-		*/
-		percent : function(p ,all , d){
-			d = (typeof d === 'undefined')?1:d ;
-			if(all==0) return 'NaN%';
-			return Number(Math.round(p/all*10000)/100).toFixed(d)+'%' ;
+		 百分比，返回带%
+		 */
+		percent: function (p, all, d) {
+			d = (typeof d === 'undefined') ? 1 : d;
+			if (all == 0) return 'NaN%';
+			return Number(Math.round(p / all * 10000) / 100).toFixed(d) + '%';
+		},
+		//标准差, http://baike.baidu.com/view/78339.htm
+		stdEVP: function (arr, avg, fix) {
+			var sum = 0;
+			for (var i = 0, l = arr.length; i < l; i++) {
+				var dev = arr[i] - avg;
+				sum += (dev * dev);
+			}
+			var resultVal = Math.sqrt(sum / l);
+			return typeof fix !== "number" ? resultVal : Number(resultVal.toFixed(parseInt(fix)));
+		},
+		//中位数,  http://baike.baidu.com/view/170892.htm
+		median: function (array, d) {
+			var l = array.length, m = Math.ceil(fy.calc.div(l, 2)) - 1;
+			if (l % 2) {
+				return array[m];
+			}
+			else {
+				var m1 = Math.floor(l * 0.5), a = (array[m1] + array[m]);
+				return fy.calc.div(a, 2, d);
+			}
+		},
+		//传入number array 返回名次array，并列名次后跳空
+		rank : function(v){
+			var rankIndex = fy.quickSort(v.slice()).reduceRight(function (acc, item, index) {
+				acc[item] = index;
+				return acc;
+			} , Object.create(null));
+
+			return v.map(function(item){ return rankIndex[item]+1; });
 		}
 	};
 
@@ -1393,38 +1549,6 @@
 	 */
 
 
-	/*
-	 //IE9+ has array.indexOf
-	 if (!Array.prototype.indexOf) {
-	 Array.prototype.indexOf = function (searchElement, fromIndex) {
-	 if ( this === undefined || this === null ) {
-	 throw new TypeError( '"this" is null or not defined' );
-	 }
 
-	 var length = this.length >>> 0; // Hack to convert object.length to a UInt32
-
-	 fromIndex = +fromIndex || 0;
-
-	 if (Math.abs(fromIndex) === Infinity) {
-	 fromIndex = 0;
-	 }
-
-	 if (fromIndex < 0) {
-	 fromIndex += length;
-	 if (fromIndex < 0) {
-	 fromIndex = 0;
-	 }
-	 }
-
-	 for (;fromIndex < length; fromIndex++) {
-	 if (this[fromIndex] === searchElement) {
-	 return fromIndex;
-	 }
-	 }
-
-	 return -1;
-	 };
-	 }
-	 */
 })(window, jQuery, fy);
 

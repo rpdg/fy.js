@@ -219,6 +219,78 @@
 		return fy(vec[0]).popup(vec[1]) ;
 	} ;
 
+	var openedWins ={};
+
+	fy.getPopuppedIFrames = function(){
+		return openedWins ;
+	} ;
+
+	fy.popIFrame = function(iframeSets , options , btns){
+		//log(openedWins==window.sys.openedWins , fy === top.fy) ;
+
+		//为了兼容fy的一个旧版本写法
+		var _url = iframeSets.oUrl || iframeSets.url ;
+
+		var $iframe = openedWins[_url];
+		if ($iframe && fy.popupManager.get($iframe)) {
+			return fy.popupManager.get(openedWins[_url]).toTop();
+		}
+		else {
+			if(iframeSets.cache) {
+				for(var key in iframeSets.cache){
+					fy.cache(key , iframeSets.cache[key]) ;
+				}
+			}
+			$iframe = $('<iframe frameborder="0" style="width: ' + (iframeSets.w || 660) + 'px; height: ' + (iframeSets.h || 360) + 'px;"  src="' + iframeSets.url + '"></iframe>');
+			openedWins[_url] = $iframe[0];
+
+			if(!options) options = {} ;
+			//强制指定为卸载内存
+			options.unloadOnHide = true;
+			if(options.modal==undefined) options.modal=0.1;
+
+			var afterFn = options.afterHide;
+			options.afterHide = function () {
+				if (afterFn) afterFn.call(this);
+				delete openedWins[_url];
+
+				if(iframeSets.cache) {
+					for(var key in iframeSets.cache){
+						fy.removeCache(key) ;
+					}
+				}
+
+				delete iframeSets.cache ;
+				iframeSets = null ;
+			};
+
+			if (iframeSets.mode === 'dialog' || iframeSets.mode === 'confirm' || iframeSets.mode === 'alert') {
+				var callback ;
+				if (options.callback) {
+					var clk = options.callback;
+					callback = function (arg1, arg2, arg3) {
+						if (clk) {
+							var dontClose = clk.call(this, arg1, arg2, arg3) ;
+							if (dontClose) return true ;
+						}
+						return false;
+					};
+
+					delete options.callback;
+				}
+//				delete popSets.afterHide ;
+				if (iframeSets.mode === 'dialog') return fy.dialog($iframe, btns, callback, options);
+				else return fy[iframeSets.mode]($iframe, callback, options);
+			}
+			else {
+				return window.fy($iframe).popup(options);
+			}
+		}
+	};
+	fy.popToTop = function(iframeSets , options , btns){
+		top.fy.popIFrame(iframeSets , options , btns);
+	} ;
+
 	fy.popHTML = function(url, options) {
 		options = options || {};
 		var ajax = {
@@ -820,9 +892,12 @@ Boxy.prototype = {
 			var po = this.getPosition() , rst = { l:po[0] , t:po[1] , w : cW , h : cH };
 			//save original window size and set the restore button
 			this.btnMax.data("size" , rst).removeClass("max").text(this.options.restoreText).addClass("restore") ;
-			var self = this ;
-			win.bind("resize.boxy"+this.boxyId , function() {
+			var self = this, timer , rzHdl = function(){
 				self.maximum();
+				timer = null;
+			};
+			win.bind("resize.boxy"+this.boxyId , function() {
+				if(!timer) timer = setTimeout(rzHdl , 200);
 			});
 			//bring window to (0,0,top-Z-index) ;
 			this.boxy.css({ left: 0 , top: 0 , zIndex: ++Boxy.zIndex });
@@ -869,11 +944,13 @@ Boxy.prototype = {
 		}
 		if (this.options.modal) {
 			var opacity = (typeof(this.options.modal) === 'number') ? this.options.modal : Boxy.MODAL_OPACITY ;
-			Boxy._setupModalResizing();
+
+			//Boxy._setupModalResizing();
+
 			this.modalBlackout = jQuery('<div class="boxy-modal-blackout"></div>')
-				.css(jQuery.extend(Boxy._cssForOverlay(), {
-				"zIndex": Boxy._nextZ(), "opacity": opacity
-			})).appendTo(document.body);
+				.css( { "zIndex": Boxy._nextZ(), "opacity": opacity })
+				.appendTo(document.body);
+
 			this.toTop();
 			/*
 			var self = this ;

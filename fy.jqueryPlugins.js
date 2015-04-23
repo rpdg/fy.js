@@ -679,7 +679,7 @@
 			var pattern = /\{(\w*[:]*[=]*\w+)\}(?!})/g ,
 				//ods = template.match(pattern) ,
 				str = template.replace(pattern, function (match, key, i) {
-					return '\'+((row[\'' + key + '\']===null||row[\'' + key + '\']===undefined)?\''+nullShown+'\':row[\'' + key + '\'])+\'' ;
+					return '\'+((row[\'' + key + '\']===null||row[\'' + key + '\']===undefined||row[\'' + key + '\']===NaN)?\''+nullShown+'\':row[\'' + key + '\'])+\'' ;
 				});
 
 			renderEvalStr += 'var out=\'' + str + '\';return out;';
@@ -1378,7 +1378,7 @@
 				$(self).html('');
 
 				/* Create the form object. */
-				var form = $('<form class="editableForm" />');
+				var form = $('<form class="editableForm" onsubmit="return false;" />');
 
 				/* Apply css or style or both. */
 				if (settings.cssclass) {
@@ -1737,11 +1737,12 @@
 						var option = $('<option />').val(key).append(json[key]);
 						$('select', this).append(option);
 					}
-					/* Loop option again to set selected. IE needed this... */
+					/* Loop option again to set selected. */
 					$('select', this).children().each(function() {
-						if ($(this).val() == json['selected'] ||
-							$(this).text() == $.trim(original.revert)) {
-							$(this).attr('selected', 'selected');
+						var $p = $(this) ;
+						if ($p.val() === json['selected'] || $p.text() === $.trim(original.revert)) {
+							$p.prop('selected', true);
+							return false;
 						}
 					});
 					/* Submit on change if no submit button defined. */

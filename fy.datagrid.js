@@ -139,7 +139,7 @@
 						for(var q = 0 , ql = ps.length ; q < ql ; q++)
 							arq[q] = '<option value="'+ps[q]+'" '+(ps[q]==this.pageSize?'selected':'')+'>'+ps[q]+'</option>' ;
 
-						this.pageSelector = $('<select style="width: 50px;margin-right: 12px;">'+arq.join('')+'</select>');
+						this.pageSelector = $('<select class="gridPageSelect">'+arq.join('')+'</select>');
 						this.tfoot.prepend(this.pageSelector);
 
 						//on change event
@@ -310,7 +310,7 @@
 					var thisCol = this.cols(i) ;
 					thisCol.each(function (x, td) {
 						//log(x, td ,this);
-						var $td = $(td) , def = {onblur:'submit' , width:'none' , height:'none' , placeholder : ''};
+						var $td = $(td) , def = {onblur:'submit' , width:'none' , height:'none' , placeholder : ''} ;
 						if(colSet.editable.submit) def.onblur = "ignore" ;
 						var editSets = $.extend(def , colSet.editable) ;
 						if(editSets.type === "select"){

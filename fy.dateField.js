@@ -25,6 +25,7 @@
 			that.close() ;
 		} ;
 
+
 		this.dateChooser = fy($('<div class="combo-dropDown dateField-combo"/>').appendTo("body")).dateChooser(dcSets);
 
 
@@ -41,7 +42,7 @@
 	DateField.prototype = {
 		_syncData : function(){
 			this.selectedDate = this.dateChooser.selectedDate ;
-			this.text = fy.formatDate(this.selectedDate , this.format);
+			this.text = this.selectedDate ? fy.formatDate(this.selectedDate , this.format) : '' ;
 			this.jq.val(this.text) ;
 		} ,
 		setSelectedDate : function(v){

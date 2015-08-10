@@ -15,6 +15,7 @@
 		fy.fn = fy.prototype = {
 			init: function (obj) {
 				this.jq = (obj instanceof jQuery) ? obj : $(obj); //hold the jQuery object
+				if(this.jq.length<1) throw new Error('fy component container is null.');
 			}
 		};
 

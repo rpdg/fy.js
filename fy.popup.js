@@ -397,7 +397,7 @@ jQuery.fn.boxy = function(options) {
 // Boxy Class
 
 function Boxy(element, options) {
-	this.boxyId = 'boxy_' + Math.random() ;
+	this.boxyId = 'boxy_' + Math.random().toString().substr(2) + (new Date).valueOf().toString().substr(-6) ;
 	this.boxy = jQuery(Boxy.WRAPPER).attr("id" , this.boxyId) ;
 	jQuery.data(this.boxy[0], 'boxy', this) ;
 

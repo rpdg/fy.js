@@ -43,7 +43,7 @@
 		if(this.group) this.tbody.addClass('groupedTbody') ;
 
 
-		this.titleBars = 1 ;
+		this.titleBars = sets.titleRowNum || 1 ;
 		if(sets.header) this.titleBars++ ;
 		if(sets.toolBar) this.titleBars++ ;
 
@@ -120,7 +120,7 @@
 						pageSize: this.pageSize
 					}, this.param);
 
-					this.tPager = $('<div style="float: right; "></div>').appendTo(this.tfoot);
+					this.tPager = $('<div class="pagination_container"></div>').appendTo(this.tfoot);
 
 					if (this.pagination.showCount) {
 
@@ -373,7 +373,8 @@
 						col.text = '<input type="hidden" name="'+ col.src +'" value="chk_'+i+'">';
 				}
 
-				th[i] = '<th data-osrc="' + (typeof col.sortable ==='string'? col.sortable: col.src) + '" style="'+(bool?' text-overflow:clip;"':'')+'min-width:'+(col.minWidth||16)+'px;">' + (col.text || 'column_' + i) + '</th>';
+				col.text = col.text.toString();
+				th[i] = '<th data-osrc="' + (typeof col.sortable ==='string'? col.sortable: col.src) + '" style="'+(bool?' text-overflow:clip;"':'')+'min-width:'+(col.minWidth||16)+'px;" title="' + (col.cmd?'':(col.text.replace(/<\/?[^>]*>/g,'') || 'column_' + i)) + '">' + (col.text || 'column_' + i) + '</th>';
 				cols[i] = "width:" + (col.width ? col.width+"px;" : "auto; ");
 			}
 			var tbHeaderTr = (sets.header) ? '<tr class="fyGridHeadText"><th colspan="' + (l || '1') + '">' + sets.header + '</th></tr>' : '';
@@ -630,6 +631,7 @@
 			if(tr.length){
 				tr.find('th:first').html(str) ;
 			}
+			return this;
 		}
 	};
 

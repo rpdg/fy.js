@@ -371,7 +371,7 @@
 			this.prevIndex = this.selectedIndex;
 			this.selectedIndex = i;
 
-			if (typeof this.onSelect === 'function') this.onSelect(evt);
+			if (typeof this.onSelect === 'function') this.onSelect.call(this , evt);
 		}
 		, setSelectedIndex:function (i) {
 			this.jq.find("li:eq(" + i + ")").trigger(this.eventType);
@@ -380,4 +380,27 @@
 	};
 
 	fy.register("tabBar", TabBar, "ListBase");
+
+
+
+	/* usage:
+	fy('#stacks').tabNavigator({
+		minWidth: 1000 ,
+		data : [
+			{ label : '浏览' , url :'page1.htm' } ,
+			{ label : '汇总' , url :'page2.htm' }
+		]
+	});
+	*/
+	var TabNavigator = function (jq, cfg) {
+		cfg.autoFire = true;
+		cfg.onSelect = function(){
+			this.iframe.attr('src' , this.getSelectedData()[this.urlField]) ;
+		};
+		var css = cfg.minWidth?' style="min-width:'+cfg.minWidth+'px;"':'' ;
+		this.tabBar = fy($('<div'+css+'></div>').appendTo(jq)).tabBar(cfg) ;
+		this.tabBar.urlField = cfg.urlField || 'url' ;
+		this.tabBar.iframe = $('<iframe frameborder="0" src="about:blank"></iframe>').appendTo($('<div class="tabStack"'+css+'></div>').appendTo(jq)) ;
+	};
+	fy.register("tabNavigator", TabNavigator, "DisplayObject");
 })(window, jQuery, fy);

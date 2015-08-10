@@ -217,7 +217,13 @@
 
 			this.json = json ? json : [] ;
 
-			this.bindOptions.list = $.isArray(json)? json : (json.data || []) ;
+			if($.isArray(json)){
+				this.bindOptions.list = json ;
+				this.json = {data : json} ;
+			}
+			else{
+				this.bindOptions.list = json.data || [] ;
+			}
 
 			// 如果有过滤器，则需要
 			// 将过滤后的array保存下，待稍后作为 this.data
@@ -261,8 +267,10 @@
 			return $.extend(d , obj) ;
 		} ,
 		setSelectedIndex : function(i) {
-			this.prevIndex = this.selectedIndex ;
-			this.selectedIndex = i ;
+			//this.prevIndex = this.selectedIndex ;
+			//this.selectedIndex = i ;
+			var evt = {target : this.items.eq(i)[0]};
+			this.selectHandler(evt) ;
 			return this ;
 		} ,
 		selectHandler : function(evt) {
@@ -294,11 +302,23 @@
 			}
 			else return src ;
 		} ,
+		getPrevData : function(original) {
+			var src = this.data[this.prevIndex] ;
+			//过滤对象中的绑定时增加的属性
+			if(!original){
+				var tar = {}  , key;
+				for (key in src) if (key.indexOf(":") === -1) tar[key]=src[key] ;
+				return tar ;
+			}
+			else return src ;
+		} ,
 
 		getSelectedItem : function () {
 			return this.items[this.selectedIndex] ;
 		} ,
-
+		getPrevItem : function(){
+			return this.items[this.prevIndex] ;
+		} ,
 
 		empty : function(){
 			this.jq.html('');

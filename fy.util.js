@@ -83,12 +83,11 @@
 			return this.postValue({vo: obj}, callback, type);
 		},
 		postValue: function (obj, callback, type) {
+			var v = {};
 			for (var key in obj) {
-				var v = {};
 				v[key] = JSON.stringify(obj[key]);
-				return this.post(v, callback, type);
-				//break;
 			}
+			return this.post(v, callback, type);
 		}
 	};
 	fy.server = function (urlSet, override) {
@@ -99,11 +98,21 @@
 		var that = fy.server, unwritable = !override;
 
 		//fy.server.add('key' , 'url');
-		if (typeof urlHashSet === "string" && typeof override === "string") {
-			var p1 = urlHashSet;
-			urlHashSet = {};
-			urlHashSet[p1] = override;
-			unwritable = true;
+		if (typeof urlHashSet === "string") {
+			if(typeof override === "string") {
+				var p1 = urlHashSet;
+				urlHashSet = {};
+				urlHashSet[p1] = override;
+				unwritable = true;
+			}
+			else{
+				var arr1 = urlHashSet.split(','), l=arr1.length;
+				urlHashSet = {} ;
+				while(l--){
+					var actionName = arr1[l] ;
+					urlHashSet[actionName] = actionName+'.foyo?actionCode='+actionName+'&actionParam=1&multiParam=1' ;
+				}
+			}
 		}
 
 
@@ -171,6 +180,26 @@
 		fy.alert(err.toString());
 	};
 
+
+	fy.urlJoin = function (url, params) {
+
+		for (var i = 1, len = arguments.length; i < len; i++) {
+			var p = arguments[i];
+			if(p !== undefined && p!==null) {
+				if (p.indexOf('?') === 0 || p.indexOf('&') === 0)
+					p = p.substr(1);
+
+				var prefix = i > 1 ? '&' : (url.indexOf('?') > -1 ? '&' : '?');
+
+				url += (prefix + p);
+			}
+		}
+
+		return url ;
+	};
+
+
+
 	//a log tool
 	window.log = function (debug) {
 		if (debug) {
@@ -182,7 +211,8 @@
 				}
 
 				window.log = function () {
-					eval('console.log(' + mkArg(arguments.length) + ')');
+					console.log.apply(console , arguments) ;
+					//eval('console.log(' + mkArg(arguments.length) + ')');
 				};
 				window.log.error = function () {
 					eval('console.error(' + mkArg(arguments.length) + ')');
@@ -355,6 +385,7 @@
 		return Math.ceil((d + dateFrom.getDay()) / 7);
 	};
 
+	//中国 -480 单位：分钟
 	fy.timeZone = (new Date).getTimezoneOffset();
 
 	fy.formatDate = function (date, formater) {
@@ -440,8 +471,9 @@
 		}
 		else {
 			d = fy.parseIsoDate(str);
+			if (str.indexOf('+') === -1)
+				d = fy.addSeconds(d, fy.timeZone * 60);
 		}
-		d = fy.addSeconds(d, fy.timeZone * 60);
 		return fy.formatDate(d, format);
 	};
 
@@ -458,7 +490,7 @@
 			j = (j = i.length) > 3 ? j % 3 : 0;
 
 		var v = s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
-		return parseFloat(v, 10);
+		return thousands_sep? v: parseFloat(v, 10);
 	};
 
 	//file size formater
@@ -621,7 +653,10 @@
 	fy.removeCache = function (key) {
 		if (!top.window['__CACHE__']) return;
 		var ch = top.window['__CACHE__'];
-		if (key) delete ch[key];
+		if (key && ch[key]!==undefined) {
+			ch[key] = null;
+			delete ch[key];
+		}
 		else top.window['__CACHE__'] = {};
 	};
 
@@ -820,7 +855,7 @@
 	Validate.time = function (string) {
 		var checkValue = new RegExp("^/[0-2]{1}/[0-6]{1}:/[0-5]{1}/[0-9]{1}:/[0-5]{1}/[0-9]{1}");
 		return checkValue.test(string);
-	}
+	} ;
 	Validate.zip = function (string, plus4) {
 		var pattern = plus4 ? /^\d{5}-\d{4}$/ : /^\d{5}$/;
 		return pattern.test(string);
@@ -1410,14 +1445,14 @@
 		 参数：arg1：第一个加数；arg2第二个加数；d要保留的小数位数（可以不传此参数，如果不传则不处理小数位数）
 		 返回值：两数相加的结果
 		 */
-		add: function (arg1, arg2) {
-			arg1 = arg1.toString(), arg2 = arg2.toString();
+		add: function (arg1, arg2 , d) {
+			arg1 = arg1.toString();
+			arg2 = arg2.toString();
 			var arg1Arr = arg1.split("."), arg2Arr = arg2.split("."), d1 = arg1Arr.length == 2 ? arg1Arr[1] : "", d2 = arg2Arr.length == 2 ? arg2Arr[1] : "";
 			var maxLen = Math.max(d1.length, d2.length);
 			var m = Math.pow(10, maxLen);
 			var result = Number(((arg1 * m + arg2 * m) / m).toFixed(maxLen));
-			var d = arguments[2];
-			return typeof d === "number" ? Number((result).toFixed(d)) : result;
+			return (typeof d === "number" ? Number((result).toFixed(d)) : result);
 		},
 		/*
 		 函数：减法函数，用来得到精确的减法结果
@@ -1425,8 +1460,8 @@
 		 参数：arg1：第一个加数；arg2第二个加数；d要保留的小数位数（可以不传此参数，如果不传则不处理小数位数
 		 返回值：两数相减的结果
 		 */
-		sub: function (arg1, arg2) {
-			return fy.calc.add(arg1, -Number(arg2), arguments[2]);
+		sub: function (arg1, arg2 , d) {
+			return fy.calc.add(arg1, -Number(arg2), d);
 		},
 		/*
 		 函数：乘法函数，用来得到精确的乘法结果
@@ -1447,9 +1482,15 @@
 		 返回值：arg1除于arg2的结果
 		 */
 		div: function (arg1, arg2, d) {
-			var r1 = arg1.toString(), r2 = arg2.toString(), m, resultVal, d = arguments[2];
-			m = (r2.split(".")[1] ? r2.split(".")[1].length : 0) - (r1.split(".")[1] ? r1.split(".")[1].length : 0);
-			resultVal = Number(r1.replace(".", "")) / Number(r2.replace(".", "")) * Math.pow(10, m);
+			var resultVal ;
+			if(arg2===0) {
+				resultVal = 0 ;
+			}
+			else{
+				var r1 = arg1.toString(), r2 = arg2.toString(), m, d = arguments[2];
+				m = (r2.split(".")[1] ? r2.split(".")[1].length : 0) - (r1.split(".")[1] ? r1.split(".")[1].length : 0);
+				resultVal = Number(r1.replace(".", "")) / Number(r2.replace(".", "")) * Math.pow(10, m);
+			}
 			return typeof d !== "number" ? Number(resultVal) : Number(resultVal.toFixed(parseInt(d)));
 		},
 		/*
@@ -1457,7 +1498,7 @@
 		 */
 		percent: function (p, all, d) {
 			d = (typeof d === 'undefined') ? 1 : d;
-			if (all == 0) return 'NaN%';
+			if (all == 0) return '--%';
 			return Number(Math.round(p / all * 10000) / 100).toFixed(d) + '%';
 		},
 		//标准差, http://baike.baidu.com/view/78339.htm
@@ -1482,14 +1523,128 @@
 			}
 		},
 		//传入number array 返回名次array，并列名次后跳空
+		//http://stackoverflow.com/questions/14834571/ranking-array-elements
 		rank : function(v){
-			var rankIndex = fy.quickSort(v.slice()).reduceRight(function (acc, item, index) {
+			var rankIndex = fy.quickSort(v.slice(0)).reduce(function (acc, item, index) {
 				acc[item] = index;
 				return acc;
 			} , Object.create(null));
 
-			return v.map(function(item){ return rankIndex[item]+1; });
+			return v.map(function(item){ return v.length-rankIndex[item]; });
+		} ,
+		/*
+		 * 分数段计算
+		 * @param from 开始数
+		 * @param to 结束数
+		 * @param segments 分段数
+		 * @param decimals 精确位数
+		 * @return 分段List
+		 */
+		segments : function(from, to, segments, decimals) {
+			decimals = decimals||2 ;
+			var ph = [], tmp = from;
+			var increase = fy.calc.div((to - from), segments, 4), p = 1 / Math.pow(10 ,decimals) ;
+			for (var i = 0; i < segments; i++) {
+				var cur = increase + tmp;
+				var obj = {
+					count: 0, //人数，初始化0
+					from: fy.formatNumber(tmp, decimals),
+					to: (i === segments - 1) ? to : fy.formatNumber(cur - p , decimals)
+				};
+				obj.key = Math.floor(obj.from) + '-' + Math.floor(obj.to);
+				ph.push(obj);
+				tmp = cur;
+			}
+
+			return ph;
 		}
+
+	};
+
+	fy.convert = {
+		/*
+		 单位
+		 */
+		units:'个十百千万@#%亿^&~',
+		/*
+		 字符
+		 */
+		chars:'零一二三四五六七八九',
+		/*
+		 数字转中文
+		 @number {Integer} 形如123的数字
+		 @return {String} 返回转换成的形如 一百二十三 的字符串
+		 */
+		numberToChinese:function(number){
+			var a=(number+'').split(''),s=[],t=this;
+			if(a.length>12){
+				throw new Error('too big');
+			}else{
+				for(var i=0,j=a.length-1;i<=j;i++){
+					if(j==1||j==5||j==9){//两位数 处理特殊的 1*
+						if(i==0){
+							if(a[i]!='1')s.push(t.chars.charAt(a[i]));
+						}else{
+							s.push(t.chars.charAt(a[i]));
+						}
+					}else{
+						s.push(t.chars.charAt(a[i]));
+					}
+					if(i!=j){
+						s.push(t.units.charAt(j-i));
+					}
+				}
+			}
+			//return s;
+			return s.join('').replace(/零([十百千万亿@#%^&~])/g,function(m,d,b){//优先处理 零百 零千 等
+				b=t.units.indexOf(d);
+				if(b!=-1){
+					if(d=='亿')return d;
+					if(d=='万')return d;
+					if(a[j-b]=='0')return '零'
+				}
+				return '';
+			}).replace(/零+/g,'零').replace(/零([万亿])/g,function(m,b){// 零百 零千处理后 可能出现 零零相连的 再处理结尾为零的
+				return b;
+			}).replace(/亿[万千百]/g,'亿').replace(/[零]$/,'').replace(/[@#%^&~]/g,function(m){
+				return {'@':'十','#':'百','%':'千','^':'十','&':'百','~':'千'}[m];
+			}).replace(/([亿万])([一-九])/g,function(m,d,b,c){
+				c=t.units.indexOf(d);
+				if(c!=-1){
+					if(a[j-c]=='0')return d+'零'+b
+				}
+				return m;
+			});
+		} ,
+		stringToDate: fy.parseDate ,
+		jsonToDate : fy.parseJsonDate ,
+		hashToArray: function(obj){
+			var arr=[];
+			for(arr[arr.length] in obj);
+			return arr;
+		} ,
+		arrayToHash : function(arr , key){
+			var obj = {},i= 0,l=arr.length;
+			for(;i<l;i++){
+				var item = arr[i];
+				if(!(item[key] in obj)){
+					obj[item[key]] = item ;
+				}
+			}
+			return obj ;
+		}
+	};
+
+	//可以合并超大数组
+	fy.combineArrays = function (arrays){
+		var arr = [] ;
+		for(var i= 0,l=arguments.length ; i<l ;i++){
+			var a = arguments[i], len = a.length ;
+			for(var k=0;k<len;k=k+5000){
+				arr.push.apply(arr , a.slice(k , k+5000)) ;
+			}
+		}
+		return arr ;
 	};
 
 	//http://www.paulfree.com/28/javascript-array-filtering/

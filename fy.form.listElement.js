@@ -160,6 +160,17 @@
 				return arr ;
 			}
 			return null ;
+		},
+		getText : function(){
+			var s = this.items.filter(':checked') ;
+			if(s.length){
+				var arr = [] ;
+				s.each(function(i, o){
+					arr.push($(o.parentNode).text()) ;
+				}) ;
+				return arr ;
+			}
+			return null ;
 		}
 	};
 
@@ -184,7 +195,7 @@
 		var tmpl = '<label><input name="'+ this.elementName
 				+'" type="radio" value="{'+(sets.value||'value')+'}">{'+(sets.text||'text')+'}</label>'+ (sets.joiner===undefined?' ':sets.joiner) ,
 
-			cfg = $.extend({template: tmpl} , sets) ,
+			cfg = $.extend({template: tmpl , selectedIndex:-1} , sets) ,
 			that = this ;
 
 		this.autoFire = !!cfg.autoFire ;
@@ -208,23 +219,33 @@
 	RadioBox.prototype = {
 		bindHandler : function(json , isInCreating) {
 			this.items = this.jq.find("input[name='"+this.elementName+"']:radio") ;
-
-			this.selectedIndex = (this.items.length > this.initSelectedIndex) ? this.initSelectedIndex : (this.items.length ? 0 : -1 );
+			var initSelectedElem = this.items.filter(':checked') ;
+			this.selectedIndex = initSelectedElem.length ? this.items.index(initSelectedElem[0]) :(this.items.length > this.initSelectedIndex) ? this.initSelectedIndex : (this.items.length ? 0 : -1 );
 			this.prevIndex = -1;
 
 			if (typeof this.onBind === 'function') this.onBind(json , isInCreating) ;
 
-			if(this.autoFire || this.initSelectedIndex !== undefined){
-				var that = this ;
-				setTimeout(function(){
-					var i = that.initSelectedIndex === undefined ? 0 : that.initSelectedIndex ;
-					that.setSelectedIndex(i) ;
-					that.items.eq(i).prop('checked' , true).trigger("change.fy") ;
-				} , 0) ;
+			if(this.autoFire){
+				if(this.initSelectedIndex !== undefined && this.initSelectedIndex > -1) {
+					var that = this ;
+					setTimeout(function(){
+						var i = that.initSelectedIndex === undefined ? 0 : that.initSelectedIndex ;
+						that.setSelectedIndex(i) ;
+						that.items.eq(i).prop('checked' , true).trigger("change.fy") ;
+					} , 0) ;
+				}
+
 			}
 		} ,
 		getValue : function(){
 			return this.items.filter(':checked').val() ;
+		},
+		getText : function(){
+			var s = this.items.filter(':checked') ;
+			if(s.length){
+				return s.parent().text() ;
+			}
+			return null ;
 		}
 	};
 

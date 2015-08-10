@@ -661,7 +661,7 @@
 			//alert('boundCache.make.caller');
 
 			var template = sets.template , cache = { name:template } ,
-				nullShown = sets['nullShown'] || '' ;
+				nullShown = sets['nullShown'] || '' ,
 				pnter = /{\w+(:=)+\w+}/g ,
 				rnderFns = template.match(pnter),
 				renderEvalStr = 'row[":index"]=i;';
@@ -679,7 +679,7 @@
 			var pattern = /\{(\w*[:]*[=]*\w+)\}(?!})/g ,
 				//ods = template.match(pattern) ,
 				str = template.replace(pattern, function (match, key, i) {
-					return '\'+((row[\'' + key + '\']===null||row[\'' + key + '\']===undefined||row[\'' + key + '\']===NaN)?\''+nullShown+'\':row[\'' + key + '\'])+\'' ;
+					return '\'+((row[\'' + key + '\']===null||row[\'' + key + '\']===undefined||Infinity===row[\'' + key + '\'])?\''+nullShown+'\':row[\'' + key + '\'])+\'' ;
 				});
 
 			renderEvalStr += 'var out=\'' + str + '\';return out;';
@@ -873,7 +873,7 @@
 			storeData = !!sets.storeData ;
 		}
 
-		var scope = itemRender || window ,
+		var scope = itemRender || sets.renderScope || window ,
 			html = [] , i = 0 , nb = 0 , rowObject ,
 			useFilter = (typeof(itemFilter) === 'function')   ;
 

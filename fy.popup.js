@@ -229,7 +229,7 @@
 		//log(openedWins==window.sys.openedWins , fy === top.fy) ;
 
 		//为了兼容fy的一个旧版本写法
-		var _url = iframeSets.oUrl || iframeSets.url ;
+		var _url = iframeSets.url ;
 
 		var $iframe = openedWins[_url];
 		if ($iframe && fy.popupManager.get($iframe)) {
@@ -397,7 +397,7 @@ jQuery.fn.boxy = function(options) {
 // Boxy Class
 
 function Boxy(element, options) {
-	this.boxyId = 'boxy_' + Math.random() ;
+	this.boxyId = 'boxy_' + Math.random().toString().substr(2) + (new Date).valueOf().toString().substr(-6) ;
 	this.boxy = jQuery(Boxy.WRAPPER).attr("id" , this.boxyId) ;
 	jQuery.data(this.boxy[0], 'boxy', this) ;
 

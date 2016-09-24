@@ -1,0 +1,115 @@
+@import "color";
+
+.row{
+	display: table-row;
+}
+.cell{
+	display: table-cell;
+}
+
+.dg-mask {
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	z-index: 100;
+	background-color: rgba(0, 0, 0, .05);
+	
+	display: none;
+}
+
+.dg-wrapper {
+	position: absolute;
+	visibility: hidden;
+	
+	background-color: #fff;
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+	
+	display: table;
+	
+	min-width: 280px;
+	min-height: 120px;
+	
+	.dg-title {
+		
+		font-size: 16px;
+		font-weight: bold;
+		text-indent: 8px;
+		
+		line-height: 2em;
+		
+		margin: 0;
+		padding: 6px;
+		color: #666;
+		background-color: $title-bar-color ;
+		border-bottom: 1px solid $border-color;
+		
+		cursor: default;
+		
+		user-select: none;
+		
+		.dg-title-buttons {
+			
+			position: absolute;
+			top: 10px;
+			right: 6px;
+			height: 18px;
+			text-align: right;
+			
+			b {
+				display: inline-block;
+				margin: 3px 3px 0 0;
+				width: 18px;
+				height: 18px;
+				background-image: url('ico/win-buttons.png?__inline');
+				background-repeat: no-repeat;
+				
+				&.dg-btn-min {
+					background-position: 3px 2px;
+					&:hover {
+						background-position: 3px -19px;
+					}
+				}
+				&.dg-btn-max {
+					background-position: -32px 2px;
+					&:hover {
+						background-position: -32px -19px;
+					}
+				}
+				&.dg-btn-restore {
+					background-position: -48px 3px;
+					&:hover {
+						background-position: -48px -18px;
+					}
+				}
+				&.dg-btn-x {
+					background-position: -14px 2px;
+					&:hover {
+						background-position: -14px -18px;
+					}
+				}
+			}
+		}
+	}
+	
+	.dg-content {
+		display: table-row;
+		overflow: auto;
+	}
+	
+	.dg-footer{
+	
+		text-align: right;
+		border-top: 1px solid $border-color;
+		background-color: $footer-bar-color;
+		padding: 5px;
+	}
+}
+
+
+.dg-alert{
+	font-size: 14px;
+	padding: 1em;
+	//max-width: 550px;
+}

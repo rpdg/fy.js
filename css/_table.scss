@@ -1,0 +1,124 @@
+@import "color";
+
+@mixin overflow() {
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+$odd-row-bg : #fafafa;
+$even-row-bg : #fff;
+$row-hover-bg : #edfaff;
+
+.grid {
+	table-layout: fixed;
+	width: 100%;
+	//border: 1px solid #cdcdcd;
+	border-collapse: collapse;
+	line-height: 18px;
+	background-color: #FFFFFF;
+	/*margin: 10px;*/
+	
+	td, th {
+		padding: 3px 5px;
+		line-height: 2em;
+		vertical-align: middle;
+		border: 1px solid $border-color;
+	}
+	
+	> thead {
+		> tr {
+			background-color: $title-bar-color;
+			
+			> th {
+				color: #555;
+				
+				font-size: 14px;
+				font-weight: bold;
+				
+				vertical-align: middle;
+				
+				@include overflow;
+				
+				text-align: center;
+				
+				border-bottom-width: 2px;
+				
+			}
+		}
+	}
+	
+	> tbody {
+		> tr {
+			&.odd {
+				background-color: $odd-row-bg ;
+			}
+			&.even{
+				background-color: $even-row-bg;
+			}
+			
+			&.odd:hover,&.even:hover {
+				background-color: $row-hover-bg;
+			}
+			
+			td {
+		
+				@include overflow;
+				
+			}
+			
+			&.subTHead{
+				background-color: $title-bar-color;
+				
+				th{
+					font:{
+						size: 12px;
+						weight: 100;
+					}
+					
+				}
+			}
+			
+			&.subTBody:nth-of-type(even){
+				background-color: $even-row-bg ;
+			}
+			&.subTBody:nth-of-type(odd){
+				background-color: $odd-row-bg ;
+			}
+		}
+	}
+	
+	> tfoot {
+		> tr {
+			height: 30px;
+			border-top: 1px solid #a8bace;
+			background-color: $footer-bar-color;
+		}
+	}
+}
+
+
+
+.rc-handle-container {
+	position: relative;
+}
+
+.rc-handle {
+	position: absolute;
+	width: 7px;
+	cursor: ew-resize;
+	margin-left: -3px;
+	z-index: 2;
+}
+
+.rc-table-resizing {
+	cursor: ew-resize;
+	
+	thead,
+	thead > th,
+	thead > th > a {
+		cursor: ew-resize;
+	}
+}
+
+

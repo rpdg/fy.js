@@ -1,0 +1,59 @@
+/*pagination*/
+.pagination_container{
+	display: inline-block;
+	float: right;
+}
+
+.pagination {
+	display: inline-block;
+	padding: 0 5px;
+	text-align: right !important;
+	
+	a {
+		text-decoration: none;
+		border: solid 1px #bbb;
+		color: #555;
+		margin: 0 1px;
+		
+		&:hover {
+			color: #333;
+			background: #cdcdcd;
+			border: solid 1px #aaa;
+		}
+	}
+	
+	a, span {
+		display: inline-block;
+		line-height: 1.6em;
+		padding: 0 5px;
+		margin: 0;
+		background-color: #fff;
+	}
+	
+	.current {
+		background: #41BEDD;
+		color: #fff;
+		border: solid 1px #39a5c0;
+		cursor: default;
+		
+		&.prev, &.next {
+			color: #aaa;
+			border-color: #bbb;
+			background-color: #eee;
+			cursor: default;
+		}
+		
+	}
+	
+}
+
+.pageSelectorLabel{
+	float: left;
+	margin-left: 1em;
+	
+	select{
+		height: 1.66em;
+		margin: 0 2px;
+	}
+}
+

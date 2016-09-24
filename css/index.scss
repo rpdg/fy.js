@@ -1,0 +1,44 @@
+@import 'reset';
+@import 'loading';
+@import 'form';
+@import 'table';
+//@import 'border';
+@import 'pager';
+@import 'text';
+@import "popup";
+
+
+@mixin border-radius($radius) {
+	-webkit-border-radius: $radius;
+	-moz-border-radius: $radius;
+	-ms-border-radius: $radius;
+	border-radius: $radius;
+}
+
+
+$red: #d00;
+
+.rd10 {
+	@include border-radius(10px);
+}
+
+.footer {
+	@extend .rd10;
+	
+	width: 600px / 960px * 100%;
+	
+	.a {
+		color: $red;
+		&:hover {
+			text-decoration: underline;
+		}
+	}
+	> .b {
+		font: {
+			style: italic;
+			family: Arial;
+			weight: bold;
+			size: 1.2em;
+		}
+	}
+}

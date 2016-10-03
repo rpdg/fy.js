@@ -137,7 +137,7 @@ $('#btnIframeTop').click(function () {
 		},
 		callback: function (i, ev, iframe) {
 			if (i === 0) {
-				iframe.fn(pop);
+				iframe.closeHandler(pop);
 				return true;
 			}
 			//console.log(b);

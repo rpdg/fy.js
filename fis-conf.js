@@ -3,18 +3,22 @@ fis.set('project.fileType.text', 'es6');
 
 var currentMedia = fis.project.currentMedia();
 var apiServer; //以 / 开头结尾
-
+var userSourceMap = false;
 switch (currentMedia) {
-	case 'prd': {
+	case 'prd':
+	{
+		apiServer = 'http://127.0.0.1:8080/data/';
+		break;
+	}
+	case 'test':
+	{
 		apiServer = 'http://localhost/data/';
 		break;
 	}
-	case 'test': {
-		apiServer = 'http://localhost/data/';
-		break;
-	}
-	default: {
-		apiServer = 'http://localhost/data/';
+	default:
+	{
+		apiServer = 'http://127.0.0.1:8080/data/';
+		userSourceMap = true;
 	}
 }
 
@@ -27,8 +31,8 @@ fis.match('{**.html,/js/config.js}', {
 		define: {
 			apiServer: apiServer,
 			'page/': {
-				'test/':{
-					'pop/' :{
+				'test/': {
+					'pop/': {
 						bodyType: 'pop'
 					}
 				}
@@ -44,7 +48,7 @@ fis.match('{**.html,/js/config.js}', {
 
 fis.match('{*.es6,*:babel}', {
 	parser: fis.plugin('babel-5.x', {
-		sourceMap: true
+		sourceMap: userSourceMap
 	}),
 	rExt: 'js'
 })/*.match('{/es6/**.es6,/js/config.js}', {
@@ -76,7 +80,7 @@ fis.match('::package', {
 fis.match('*.scss', {
 	parser: fis.plugin('node-sass', {
 		outputStyle: 'compact',
-		sourceMap: true
+		sourceMap: userSourceMap
 	}),
 	rExt: '.css'
 });

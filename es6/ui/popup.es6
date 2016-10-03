@@ -388,14 +388,20 @@ class PopUp extends DisplayObject {
 	toggle() {
 		if (this.state === 'normal') {
 			this.max();
+
+			if(navigator.userAgent.indexOf('Firefox')>-1 && this.iframe){
+				this.iframe.style.cssText+= 'height: '+ (this.boxy.outerHeight() - this.titleBar.outerHeight() - 2) + 'px; ';
+			}
+
 		}
 		else {
 			this.restore();
+
+			if(navigator.userAgent.indexOf('Firefox')>-1 && this.iframe){
+				this.iframe.style.cssText+= 'height: '+ (this.restoreSize.height - this.titleBar.outerHeight() - 2) + 'px; ';
+			}
 		}
 
-		if(navigator.userAgent.indexOf('Firefox')>-1){
-
-		}
 
 		return this;
 	}

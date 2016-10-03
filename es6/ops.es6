@@ -2,7 +2,7 @@ import {PopUp} from 'ui/popup';
 import {Table} from 'ui/table';
 import {Tree} from 'ui/tree';
 import {Panel} from 'ui/panel';
-import {TabBar, TabNavigator} from 'ui/tab';
+import {TabBar, TabNavigator, TabView} from 'ui/tab';
 import {ListBox, CheckBox, RadioBox} from 'ui/form';
 
 import {$} from '/es6/util/jquery.plugins';
@@ -35,6 +35,10 @@ class UI {
 
 	tabNavigator(cfg) {
 		return new TabNavigator(this.jq, cfg);
+	}
+
+	tabView(cfg) {
+		return new TabView(this.jq, cfg);
 	}
 
 	tree(cfg) {

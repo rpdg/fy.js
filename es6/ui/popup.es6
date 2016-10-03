@@ -349,7 +349,7 @@ class PopUp extends DisplayObject {
 		if (this.btnMax)
 			this.btnMax.toggleClass('dg-btn-max dg-btn-restore');
 
-		$(document.body).addClass('no-scroll');
+		//$(document.body).addClass('no-scroll');
 
 		this.state = 'max';
 		return this;
@@ -364,7 +364,7 @@ class PopUp extends DisplayObject {
 		if (this.btnMax)
 			this.btnMax.toggleClass('dg-btn-max dg-btn-restore');
 
-		$(document.body).removeClass('no-scroll');
+		//$(document.body).removeClass('no-scroll');
 
 		this.state = 'normal';
 

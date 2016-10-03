@@ -26,7 +26,7 @@ class TabBar extends DisplayObject {
 
 	create(jq, cfg) {
 		jq.css({display: 'table'});
-		
+
 		var navi = $('<div class="tabNavigator"></div>');
 
 		this.bar = $('<ul class="tabUL"></ul>');
@@ -137,19 +137,40 @@ class TabView extends DisplayObject {
 
 
 	create(jq, cfg) {
+		this.views = [];
+
 		var x = cfg.selectedIndex || 0;
 		var self = this;
 		cfg.selectedIndex = -1;
 		this.tabBar = new TabBar(jq, cfg);
-		
-		this.stack = $('<div class="tabStack"></div>').appendTo(jq) ;
-		
+
+		this.stack = $('<div class="tabStack"></div>').appendTo(jq);
+
+		for (let i = 0, l = cfg.data.length; i < l; i++) {
+			var div = cfg.data[i]['view'];
+			this.addView($(div));
+		}
+
+		this.tabBar.onSelect = function () {
+			if(self.views[self.tabBar.prevIndex])
+				self.views[self.tabBar.prevIndex].toggle();
+			if(self.views[self.tabBar.selectedIndex])
+			self.views[self.tabBar.selectedIndex].toggle();
+		};
+		this.tabBar.setSelectedIndex(x);
+
 
 		this.created = true;
 		if ($.isFunction(this.onCreate)) this.onCreate(this.data);
 
+
 		return this;
+	}
+
+	addView(jqDiv) {
+		this.views.push(jqDiv);
+		this.stack.append(jqDiv.addClass('tabDivision'));
 	}
 }
 
-export {TabBar, TabNavigator , TabView};
+export {TabBar, TabNavigator, TabView};

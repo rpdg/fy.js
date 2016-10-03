@@ -1,0 +1,68 @@
+@import "_color";
+
+.panel {
+	background-color: $panel-body-bg;
+	border: 1px solid darken($panel-body-bg, 10%);
+	box-shadow: 0 0 1px rgba(0, 0, 0, .1);
+	
+	margin-bottom: 20px;
+	
+	> .panel-title {
+		background-color: $title-bar-color;
+		color: $head-text-color;
+		padding: 0.5em 1em;
+		border-bottom: 1px solid #ddd;
+		
+		font: {
+			size: 14px;
+			weight: bold;
+		}
+		
+		.panel-collapse {
+			display: inline-block;
+			float: right;
+			width: 24px;
+			height: 15px;
+			cursor: pointer;
+			background-image: url("../ico/box-hide.png?__inline");
+		}
+		.panel-collapse.expanded{
+			background-position: 100% 100%;
+		}
+		
+	}
+	
+	> .panel-body {
+		padding: 1em;
+	}
+	
+	> .panel-foot {
+		padding: 0.3em 1em 1em;
+		text-align: right;
+	}
+}
+
+.search-table {
+	width: 100%;
+	td {
+		border: 1px solid $border-color;
+		padding: 0.3em 0.8em;
+		vertical-align: middle;
+		
+		label {
+			line-height: 1em;
+			padding: 0;
+			margin: 0;
+			vertical-align: baseline;
+		}
+		input[type='text'] {
+			display: inline-block;
+			width: 100%;
+		}
+	}
+	.lead {
+		text-align: right;
+		width: 100px;
+		background-color: #fafafa;
+	}
+}

@@ -1,44 +1,151 @@
-@import 'reset';
-@import 'loading';
-@import 'form';
-@import 'table';
-//@import 'border';
-@import 'pager';
-@import 'text';
-@import "popup";
+//@import "module/color";
 
+$sidebar-width: 180px;
+$sidebar-bg: #e4eeed;
 
-@mixin border-radius($radius) {
-	-webkit-border-radius: $radius;
-	-moz-border-radius: $radius;
-	-ms-border-radius: $radius;
-	border-radius: $radius;
+$topbar-height: 55px;
+$topbar-bg : #00acc1 ;
+
+body {
+	padding: 0;
+	overflow: hidden;
 }
 
-
-$red: #d00;
-
-.rd10 {
-	@include border-radius(10px);
+#header {
+	height: $topbar-height;
+	background-color: $topbar-bg;
+	
+	#logo{
+		display: inline-block;
+		width: $sidebar-width;
+		height: $topbar-height;
+		background-color: darken($topbar-bg , 2%) ;
+		//border-right: 1px solid darken($topbar-bg , 2%) ;
+		text-align: center;
+		color: #fff;
+		font-size: 32px;
+		float: left;
+	}
+	
+	.ico-more-vert{
+		display: inline-block;
+		//transform: scale(0.5);
+		width: 36px;
+		height: 36px;
+		cursor: pointer;
+		float: right;
+		margin-top: 8px;
+		margin-right: 16px;
+		border-radius: 50px;
+		background: {
+			image: url("/css/ico/more-vert.png?__inline");
+			repeat: no-repeat;
+			position: center center;
+		}
+		&:hover{
+			background-color: darken($topbar-bg , 3%) ;
+			
+			ul{
+				//display: block;
+				right: 0;
+			}
+		}
+		
+		ul{
+			//display: none;
+			position: absolute;
+			z-index: 50;
+			
+			padding: $topbar-height 0 1em 1em;
+			top: 0 ;
+			right: -160px;
+			
+			width: 150px;
+			
+			transition-duration: 0.3s;
+			
+			li{
+				box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+				background-color: #fff;
+				padding: 1em 2em;
+				border-bottom: 1px solid #eee;
+				
+				&:hover{
+					background-color: #e9e9e9;
+				}
+			}
+		}
+	}
+	
+	menu{
+		display: inline-block;
+		height: $topbar-height;
+				
+		a{
+			display: inline-block;
+			font-size: 18px;
+			color: #fff;
+			text-align: center;
+			text-decoration: none;
+			line-height: $topbar-height;
+			padding: 0 1.5em;
+			height: $topbar-height ;
+			&:hover{
+				background-color: darken($topbar-bg , 3%) ;
+			}
+			&.cur{
+				border:{
+					width: 0 1px;
+					style: solid;
+					color: darken($topbar-bg , 8%) ;
+				}
+				background-color: darken($topbar-bg , 5%) ;
+				box-shadow: inset 0 0 1px rgba(0,0,0,0.2);
+			}
+		}
+	}
 }
 
-.footer {
-	@extend .rd10;
+#sideBar {
+	position: absolute;
+	top: $topbar-height;
+	bottom: 0;
+	left: 0;
+	width: $sidebar-width;
+	background-color: $sidebar-bg;
+	border-right: 1px solid darken($sidebar-bg , 5%);
 	
-	width: 600px / 960px * 100%;
+	padding-top: 2em;
 	
-	.a {
-		color: $red;
-		&:hover {
-			text-decoration: underline;
+	
+	a{
+		display: block;
+		border : solid transparent;
+		border-width: 1px 0 1px 0 ;
+		height: 2.6em;
+		line-height: 2.6em;
+		padding-left: 3em;
+		font-size: 14px;
+		text-decoration: none;
+		color: #333;
+		
+		&:hover{
+			color: #4b6887;
+			background-color: #c7e4f1;
+		}
+		&.cur{
+			color: darken($sidebar-bg , 55%);
+			background-color: darken($sidebar-bg , 10%);
+			border-color: darken($sidebar-bg , 15%);
+			//box-shadow: inset 0 0 1px rgba(0,0,0,0.2);
 		}
 	}
-	> .b {
-		font: {
-			style: italic;
-			family: Arial;
-			weight: bold;
-			size: 1.2em;
-		}
-	}
+}
+
+#td {
+	position: absolute;
+	top: $topbar-height;
+	bottom: 0;
+	left: $sidebar-width;
+	right: 0;
 }

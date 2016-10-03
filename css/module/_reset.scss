@@ -38,10 +38,11 @@ footer, header, menu, nav, section {
 }
 body {
 	color: #383838;
-	background-color: #fafafa;
+	background-color: #f6f6f6;
+	padding: 2em;
+	
 	&.pop{
 		background-color: #fff;
-		padding: 2em;
 	}
 }
 
@@ -81,7 +82,10 @@ table {
 	border-collapse: collapse;
 	border-spacing: 0;
 }
-
+p{
+	padding-top: .5em;
+	padding-bottom: .5em;
+}
 .no-scroll{
 	overflow: hidden;
 }

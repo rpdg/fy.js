@@ -1,4 +1,4 @@
-import {ops, $} from 'es6/ops.es6';
+import {ops, $} from '../../../es6/ops.es6';
 
 
 window.fn = function (pop) {

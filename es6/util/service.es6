@@ -1,10 +1,11 @@
 import {$} from '/es6/util/jquery.plugins';
 import cfg from 'cfg';
 import {uuid} from '/es6/util/uuid';
+import store from '/es6/util/store';
 
 var onServerError = cfg.onServerError || function (msg) {
-	alert(msg);
-};
+		alert(msg);
+	};
 
 var loading = {
 	dom: $('#opsAjaxLoading'),
@@ -20,11 +21,24 @@ var loading = {
 };
 
 
+const xToken = (function () {
+	var token = store.get('x-token');
+	if (token) {
+		return {'X-Token': token};
+	}
+	else {
+		if (window.location.pathname != '/' && window.location.pathname != 'index.html') {
+			window.location.href = '/';
+		}
+		return null;
+	}
+})();
+
 class ServerFn {
 
-	constructor(url, name , method) {
+	constructor(url, name, method) {
 
-		this.name = name ;
+		this.name = name;
 		this.method = method || 'GET';
 
 		if (url.indexOf('http://') === 0 || url.indexOf('https://') === 0) this.url = url;
@@ -55,7 +69,7 @@ class ServerFn {
 			}
 
 			return $.ajax({
-				headers : {'x-token' : uuid() } ,
+				headers: xToken,
 				url: this.url,
 				data: data,
 				method: this.method,
@@ -107,7 +121,6 @@ class ServerFn {
 }
 
 
-
 var api = function (obj) {
 
 	for (let key in obj) {
@@ -128,7 +141,7 @@ var api = function (obj) {
 
 				fn.get = (k) => srvFn[k];
 
-				fn.toString = ()=> srvFn.url ;
+				fn.toString = ()=> srvFn.url;
 
 				/*fn.post = (data , cb)=>{
 				 fn.set('method' , 'POST') ;
@@ -146,7 +159,6 @@ var api = function (obj) {
 
 	return api;
 };
-
 
 
 export {api} ;

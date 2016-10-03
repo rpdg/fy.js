@@ -1,42 +1,40 @@
-<% include('/comm/header.html') %>
+<% include ('/comm/header.html') %>
 
 <style>
 	body {
 
 	}
 </style>
-<div id="opsAjaxLoading">
-	<div id="opsAjaxLoadingText">数据传送中，请稍候...</div>
-</div>
+
 
 
 <div id="h1" style="padding: 20px;">
 
 	<form action="">
-		<label>请稍候 <select name="" id="sel1">
-			<option value="">请稍候</option>
+		<label>文本 <select name="" id="sel1">
+			<option value="">选项</option>
 		</select></label>
 		<label><input type="text" name="xx" placeholder="请稍候"></label>
-		<textarea name="" id="" cols="30" rows="10">请稍候
-			aa安定
+		<textarea name="" id="" cols="30" rows="10">文本换行
+			文本测试
 		</textarea>
 	</form>
-		<div id="test1"></div>
-		<div id="test2">
+	<div id="test1"></div>
+	<div id="test2">
 
 
-			<button id="btnIframe">open iframe</button>
-			<button class="btn-large btn-primary">请稍候</button>
-			<button class="btn-small btn-warning">请稍候</button>
-			<button class="btn-mini btn-danger">请稍候</button>
-			<button class="btn-success">请稍候</button>
-			<button class="btn-info">请稍候</button>
-		</div>
+		<button id="btnIframe">open iframe</button>
+		<button id="btnIframeTop" class="btn-mini btn-danger">open iframe on top</button>
+		<button id="btnAlert" class="btn-small btn-warning">open alert</button>
+		<button class="btn-success">按钮</button>
+		<button class="btn-info">按钮</button>
+		<button id="btnGetTableValues" class="btn-large btn-primary">get table values</button>
+	</div>
 
-		<input type="file">
+	<input type="file">
 
 
-	<table id="test3" style="width: 700px"></table>
+	<table id="test3" style="width: 100%;"></table>
 
 
 	<!--
@@ -48,16 +46,19 @@
 			</div>
 		</div>-->
 
-		<p id="sdsd">
-			请稍候请稍
-			</p>
+	<p id="sdsd">
+		文本测试
+	</p>
 
 </div>
 
-<% include('/comm/footer.html') %>
+
+
+<% include ('/comm/footer.html') %>
+
 <script>
 
-	require('test');
+	require('./index');
 
 
 </script>

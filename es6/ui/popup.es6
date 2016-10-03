@@ -10,10 +10,10 @@ const DEFAULTS = {
 	drag: true,           // can this dialog be dragged?
 	modal: true,          // make dialog modal?
 	show: true,           // show dialog immediately?
-	destory: true,          // should this dialog be removed from the DOM after being hidden?
+	destroy: true,          // should this dialog be removed from the DOM after being hidden?
 	onClose: $.noop,        // callback fired after dialog is hidden. executed in context of Boxy instance.
 	onDestroy: $.noop,
-	footer: null
+	buttons: null
 };
 
 const BoxyStore = {
@@ -76,6 +76,8 @@ function setTitleBar(cfg) {
 	}
 
 	$('<div class="row tb-row" />').prependTo(this.boxy).append(tb);
+
+
 }
 
 
@@ -134,9 +136,9 @@ function setDraggable(self) {
 function setFooter(cfg) {
 	var footer = this.footBar = $('<div class="dg-footer"></div>');
 
-	var htmlArr = [] ;
-	for(let key in cfg.footer){
-		var v = cfg.footer[key] , x = htmlArr.length ;
+	var htmlArr = [];
+	for (let key in cfg.buttons) {
+		var v = cfg.buttons[key], x = htmlArr.length;
 
 		let cls, txt;
 
@@ -149,7 +151,7 @@ function setFooter(cfg) {
 			txt = v.text || '';
 		}
 
-		htmlArr.push('<button class="' + cls + '" name="' + x + '">' + txt + '</button>') ;
+		htmlArr.push('<button class="' + cls + '" name="' + x + '">' + txt + '</button>');
 	}
 
 	footer.html(htmlArr.join(' '));
@@ -197,7 +199,7 @@ class PopUp extends DisplayObject {
 		this.visible = false;
 
 		this.mask = $('<div class="dg-mask"></div>');
-		this.boxy = $('<div class="dg-wrapper" id="' + ('dialog_' + this.guid) + '"></div>');
+		this.boxy = $('<div class="dg-wrapper" id="' + ('dialog_' + guid() ) + '"></div>');
 		this.content = $('<div class="dg-content"></div>');
 
 
@@ -205,9 +207,12 @@ class PopUp extends DisplayObject {
 		this.boxy.append(this.content).appendTo(document.body);
 
 
+		var titleBarHeight = 0;
+
 		if (cfg.title) {
 			setTitleBar.call(this, cfg);
-			this.boxy.find('.tb-row').css({height: this.titleBar.outerHeight()});
+			titleBarHeight = this.titleBar.outerHeight();
+			this.boxy.find('.tb-row').css({height: titleBarHeight});
 		}
 
 		this.iframe = this.jq[0].tagName === 'IFRAME' ? this.jq[0] : undefined;
@@ -221,16 +226,16 @@ class PopUp extends DisplayObject {
 		/*//console.log(size);
 		 this.boxy.css(contentSize);*/
 
-		if (cfg.footer) {
+		if (cfg.buttons) {
 			setFooter.call(this, cfg);
 			this.boxy.find('.tf-row').css({height: this.footBar.outerHeight()});
 		}
 
-		var doc = document.documentElement, win = window;
+		var doc = document.documentElement;//, win = window;
 
 		var viewport = {
-			top: win.pageYOffset,
-			left: win.pageXOffset,
+			//top: win.pageYOffset,
+			//left: win.pageXOffset,
 			width: doc.clientWidth,
 			height: doc.clientHeight
 		};
@@ -239,9 +244,10 @@ class PopUp extends DisplayObject {
 		var pos = {
 			width: cfg.width || this.boxy.outerWidth() || 500,
 			height: cfg.height || this.boxy.outerHeight() || 300,
-			top: (viewport.height - contentSize.height - (cfg.title ? this.titleBar.height() : 10)) / 2,
-			left: (viewport.width - contentSize.width) / 2
+			top: Math.max(0, (viewport.height - contentSize.height ) / 2 ),
+			left: Math.max(0, (viewport.width - contentSize.width) / 2)
 		};
+
 
 		this.boxy.css(pos);
 
@@ -253,6 +259,10 @@ class PopUp extends DisplayObject {
 
 
 		this.toTop();
+
+		if(navigator.userAgent.indexOf('Firefox')>-1 && this.iframe){
+			jq.css({height: contentSize.height - titleBarHeight - 2});
+		}
 
 		if (cfg.show) this.open();
 
@@ -275,18 +285,23 @@ class PopUp extends DisplayObject {
 		return this;
 	}
 
-	open(callback) {
+	open() {
+
+		this.boxy.stop(true, true);
 
 		if (this.visible) {
 			return this.toTop();
 		}
 
 		this.mask.css({display: "block", opacity: 1});
+
+		var topPx = this.boxy.position().top ;
+
+		//console.warn(topPx);
+
+		this.boxy.css({top: topPx - 20, opacity: 0}).animate({opacity: 1, top: topPx}, 300 );
+
 		this.visible = true;
-
-		var _t = this.boxy.position().top;
-		this.boxy.css({top: _t - 20, opacity: 0}).animate({opacity: 1, top: _t}, 300);
-
 		return this;
 	}
 
@@ -299,7 +314,7 @@ class PopUp extends DisplayObject {
 
 		this.mask.animate({opacity: 0}, 200);
 
-		this.boxy.animate(css, 300, function () {
+		this.boxy.stop(true, true).animate(css, 300, function () {
 
 
 			if (typeof that.cfg.onClose === 'function')
@@ -309,7 +324,7 @@ class PopUp extends DisplayObject {
 				fn.call(that);
 
 
-			if (that.cfg.destory)
+			if (that.cfg.destroy)
 				that.destroy();
 			else {
 				that.visible = false;
@@ -323,7 +338,7 @@ class PopUp extends DisplayObject {
 
 	max() {
 		//resize window entity
-		this.boxy.css({
+		this.boxy.stop(true, true).css({
 			left: 0,
 			top: 0,
 			width: '100%',
@@ -343,7 +358,7 @@ class PopUp extends DisplayObject {
 	restore() {
 
 
-		this.boxy.css(this.restoreSize);
+		this.boxy.stop(true, true).css(this.restoreSize);
 
 
 		if (this.btnMax)
@@ -378,48 +393,62 @@ class PopUp extends DisplayObject {
 			this.restore();
 		}
 
+		if(navigator.userAgent.indexOf('Firefox')>-1){
+
+		}
+
 		return this;
 	}
 
 
 	static alert(message, callback, options = {}) {
 
-		var {html , cfg} = ask(message , callback , options);
-		
+		var {html, cfg} = wrapAsk(message, callback, options);
+
 		return new PopUp($(html), cfg);
 	}
 
 	static confirm(message, callback, options = {}) {
 
-		var {html , cfg} = ask(message , callback , options);
+		var {html, cfg} = wrapAsk(message, callback, options);
 
-		if(!cfg.footer.cancel){
-			cfg.footer.cancel = '取消' ;
+		if (!cfg.buttons.cancel) {
+			cfg.buttons.cancel = '取消';
 		}
 
-		cfg.callback = function(i , evt , ifrWin) {
-			if (i===0) return callback(i , evt , ifrWin);
+		cfg.callback = function (i, evt, ifrWin) {
+			if (i === 0) return callback(i, evt, ifrWin);
 			return void(0);
 		};
 
 		return new PopUp($(html), cfg);
 	}
+
+	static popTop(iframe, options) {
+		return top.ops(iframe).popup(options);
+	}
 }
 
-function ask(msg , cb , cfg) {
+function wrapAsk(msg, cb, cfg) {
 	if (typeof cb === 'function')
 		cfg.callback = cb;
-	
-	if(!cfg.footer){
-		cfg.footer = {};
+
+	if (!cfg.buttons) {
+		cfg.buttons = {};
 	}
 
-	if(!cfg.footer.ok){
-		cfg.footer.ok = '确定' ;
+	if (!cfg.buttons.ok) {
+		cfg.buttons.ok = '确定';
 	}
 
-	var html  = (msg.indexOf('<iframe ') < 0) ?  `<div class="dg-alert">${msg}</div>` : msg ;
-	
-	return {html , cfg};
+	var html ;
+	if(typeof msg === 'string' && msg.indexOf('<iframe ') < 0){
+		html =  `<div class="dg-alert">${msg}</div>` ;
+	}
+	else html =  msg;
+
+	return {html, cfg};
 }
+
+
 export {PopUp};

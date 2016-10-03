@@ -4,7 +4,7 @@ import {$} from '/es6/util/jquery.plugins';
 class DisplayObject {
 
 	constructor(jq, cfg) {
-		this.guid = guid();
+		//this.guid = guid();
 		this.jq = jq;
 		if(typeof cfg.onCreate === 'function') this.onCreate = cfg.onCreate;
 	}
@@ -107,10 +107,7 @@ class AjaxDisplayObject extends DisplayObject {
 
 			that.ajaxEndHandler(json);
 
-
 			that.bindData(json , onceCall);
-
-
 
 		});
 
@@ -124,6 +121,7 @@ class AjaxDisplayObject extends DisplayObject {
 	bindData(data , onceCall) {
 
 		var json = data , list ;
+
 		if($.isArray(data)){
 			list = data ;
 		}
@@ -149,6 +147,10 @@ class AjaxDisplayObject extends DisplayObject {
 		}
 
 
+
+		this.bindHandler(json);
+
+
 		if (this.created)
 			this.updateHandler(json , onceCall);
 		else
@@ -156,14 +158,12 @@ class AjaxDisplayObject extends DisplayObject {
 
 
 
-		this.bindHandler(json);
-
 
 		return this;
 	}
 
-	bindHandler(data) {
-		if (typeof this.onBind === 'function') this.onBind(data) ;
+	bindHandler(json) {
+		if (typeof this.onBind === 'function') this.onBind(json) ;
 	}
 
 	setSelectedIndex(i) {

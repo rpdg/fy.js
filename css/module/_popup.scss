@@ -1,4 +1,4 @@
-@import "color";
+@import "_color";
 
 .row{
 	display: table-row;
@@ -14,7 +14,7 @@
 	left: 0;
 	right: 0;
 	z-index: 100;
-	background-color: rgba(0, 0, 0, .05);
+	background-color: rgba(0, 0, 0, .1);
 	
 	display: none;
 }
@@ -24,12 +24,13 @@
 	visibility: hidden;
 	
 	background-color: #fff;
+	border: 1px solid $border-color;
 	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
 	
 	display: table;
 	
 	min-width: 280px;
-	min-height: 120px;
+	min-height: 100px;
 	
 	.dg-title {
 		
@@ -62,7 +63,7 @@
 				margin: 3px 3px 0 0;
 				width: 18px;
 				height: 18px;
-				background-image: url('ico/win-buttons.png?__inline');
+				background-image: url('../ico/win-buttons.png?__inline');
 				background-repeat: no-repeat;
 				
 				&.dg-btn-min {
@@ -112,4 +113,25 @@
 	font-size: 14px;
 	padding: 1em;
 	//max-width: 550px;
+	div,span{
+		font-size: 14px;
+	}
+}
+
+
+.ico-ok,.ico-warn,.ico-error{
+	display: inline-block;
+	width: 16px;
+	height: 16px;
+	vertical-align: sub;
+	margin-right: 4px;
+}
+.ico-ok{
+	background-image: url("../ico/check-circle-green-16.png?__inline");
+}
+.ico-warn{
+	background-image: url("../ico/alert-triangle-yellow-16.png?__inline");
+}
+.ico-error{
+	background-image: url("../ico/alert-circle-red-16.png?__inline");
 }

@@ -1,0 +1,25 @@
+<% include ('/comm/header.html') %>
+<link rel="stylesheet" href="/css/jquery.datetimepicker.css">
+
+
+<table id="tbSearch" class="search-table">
+	<tr>
+		<td class="lead"><label for="name">内容名称</label></td>
+		<td><input type="text" id="name" name="name"></td>
+		<td class="lead"><label for="time">入库时间</label></td>
+		<td><input type="datetime" id="time" name="time"></td>
+	</tr>
+</table>
+
+<div class="grid-title-bar">
+	内容列表
+	<button id="btnAdd" class="btn-create"><i class="ico-create"></i> 新增</button>
+</div>
+<table id="test3"></table>
+
+
+<% include ('/comm/footer.html') %>
+
+<script>
+	require('./demo');
+</script>

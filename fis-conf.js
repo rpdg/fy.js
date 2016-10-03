@@ -5,19 +5,16 @@ var currentMedia = fis.project.currentMedia();
 var apiServer; //以 / 开头结尾
 
 switch (currentMedia) {
-	case 'prd':
-	{
-		apiServer = 'http://127.0.0.1/page/data/';
+	case 'prd': {
+		apiServer = 'http://localhost/data/';
 		break;
 	}
-	case 'test':
-	{
-		apiServer = '/data/';
+	case 'test': {
+		apiServer = 'http://localhost/data/';
 		break;
 	}
-	default:
-	{
-		apiServer = '/data/';
+	default: {
+		apiServer = 'http://localhost/data/';
 	}
 }
 
@@ -29,8 +26,12 @@ fis.match('{**.html,/js/config.js}', {
 		compress: false,//默认为false
 		define: {
 			apiServer: apiServer,
-			'i.html': {
-				bodyType : 'pop'
+			'page/': {
+				'test/':{
+					'pop/' :{
+						bodyType: 'pop'
+					}
+				}
 			},
 			'comm/': {
 				release: false
@@ -60,9 +61,11 @@ fis.hook('commonjs', {
 	}
 
 });
+
 fis.match('{*.es6,lib/jquery-3.1.1.js,js/config.js}', {
 	isMod: true
 });
+
 
 fis.match('::package', {
 	postpackager: fis.plugin('loader'),
@@ -90,9 +93,11 @@ fis.match('*.scss', {
 
 
 
+
+
 // 产品发布，进行合并
 fis.media('prd').match('{/es6/**.es6,/js/config.js}', {
-	packTo: '/es6.js'
+	packTo: '/js/es6.js'
 }).match('*.{html:js,js,es6}', {
 	optimizer: fis.plugin('uglify-js', {
 		compress: {
@@ -129,4 +134,4 @@ fis.match('*', {
 
 
 // fis3 server start --root ../dist
-// fis3 release dev -d ../dist
+// fis3 release dev -d ../dist --no-color

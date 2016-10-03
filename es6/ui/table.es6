@@ -1,6 +1,6 @@
 import {AjaxDisplayObject} from 'base';
 import {$} from '/es6/util/jquery.plugins';
-
+//import store from '/es6/util/store' ;
 var idSeed = 0;
 
 function makeTemplate(sets) {
@@ -16,10 +16,15 @@ function makeTemplate(sets) {
 		else render = '';
 
 		if (col.cmd) {
-			if (col.cmd === 'checkAll')
+
+			if (col.cmd === 'checkAll') {
 				tdTmp[i] = '<td class="text-center"><input type="checkbox" name="chk_' + i + '" value="${' + col.src + render + '}"></td>';
-			else
+				this.cmd = 'checkAll';
+			}
+			else {
 				tdTmp[i] = '<td class="text-center"><input type="radio" name="chk_' + i + '" value="${' + col.src + render + '}"></td>';
+				this.cmd = 'checkOne';
+			}
 		}
 		else {
 
@@ -30,11 +35,21 @@ function makeTemplate(sets) {
 	}
 
 	//console.log('<tr>' + tdTmp.join('') + '</tr>');
-	sets.bindOptions.itemRender['renderTr'] = function (val, i) {
-		return i % 2 ? 'odd' : 'even';
-	};
+	var trSrc;
+	if (sets.rows && sets.rows.render) {
+		trSrc = sets.rows.src || '___';
+		sets.bindOptions.itemRender['__renderTr'] = (val, i, row, attr)=> {
+			var cn = sets.rows.render(val, i, row, attr);
+			var sn = ( i % 2 ? 'odd' : 'even');
+			return sn + ' ' + cn;
+		}
+	}
+	else {
+		trSrc = '___';
+		sets.bindOptions.itemRender['__renderTr'] = (val, i)=> ( i % 2 ? 'odd' : 'even');
+	}
 
-	return '<tr class="${x:=renderTr}">' + tdTmp.join('') + '</tr>';
+	return '<tr class="${' + trSrc + ':=__renderTr}">' + tdTmp.join('') + '</tr>';
 
 }
 
@@ -109,7 +124,7 @@ class Table extends AjaxDisplayObject {
 
 		this.resizable = cfg.resizable;
 
-		this.bindOptions.template = makeTemplate(cfg);
+		this.bindOptions.template = makeTemplate.call(this, cfg);
 
 
 		makeTbStructor(this.table, cfg);
@@ -159,22 +174,43 @@ class Table extends AjaxDisplayObject {
 	}
 
 	createHandler(json) {
+		if (this.cmd === 'checkAll') {
+			this.cmdCheckAll = this.thead.find('th:eq(0)').find('input');
+			this.cmdCheckAll.syncCheckBoxGroup('td:eq(0)>:checkbox:enabled', this.tbody.find('tr'));
+		}
+		else if (this.cmd === 'checkOne') {
+			this.cmdCheckOne = this.thead.find('th:eq(0)').find('input:hidden');
+		}
+
 		if (this.resizable) {
 			this.table.resizableColumns();
 		}
 
-		if (this.pagination) {
-
-			this.tfoot = this.table.find("tfoot td:eq(0)");
-
-			var rowCount = ~~json.rowCount;
-
-			this.makePager(rowCount);
-
-		}
 
 		this.created = true;
 		if ($.isFunction(this.onCreate)) this.onCreate(json);
+
+		return this;
+	}
+
+	bindHandler(json) {
+		if (this.pagination) {
+			this.makePager(~~json.rowCount);
+		}
+		if (typeof this.onBind === 'function') this.onBind(json) ;
+	}
+
+	updateHandler(json, onceCall) {
+		if (this.cmdCheckAll) {
+			this.cmdCheckAll.prop("checked", false);
+			this.cmdCheckAll.syncCheckBoxGroup('td:eq(0)>:checkbox:enabled', this.tbody.find('tr'));
+		}
+
+		if ($.isFunction(this.onUpdate))
+			this.onUpdate(json);
+
+		if (onceCall)
+			onceCall.call(this, json);
 
 		return this;
 	}
@@ -188,7 +224,7 @@ class Table extends AjaxDisplayObject {
 
 
 		if (this.created) {
-
+			this.pagination.current_page = this.param.pageIndex;
 			this.tPager.pagination(rowCount, this.pagination);
 
 			if (this.pagination.showCount) {
@@ -197,11 +233,11 @@ class Table extends AjaxDisplayObject {
 		}
 		else {
 
-
+			this.tfoot = this.table.find("tfoot td:eq(0)");
 			this.tPager = $('<div class="pagination_container"></div>').appendTo(this.tfoot);
 			this.tPager.pagination(rowCount, this.pagination);
 
-			this.pageCounter = $('<span class="float-left"></span>');
+			this.pageCounter = $('<span></span>');
 			this.tPager.after(this.pageCounter);
 
 			if (this.pagination.showCount) {
@@ -233,9 +269,7 @@ class Table extends AjaxDisplayObject {
 
 					that.pagination.items_per_page = that.param.pageSize = ~~this.options[this.selectedIndex].value;
 					that.param.pageIndex = 0;
-					that.update(that.param, (json)=> {
-						that.makePager.call(that, ~~json.rowCount);
-					});
+					that.update(that.param);
 
 					return false;
 

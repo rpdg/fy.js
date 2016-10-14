@@ -3,7 +3,7 @@ import {ops} from '/es6/ops';
 
 ops.api({
 	'a1': 'a1.json',
-	'table': 'tb.json'
+	'table': 'data/tb.json'
 });
 
 
@@ -17,14 +17,14 @@ var tvb = ops('#test3').table({
 			}
 		},
 		{
-			src: 'id', text: 'ID', width: 60,
+			src: 'id', text: 'ID', width: 120,
 			render: function (val, i, row, name) {
 				return `<b class="ico-expandable ellipse" data-esd="` + ops.guid() + `"></b> ${val}`;
 			}
 		},
-		{src: 'text', text: '标题', align: 'left', width: 220},
+		{src: 'name', text: '标题', align: 'left', width: 220},
 		{
-			src: 'text', text: '其他信息', align: 'left',
+			src: 'bizCode', text: '其他信息', align: 'left',
 			render: function (val, i, row, name) {
 				//console.log(val , i , row , name);
 				return `bb + ${val}`;

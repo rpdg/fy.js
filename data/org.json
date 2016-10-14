@@ -1,0 +1,32 @@
+{
+	"data": [
+		{
+			"id": 11,
+			"name": "百视通",
+			"description": "百视通" ,
+			"children": [
+				{
+					"id": 111,
+					"name": "上海驻地" ,
+					"description": "test copyrights"
+				},
+				{
+					"id": 112,
+					"name": "livetest" ,
+					"description": "",
+					"children": [
+						{
+							"id": 1131,
+							"name": "节目部" ,
+							"description": "节目部操作人员角色"
+						}
+					]
+				}
+			]
+		}
+	],
+	"meta": {
+		"success": true,
+		"message": "ok"
+	}
+}

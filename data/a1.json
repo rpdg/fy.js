@@ -9,5 +9,8 @@
 			"v": 222
 		}
 	],
-	"error": null
+	"meta": {
+		"success": true,
+		"message": "ok"
+	}
 }

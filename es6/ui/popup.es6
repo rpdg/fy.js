@@ -4,6 +4,7 @@ import {$} from '/es6/util/jquery.plugins';
 
 
 const DEFAULTS = {
+	callback: null,
 	title: null,           // titlebar text. titlebar will not be visible if not set.
 	btnClose: true,           // display close link in titlebar?
 	btnMax: false,           // display max link in titlebar?
@@ -168,7 +169,7 @@ function setFooter(cfg) {
 
 			var i = parseInt(clicked.name, 10);
 
-			var wontClose = cfg.callback(i, evt, ifrWin);
+			var wontClose = cfg.callback.call(self , i, ifrWin);
 
 			if (!wontClose) self.close();
 
@@ -207,12 +208,18 @@ class PopUp extends DisplayObject {
 		this.boxy.append(this.content).appendTo(document.body);
 
 
-		var titleBarHeight = 0;
+		var titleBarHeight = 0 , footBarHeight = 0;
 
 		if (cfg.title) {
 			setTitleBar.call(this, cfg);
 			titleBarHeight = this.titleBar.outerHeight();
 			this.boxy.find('.tb-row').css({height: titleBarHeight});
+		}
+
+		if (cfg.buttons) {
+			setFooter.call(this, cfg);
+			this.boxy.find('.tf-row').css({height: this.footBar.outerHeight()});
+			footBarHeight =  this.footBar.outerHeight();
 		}
 
 		this.iframe = this.jq[0].tagName === 'IFRAME' ? this.jq[0] : undefined;
@@ -226,10 +233,6 @@ class PopUp extends DisplayObject {
 		/*//console.log(size);
 		 this.boxy.css(contentSize);*/
 
-		if (cfg.buttons) {
-			setFooter.call(this, cfg);
-			this.boxy.find('.tf-row').css({height: this.footBar.outerHeight()});
-		}
 
 		var doc = document.documentElement;//, win = window;
 
@@ -261,7 +264,7 @@ class PopUp extends DisplayObject {
 		this.toTop();
 
 		if(navigator.userAgent.indexOf('Firefox')>-1 && this.iframe){
-			jq.css({height: contentSize.height - titleBarHeight - 2});
+			jq.css({height: contentSize.height - titleBarHeight - footBarHeight - 2});
 		}
 
 		if (cfg.show) this.open();
@@ -297,9 +300,9 @@ class PopUp extends DisplayObject {
 
 		var topPx = this.boxy.position().top ;
 
-		//console.warn(topPx);
+		console.warn(this.boxy[0] , topPx);
 
-		this.boxy.css({top: topPx - 20, opacity: 0}).animate({opacity: 1, top: topPx}, 300 );
+		this.boxy.css({top: topPx - 20, opacity: 0}).animate({opacity: 1, top: topPx}, 200 );
 
 		this.visible = true;
 		return this;
@@ -328,6 +331,7 @@ class PopUp extends DisplayObject {
 				that.destroy();
 			else {
 				that.visible = false;
+				that.boxy.css({top: css.top + 40});
 				that.mask.css({display: 'none'});
 			}
 		});
@@ -390,7 +394,7 @@ class PopUp extends DisplayObject {
 			this.max();
 
 			if(navigator.userAgent.indexOf('Firefox')>-1 && this.iframe){
-				this.iframe.style.cssText+= 'height: '+ (this.boxy.outerHeight() - this.titleBar.outerHeight() - 2) + 'px; ';
+				this.iframe.style.cssText+= 'height: '+ (this.boxy.outerHeight() - this.titleBar.outerHeight() - 2 - (this.footBar?this.footBar.outerHeight():0)) + 'px; ';
 			}
 
 		}
@@ -398,7 +402,7 @@ class PopUp extends DisplayObject {
 			this.restore();
 
 			if(navigator.userAgent.indexOf('Firefox')>-1 && this.iframe){
-				this.iframe.style.cssText+= 'height: '+ (this.restoreSize.height - this.titleBar.outerHeight() - 2) + 'px; ';
+				this.iframe.style.cssText+= 'height: '+ (this.restoreSize.height - this.titleBar.outerHeight() - 2 - (this.footBar?this.footBar.outerHeight():0)) + 'px; ';
 			}
 		}
 
@@ -422,8 +426,8 @@ class PopUp extends DisplayObject {
 			cfg.buttons.cancel = '取消';
 		}
 
-		cfg.callback = function (i, evt, ifrWin) {
-			if (i === 0) return callback(i, evt, ifrWin);
+		cfg.callback = function (i, ifrWin) {
+			if (i === 0) return callback.call(this, i, ifrWin);
 			return void(0);
 		};
 

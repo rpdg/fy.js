@@ -11,6 +11,7 @@ body {
 
 #header {
 	height: $topbar-height;
+	//min-width: 1160px;
 	background-color: $topbar-bg;
 	
 	#logo{
@@ -30,7 +31,7 @@ body {
 		//transform: scale(0.5);
 		width: 36px;
 		height: 36px;
-		cursor: pointer;
+		//cursor: pointer;
 		float: right;
 		margin-top: 8px;
 		margin-right: 16px;
@@ -67,6 +68,7 @@ body {
 				background-color: #fff;
 				padding: 1em 2em;
 				border-bottom: 1px solid #eee;
+				cursor: pointer;
 				
 				&:hover{
 					background-color: #e9e9e9;
@@ -76,10 +78,11 @@ body {
 	}
 	
 	menu{
+		position: absolute;
 		display: inline-block;
 		height: $topbar-height;
 				
-		a{
+		>a{
 			display: inline-block;
 			font-size: 18px;
 			color: #fff;
@@ -101,6 +104,10 @@ body {
 				box-shadow: inset 0 0 1px rgba(0,0,0,0.2);
 			}
 		}
+		
+		&.small-menu>a{
+			font-size: 16px;
+		}
 	}
 }
 
@@ -113,7 +120,20 @@ body {
 	background-color: $sidebar-bg;
 	border-right: 1px solid darken($sidebar-bg , 5%);
 	
-	padding-top: 2em;
+	padding-top: 1em;
+	
+	/*.ico-tg{
+		cursor: pointer;
+	}*/
+	
+}
+#subMenu{
+	position: absolute;
+	top: 10px;
+	left: 0;
+	bottom: 10px;
+	right: 0;
+	overflow: auto;
 	
 	
 	a{
@@ -139,7 +159,6 @@ body {
 		}
 	}
 }
-
 #td {
 	position: absolute;
 	top: $topbar-height;

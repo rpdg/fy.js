@@ -50,9 +50,13 @@ h1, .h1{
 	float: left;
 	
 	&.ellipse:before{
+		line-height: 22px;
+		vertical-align: super;
 		content: '+';
 	}
 	&.expanded:before{
+		line-height: 22px;
+		vertical-align: super;
 		content: '-';
 	}
 }

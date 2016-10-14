@@ -138,6 +138,13 @@ class Table extends AjaxDisplayObject {
 		this.listContainer = this.tbody;
 
 
+		if (this.resizable) {
+			this.table.resizableColumns({//refreshHeaders
+				minWidth: 1
+			});
+		}
+
+
 		if (cfg.pagination) {
 
 			var that = this;
@@ -150,7 +157,7 @@ class Table extends AjaxDisplayObject {
 				next_text: "下页",
 				load_first_page: false,
 				callback: (pageIndex, paginationContainer)=> {
-					that.param.pageIndex = pageIndex;
+					that.param.pageNo = pageIndex + 1;
 					that.update(this.param);
 					return false;
 				}
@@ -166,7 +173,7 @@ class Table extends AjaxDisplayObject {
 			this.pagination = cfg.pagination;
 
 			this.param = $.extend({
-				pageIndex: 0,
+				pageNo: 1,
 				pageSize: cfg.pagination.pageSize
 			}, cfg.params);
 		}
@@ -182,10 +189,6 @@ class Table extends AjaxDisplayObject {
 			this.cmdCheckOne = this.thead.find('th:eq(0)').find('input:hidden');
 		}
 
-		if (this.resizable) {
-			this.table.resizableColumns();
-		}
-
 
 		this.created = true;
 		if ($.isFunction(this.onCreate)) this.onCreate(json);
@@ -195,9 +198,9 @@ class Table extends AjaxDisplayObject {
 
 	bindHandler(json) {
 		if (this.pagination) {
-			this.makePager(~~json.rowCount);
+			this.makePager(~~json.totalRecord);
 		}
-		if (typeof this.onBind === 'function') this.onBind(json) ;
+		if (typeof this.onBind === 'function') this.onBind(json);
 	}
 
 	updateHandler(json, onceCall) {
@@ -205,6 +208,11 @@ class Table extends AjaxDisplayObject {
 			this.cmdCheckAll.prop("checked", false);
 			this.cmdCheckAll.syncCheckBoxGroup('td:eq(0)>:checkbox:enabled', this.tbody.find('tr'));
 		}
+
+
+		/*if (this.resizable) {
+		 this.table.resizableColumns('refreshHeaders');
+		 }*/
 
 		if ($.isFunction(this.onUpdate))
 			this.onUpdate(json);
@@ -220,11 +228,11 @@ class Table extends AjaxDisplayObject {
 		var that = this;
 
 		var pageCount = Math.ceil(rowCount / this.param.pageSize);
-		var pageNum = this.param.pageIndex + 1;
+		var pageNum = this.param.pageNo;
 
 
 		if (this.created) {
-			this.pagination.current_page = this.param.pageIndex;
+			this.pagination.current_page = this.param.pageNo - 1;
 			this.tPager.pagination(rowCount, this.pagination);
 
 			if (this.pagination.showCount) {
@@ -268,7 +276,7 @@ class Table extends AjaxDisplayObject {
 				pageSelector.on('change.ops', function () {
 
 					that.pagination.items_per_page = that.param.pageSize = ~~this.options[this.selectedIndex].value;
-					that.param.pageIndex = 0;
+					that.param.pageNo = 1;
 					that.update(that.param);
 
 					return false;

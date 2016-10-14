@@ -3,6 +3,12 @@ import cfg from 'cfg';
 import {uuid} from '/es6/util/uuid';
 import store from '/es6/util/store';
 
+
+cfg.apiServer = window.apiServer || store.get('apiServer');
+if (!cfg.apiServer) {
+	cfg.onUnauthorizedError();
+}
+
 var onServerError = cfg.onServerError || function (msg) {
 		alert(msg);
 	};
@@ -22,24 +28,28 @@ var loading = {
 
 
 const xToken = (function () {
-	var token = store.get('x-token');
+	var token = store.get('X-Token');
 	if (token) {
 		return {'X-Token': token};
 	}
 	else {
-		if (window.location.pathname != '/' && window.location.pathname != 'index.html') {
-			window.location.href = '/';
+		if (window.location.pathname != cfg.loginPage) {
+			cfg.onUnauthorizedError();
 		}
 		return null;
 	}
 })();
 
+const defaultErrorMsg = {message: 'Server echoes without meta data'};
+
+
 class ServerFn {
 
-	constructor(url, name, method) {
+	constructor(url, name, method = 'GET', restful = true) {
 
 		this.name = name;
-		this.method = method || 'GET';
+		this.method = method;
+		this.restful = restful;
 
 		if (url.indexOf('http://') === 0 || url.indexOf('https://') === 0) this.url = url;
 		else this.url = cfg.apiServer + url.replace(/^['/']/, '');
@@ -68,12 +78,22 @@ class ServerFn {
 				data = null;
 			}
 
+			var url = this.url;
+
+			if (this.restful) {
+				for (let key in data) {
+					url += '/' + data[key];
+				}
+				data = null;
+			}
+
 			return $.ajax({
 				headers: xToken,
-				url: this.url,
-				data: data,
+				url: url,
+				data: data ? JSON.stringify(data) : null,
 				method: this.method,
 				dataType: "json",
+				contentType: "application/json",
 				cache: false,
 				timeout: cfg.ajaxTimeOut,
 				beforeSend: function (jqXHR, settings) {
@@ -104,18 +124,20 @@ class ServerFn {
 				},
 				success: function (json, statusText, xhr) {
 
-					if (json.error) {
-						that.handleError.call(that, json.error, callback);
+					var meta = json.meta || defaultErrorMsg;
+					if (meta.success) {
+						if (callback && typeof callback === 'function')
+							callback(json.data, statusText, xhr);
 					}
-					else if (callback && typeof callback === 'function') {
-						callback(json, statusText, xhr);
+					else {
+						that.handleError.call(that, meta.message, callback);
 					}
 				}
 			});
 
 		}
 		else {
-			throw new Error('Server function unusable now, may be you should set property "unlimited" to true.');
+			throw new Error('Server function unusable now.');
 		}
 	}
 }
@@ -127,7 +149,7 @@ var api = function (obj) {
 		let uArr = key.split('!');
 		let pName = uArr[0];
 		let pMethod = uArr[1] ? uArr[1].toString().toUpperCase() : 'GET';
-
+		let restful = !(uArr[2] === undefined);
 
 		if (!api[pName]) {
 			api[pName] = (function (srvFn) {
@@ -150,7 +172,7 @@ var api = function (obj) {
 
 
 				return fn;
-			})(new ServerFn(obj[key], pName, pMethod));
+			})(new ServerFn(obj[key], pName, pMethod, restful));
 		}
 		else {
 			throw new Error('api [' + pName + '] duplicate definition');

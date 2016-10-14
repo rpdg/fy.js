@@ -46,8 +46,8 @@ class ListBox extends AjaxDisplayObject {
 		if (i > -1) {
 			//var that = this;
 			//setTimeout(function () {
-				//if (that.selectedIndex > 0) that.setSelectedIndex(that.selectedIndex);
-				//if (that.autoFire) that.jq.trigger("change.ops");
+			//if (that.selectedIndex > 0) that.setSelectedIndex(that.selectedIndex);
+			//if (that.autoFire) that.jq.trigger("change.ops");
 			//}, 0);
 
 			this.jq[0].selectedIndex = i;
@@ -106,7 +106,7 @@ class CheckBox extends AjaxDisplayObject {
 		if (this.initSelectedIndex.length) {
 			//var that = this;
 			//setTimeout(() => that.setSelectedIndex(that.initSelectedIndex), 0);
-			this.setSelectedIndex(this.initSelectedIndex) ;
+			this.setSelectedIndex(this.initSelectedIndex);
 		}
 
 
@@ -143,7 +143,9 @@ class CheckBox extends AjaxDisplayObject {
 	}
 
 	getSelectedData() {
-		var s = this.items.filter(':checked'), arr = [], that = this;
+		var s = this.items.filter(':checked'),
+			arr = [],
+			that = this;
 		s.each((i, opt)=> {
 			let src = that.data[that.items.index(opt)], tar = {}, key;
 			for (key in src) if (key.indexOf(":") === -1) tar[key] = src[key];
@@ -216,13 +218,13 @@ class RadioBox extends AjaxDisplayObject {
 		if (i > -1) {
 			/*var that = this;
 
-			this.items.eq(this.selectedIndex).prop('checked', true);
+			 this.items.eq(this.selectedIndex).prop('checked', true);
 
-			setTimeout(function () {
-				if (that.selectedIndex > 0) that.setSelectedIndex(that.selectedIndex);
-			}, 0);*/
+			 setTimeout(function () {
+			 if (that.selectedIndex > 0) that.setSelectedIndex(that.selectedIndex);
+			 }, 0);*/
 
-			this.items.eq(i).prop('checked' , true) ;
+			this.items.eq(i).prop('checked', true);
 
 			this.setSelectedIndex(i);
 		}

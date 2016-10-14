@@ -106,7 +106,7 @@ $row-hover-bg : #edfaff;
 .grid-title-bar{
 	background-color: $title-bar-color;
 	color: $head-text-color;
-	padding: 0.5em 1em;
+	padding: 0.428em 0.857em 0.428em 1em;
 	
 	height: 36px;
 	
@@ -127,6 +127,7 @@ $row-hover-bg : #edfaff;
 			display: inline-block;
 			width: 14px;
 			height: 14px;
+			margin: 0 1px;
 			vertical-align: text-bottom;
 			background-image: url("../ico/circledPlus.png?__inline");
 		}

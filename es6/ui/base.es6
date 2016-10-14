@@ -4,7 +4,7 @@ import {$} from '/es6/util/jquery.plugins';
 class DisplayObject {
 
 	constructor(jq, cfg) {
-		//this.guid = guid();
+		this.guid = guid();
 		this.jq = jq;
 		if(typeof cfg.onCreate === 'function') this.onCreate = cfg.onCreate;
 	}
@@ -25,7 +25,7 @@ class AjaxDisplayObject extends DisplayObject {
 		this.data = cfg.data;
 		this.api = cfg.api;
 		this.param = cfg.param;
-		this.arrSrc = cfg.arrSrc || 'data';
+		this.arrSrc = cfg.arrSrc || 'results';
 		this.listContainer = this.listContainer || this.jq ;
 		this.items = null;
 		this.selectedIndex = -1;

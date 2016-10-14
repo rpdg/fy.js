@@ -70,7 +70,8 @@ window.tvb = ops('#test3').table({
 			}
 		}
 	],
-	api: ops.api.table,
+	//api: ops.api.table,
+	lazy: true,
 	onSelect: function (evt) {
 		//console.log(this);
 	},
@@ -84,6 +85,10 @@ window.tvb = ops('#test3').table({
 			console.log(tvb.getCheckData());
 		});
 	}
+});
+
+$('#btnUpdate').click(function () {
+	tvb.update([{id: 111 , text : 'haha'}]);
 });
 
 tvb.tbody.on('click', '.ico-expandable', function (e) {
@@ -135,7 +140,7 @@ $('#btnIframeTop').click(function () {
 			ok: 'OK2',
 			cancel: 'Cancel'
 		},
-		callback: function (i, ev, iframe) {
+		callback: function (i, iframe) {
 			if (i === 0) {
 				iframe.closeHandler(pop);
 				return true;

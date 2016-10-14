@@ -15,11 +15,34 @@ import $ from '$';
 		var $t = this, $cxt = $(context || document);
 		$cxt.on('change', expr, function () {
 			var $chks = $(expr, $cxt);
+			console.log($chks , $chks.length, $chks.filter(':checked').length);
 			$t.prop("checked", $chks.filter(':checked').length === $chks.length);
 		});
 		$t.on('change', function () {
 			$(expr, $cxt).prop("checked", this.checked);
 		});
+		return this;
+	};
+
+	$.fn.iptError = function (sets) {
+		var self = this , fn = sets ;
+		this.addClass('error').one('focus', function () {
+			self.removeClass('error');
+		});
+
+		if (typeof sets === 'string'){
+			fn = function (ipt) {
+				ops.warn(sets, ()=> {
+					ipt.focus()
+				});
+			}
+		}
+
+		if(typeof fn === 'function'){
+			fn.call(this , this);
+		}
+
+
 		return this;
 	};
 
@@ -361,23 +384,7 @@ import $ from '$';
 			}
 			++i;
 		}
-		switch (mode) {
-			case 'append' :
-				this.append(html.join(cache["joiner"]));
-				break;
-			case 'prepend' :
-				this.prepend(html.join(cache["joiner"]));
-				break;
-			case 'after' :
-				this.after(html.join(cache["joiner"]));
-				break;
-			case 'before' :
-				this.before(html.join(cache["joiner"]));
-				break;
-			default :
-				if (document.all) this.html(html.join(cache["joiner"])); //IE 对TABLE/TBODY/TR 的innerHTML无法操作
-				else  _this_.innerHTML = html.join(cache["joiner"]);
-		}
+		this[mode||'html'](html.join(cache["joiner"]));
 		if (typeof(cache.onBound) === 'function') {
 			cache.onBound.call(this, list, sets);
 		}
@@ -809,7 +816,8 @@ import $ from '$';
 					var $el = $(el);
 
 					var height = _this3.options.resizeFromBody ? _this3.$table.height() : _this3.$table.find('thead').height();
-					height -= _this3.$table.find('tfoot').height();
+					var tf = _this3.$table.find('tfoot');
+					if(tf.length) height -= tf.height();
 
 					var left = $el.data(_constants.DATA_TH).outerWidth() + ($el.data(_constants.DATA_TH).offset().left - _this3.$handleContainer.offset().left);
 

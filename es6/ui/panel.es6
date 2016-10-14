@@ -6,7 +6,9 @@ class Panel extends DisplayObject {
 		cfg = $.extend({
 			title: '内容检索',
 			btnClose: true ,
-			btnSearchId : 'btnSearch'
+			btnClass : 'btn-primary btn-small',
+			btnSearchId : 'btnSearch' ,
+			btnSearchText: '<i class="ico-find"></i> 查询'
 		}, cfg);
 
 		super(jq, cfg);
@@ -27,6 +29,7 @@ class Panel extends DisplayObject {
 		else{
 			this.panel = $('<div class="panel" />');
 		}
+		this.panel.show();
 
 		this.titleBar = $('<div class="panel-title" />');
 		this.titleBar.html(cfg.title);
@@ -58,7 +61,7 @@ class Panel extends DisplayObject {
 		}
 
 		if(cfg.btnSearchId){
-			this.btnSearch = $(`<button id="${cfg.btnSearchId}" class="btn-primary"><i class="ico-find"></i> 查询</button>`) ;
+			this.btnSearch = $(`<button id="${cfg.btnSearchId}" class="${cfg.btnClass}">${cfg.btnSearchText}</button>`) ;
 			this.addToFoot(this.btnSearch) ;
 		}
 

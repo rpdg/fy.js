@@ -330,7 +330,16 @@ const format = {
 			filesize = format.number(filesize, 0) + ' bytes';
 		}
 		return filesize;
-	}
+	},
+	json:(function () {
+		var pattern = /\${(\w+[.]*\w*)\}(?!})/g ;
+
+		return function (template, json) {
+			return template.replace(pattern, function (match, key, value) {
+				return json[key];
+			});
+		}
+	})()
 };
 
 

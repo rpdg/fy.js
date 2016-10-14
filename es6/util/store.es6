@@ -1,11 +1,11 @@
 // Store.js
 /* Copyright (c) 2010-2016 Marcus Westin
-* https://github.com/marcuswestin/store.js/ */
+ * https://github.com/marcuswestin/store.js/ */
 
 var store = {},
 	win = (typeof window != 'undefined' ? window : global),
 	doc = win.document,
-	localStorageName = 'localStorage',
+	localStorageName = 'sessionStorage', //localStorage
 	scriptTag = 'script',
 	storage;
 

@@ -1,0 +1,41 @@
+{
+	"data": [
+		{
+			"id": 11,
+			"name": "admin",
+			"description": "管理员角色" ,
+			"children": [
+				{
+					"id": 111,
+					"name": "版权测试" ,
+					"description": "test copyrights"
+				},
+				{
+					"id": 112,
+					"name": "livetest" ,
+					"description": ""
+				},
+				{
+					"id": 113,
+					"name": "节目部运维管理员",
+					"children": [
+						{
+							"id": 1131,
+							"name": "节目部操作人员" ,
+							"description": "节目部操作人员角色"
+						}
+					]
+				},
+				{
+					"id": 114,
+					"name": "备份管理人员",
+					"description": "操作备份"
+				}
+			]
+		}
+	],
+	"meta": {
+		"success": true,
+		"message": "ok"
+	}
+}

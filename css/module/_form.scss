@@ -58,7 +58,7 @@ textarea {
 	
 	padding: $padding;
 	border: 1px solid $border-color;
-	border-radius: $radius;
+	//border-radius: $radius;
 	
 	background-color: $background-color;
 	vertical-align: bottom;
@@ -187,10 +187,18 @@ $btnColorClass: (primary #3498db #fff) (warning #f0ad4e #fff) (danger #e74c3c #f
 	height: 16px;
 	vertical-align: sub;
 }
+
 .ico-find{
 	display: inline-block;
 	width: 16px;
 	height: 16px;
 	vertical-align: bottom;
 	background-image: url("../ico/find01-16.png?__inline");
+}
+.ico-edit{
+	display: inline-block;
+	width: 16px;
+	height: 16px;
+	vertical-align: bottom;
+	background-image: url("../ico/edit-16.png?__inline");
 }

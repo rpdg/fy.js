@@ -44,6 +44,7 @@
 
 .search-table {
 	width: 100%;
+	display: none;
 	td {
 		border: 1px solid $border-color;
 		padding: 0.3em 0.8em;
@@ -54,8 +55,9 @@
 			padding: 0;
 			margin: 0;
 			vertical-align: baseline;
+			width: 100%;
 		}
-		input[type='text'] {
+		input[type='text'] ,textarea{
 			display: inline-block;
 			width: 100%;
 		}

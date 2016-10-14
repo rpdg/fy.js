@@ -1,0 +1,39 @@
+<% include ('/comm/header.html') %>
+
+<link rel="stylesheet" href="main.scss?__inline">
+
+
+<header id="header">
+	<section id="logo">
+		AMS
+	</section>
+	<div class="ico-more-vert">
+		<ul>
+			<li id="liChangePsw"><img src="/css/ico/lock-1-16.png?__inline" class="ico-16"> 修改密码</li>
+			<li id="liAbout"><img src="/css/ico/Info-16.png?__inline" class="ico-16"> 关于 AMS</li>
+			<li id="liLogOff"><img src="/css/ico/logout-16.png?__inline" class="ico-16"> 退出</li>
+		</ul>
+	</div>
+
+	<menu id="mainMenu">
+	</menu>
+</header>
+
+<aside id="sideBar">
+	<!--<section class="text-right">
+		<img src="/css/ico/arrowleft.gif" id="ico-tgLeft" class="ico-tg" />
+		<img src="/css/ico/arrowTop.gif" id="ico-tgTop" class="ico-tg" />
+	</section>-->
+	<menu id="subMenu">
+	</menu>
+</aside>
+<section id="td">
+	<iframe id="mainFrame" name="mainFrame" src="about:blank" frameborder="0"></iframe>
+</section>
+
+
+<% include ('/comm/footer.html') %>
+
+<script>
+	require('./main');
+</script>

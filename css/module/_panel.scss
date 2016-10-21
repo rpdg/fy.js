@@ -5,7 +5,7 @@
 	border: 1px solid darken($panel-body-bg, 10%);
 	box-shadow: 0 0 1px rgba(0, 0, 0, .1);
 	
-	margin-bottom: 20px;
+	margin-bottom: 1em;
 	
 	> .panel-title {
 		background-color: $title-bar-color;
@@ -26,7 +26,7 @@
 			cursor: pointer;
 			background-image: url("../ico/box-hide.png?__inline");
 		}
-		.panel-collapse.expanded{
+		.panel-collapse.expanded {
 			background-position: 100% 100%;
 		}
 		
@@ -37,14 +37,14 @@
 	}
 	
 	> .panel-foot {
-		padding: 0.3em 1em 1em;
+		padding: 0 1em 1em;
 		text-align: right;
 	}
 }
 
 .search-table {
 	width: 100%;
-	display: none;
+	//display: none;
 	td {
 		border: 1px solid $border-color;
 		padding: 0.3em 0.8em;
@@ -57,14 +57,14 @@
 			vertical-align: baseline;
 			width: 100%;
 		}
-		input[type='text'] ,textarea{
+		input[type='text'], textarea {
 			display: inline-block;
 			width: 100%;
 		}
 	}
 	.lead {
 		text-align: right;
-		width: 100px;
+		width: 120px;
 		background-color: #fafafa;
 	}
 }

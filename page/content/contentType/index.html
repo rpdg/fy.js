@@ -1,0 +1,25 @@
+<% include ('/comm/header.html') %>
+
+<style>
+
+</style>
+
+	<table id="tbSearch" class="search-table">
+		<tr>
+			<td class="lead"><label for="name">节目类型名称</label></td>
+			<td><input id="name" name="name" type="text" /></td>
+		</tr>
+	</table>
+
+	<div class="grid-title-bar">
+		节目类型列表
+		<button id="btnAdd" class="btn-create"><i class="ico-create"></i> 新增节目类型</button>
+	</div>
+	<table id="tb"></table>
+
+
+<% include ('/comm/footer.html') %>
+
+<script>
+	require('./index.ts');
+</script>

@@ -1,0 +1,44 @@
+<% include ('/comm/header.html') %>
+
+<style>
+
+</style>
+
+<table id="tbSearch" class="search-table">
+	<tr>
+		<td class="lead"><label for="businessId">业务名称</label></td>
+		<td colspan="3">
+			<select name="businessId" id="businessId"></select>
+		</td>
+	</tr>
+	<tr>
+		<td class="lead"><label for="inputProfile">输入类别</label></td>
+		<td>
+			<select name="inputProfile" id="inputProfile"></select>
+		</td>
+		<td class="lead"><label for="inputFileType">输入源文件类型</label></td>
+		<td>
+			<select name="inputFileType" id="inputFileType"></select>
+		</td>
+	</tr>
+	<tr>
+		<td class="lead"><label for="isSd">输出类别</label></td>
+		<td>
+			<select name="inputProfile" id="isSd"></select>
+		</td>
+		<td class="lead"><label for="outputProfile">输出文件类型</label></td>
+		<td>
+			<select name="inputFileType" id="outputProfile"></select>
+		</td>
+	</tr>
+</table>
+
+
+<table id="tb"></table>
+
+
+<% include ('/comm/footer.html') %>
+
+<script>
+	require('./index.ts');
+</script>

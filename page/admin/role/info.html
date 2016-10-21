@@ -1,0 +1,30 @@
+<% include ('/comm/header.html') %>
+<style>
+	#tbSearch{
+		height: 100%;
+	}
+</style>
+<table id="tbSearch" class="search-table">
+	<tr style="height: 2em;">
+		<td class="lead"><b class="text-red">*</b>角色名称</td>
+		<td><label><input id="roleName" name="roleName" type="text" maxlength="20"></label></td>
+	</tr>
+	<tr style="height: 2em;">
+		<td class="lead">角色描述</td>
+		<td><label><textarea id="roleDescription" name="roleDescription"></textarea></label></td>
+	</tr>
+	<tr>
+		<td class="lead"><b class="text-red">*</b>权限列表</td>
+		<td style="vertical-align: top;">
+			<div id="menuTree">
+
+			</div>
+		</td>
+	</tr>
+</table>
+
+<% include ('/comm/footer.html') %>
+
+<script>
+	require('./info.ts');
+</script>

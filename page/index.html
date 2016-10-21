@@ -18,6 +18,7 @@
 		font-size: 14px;
 		text-indent: 1em;
 		border-radius: 0 3px 3px 0;
+		border-left: none;
 	}
 
 	input[type='text']:focus, input[type='password']:focus {
@@ -53,6 +54,8 @@
 
 	#btnLogin {
 		font-size: 14px;
+		width: 402px;
+		height: 38px;
 	}
 
 	.box {
@@ -81,7 +84,7 @@
 <div id="loginPanel">
 	<h1>欢迎登录AMS系统</h1>
 	<form id="loginForm" action="#" onsubmit="return false">
-		<label><b id="b0" class="box"></b><input id="orgCode" name="orgCode" type="text" placeholder="组织代码" value="sys"></label>
+		<label><b id="b0" class="box"></b><input id="orgCode" name="orgCode" type="text" placeholder="组织代码" value="<%=orgCode%>"></label>
 		<label><b id="b1" class="box"></b><input id="loginName" name="loginName" type="text" placeholder="用户名"></label>
 		<label><b id="b2" class="box"></b><input id="password" name="password" type="password"
 		                                         placeholder="登录密码"></label>
@@ -93,6 +96,5 @@
 <% include ('/comm/footer.html') %>
 
 <script>
-	var mainPage = '<%=mainPage%>';
-	require('./index');
+	require('./index.ts');
 </script>

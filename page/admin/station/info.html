@@ -1,0 +1,104 @@
+<% include ('/comm/header.html') %>
+
+<style>
+	.search-table .lead{
+		width: 150px;
+	}
+</style>
+
+
+<table id="tbInfo" class="search-table">
+	<tr>
+		<td class="lead"><label for="code"><b class="text-red">*</b>渠道编码</label></td>
+		<td><input id="code" name="code" type="text" maxlength="20" /></td>
+		<td class="lead"><label for="name"><b class="text-red">*</b>渠道名称</label></td>
+		<td><input id="name" name="name" type="text" maxlength="20"/></td>
+	</tr>
+	<tr>
+		<td class="lead">业务</td>
+		<td colspan="3" id="tdBusiness">
+			<!-- 业务 checkboxes -->
+		</td>
+	</tr>
+	<tr>
+		<td class="lead"><b class="text-red">*</b>节目媒体文件</td>
+		<td colspan="3">
+			<label><input type="checkbox"> 云IPTV</label>
+		</td>
+	</tr>
+	<tr>
+		<td class="lead"><b class="text-red">*</b>支持图片类型</td>
+		<td colspan="3">
+			<label><input type="checkbox"> 云IPTV</label>
+		</td>
+	</tr>
+	<tr>
+		<td class="lead"><b class="text-red">*</b>接口版本</td>
+		<td>
+			<label><input type="radio"> 云IPTV</label>
+		</td>
+		<td class="lead"><b class="text-red">*</b>所属组织</td>
+		<td>
+			<input type="text">
+		</td>
+	</tr>
+	<tr>
+		<td class="lead"><b class="text-red">*</b>渠道内容接口 </td>
+		<td colspan="3">
+			<input type="text">
+		</td>
+	</tr>
+	<tr>
+		<td class="lead">渠道业务接口</td>
+		<td colspan="3">
+			<input type="text">
+		</td>
+	</tr>
+	<tr>
+		<td class="lead"><b class="text-red">*</b>支持外网访问</td>
+		<td colspan="3">
+			<label class="lbAutoWidth"><input type="radio" name="internet" value="true" checked> 是</label>
+			<label class="lbAutoWidth"><input type="radio" name="internet" value="false"> 否</label>
+		</td>
+	</tr>
+	<tr>
+		<td class="lead"><b class="text-red">*</b>支持分发节目编目关系</td>
+		<td colspan="3">
+			<label class="lbAutoWidth"><input type="radio" name="arrangeDispatch" value="true" checked> 是</label>
+			<label class="lbAutoWidth"><input type="radio" name="arrangeDispatch" value="false"> 否</label>
+		</td>
+	</tr>
+	<tr>
+		<td class="lead"><b class="text-red">*</b>支持分发节目分组关系</td>
+		<td colspan="3">
+			<label class="lbAutoWidth"><input type="radio" name="packageDispatch" value="true" checked> 是</label>
+			<label class="lbAutoWidth"><input type="radio" name="packageDispatch" value="false"> 否</label>
+		</td>
+	</tr>
+	<tr>
+		<td class="lead"><b class="text-red">*</b>是否需要审核</td>
+		<td colspan="3">
+			<label class="lbAutoWidth"><input type="radio" name="auditing" value="true" checked> 是</label>
+			<label class="lbAutoWidth"><input type="radio" name="auditing" value="false"> 否</label>
+		</td>
+	</tr>
+	<tr>
+		<td class="lead"><b class="text-red">*</b>节目单下发</td>
+		<td colspan="3">
+			<label class="lbAutoWidth"><input type="radio" name="contentSchedule" value="true" checked> 是</label>
+			<label class="lbAutoWidth"><input type="radio" name="contentSchedule" value="false"> 否</label>
+		</td>
+	</tr>
+	<tr>
+		<td class="lead"><label for="mails">告警Email</label> </td>
+		<td colspan="3">
+			<input type="text" id="mails" name="mails" placeholder="多个地址以半角逗号分隔">
+		</td>
+	</tr>
+</table>
+
+<% include ('/comm/footer.html') %>
+
+<script>
+	require('./info.ts');
+</script>

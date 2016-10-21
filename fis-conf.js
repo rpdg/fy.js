@@ -1,33 +1,40 @@
-fis.set('project.fileType.text', 'es6');
+fis.set('project.fileType.text', 'ts');
+
 
 var currentVersion = 'beta 1';
-var currentMedia = fis.project.currentMedia();
 var apiServer; //以 / 开头结尾
-var userSourceMap = false;
+var isUnderLocal = false;
 var orgCode = 'sys';
+
+var currentMedia = fis.project.currentMedia();
+
+
+var jScripts = null;
+
 
 switch (currentMedia) {
 	case 'prd': {
-		apiServer = 'http://54.223.126.249:8080/api/';
-		//orgCode = 'bestv';
+		apiServer = 'http://127.0.0.1:8080/data/';
+		orgCode = 'bestv';
 		break;
 	}
 	case 'test': {
 		apiServer = 'http://10.50.127.24:8080/api/';
+		orgCode = 'bestv';
 		break;
 	}
-	case 'mock' : {
-		apiServer = 'http://127.0.0.1:8088/data/';
-		userSourceMap = true;
+	case 'alpha' : {
+		apiServer = 'http://54.223.126.249:8080/api/';
 		break;
 	}
 	default: { //dev
 		apiServer = 'http://54.223.126.249:8080/api/';
-		userSourceMap = true;
+		jScripts = ['/lib/jquery.mockjax.js', '/js/mockData.js'];
+		isUnderLocal = true;
 	}
 }
 
-fis.match('{**.html,/js/*.js}', {
+fis.match('{**.html,/js/config.js,/js/mockData.js}', {
 	parser: fis.plugin('art-template', {
 		native: true, //默认为false，即简单语法模式
 		openTag: '<%', //默认为{{
@@ -35,32 +42,40 @@ fis.match('{**.html,/js/*.js}', {
 		compress: false,//默认为false
 		define: {
 			apiServer: apiServer,
-			currentVersion: currentVersion,
-			loginPage :'/page/index.html',
-			mainPage : '/page/main.html' ,
-			orgCode: orgCode,
-			'page/': {},
+			jScripts: jScripts,
+			'page/': {
+				'index.html': {
+					orgCode: orgCode,
+					currentMedia: currentMedia
+				},
+				bodyType: ''
+			},
 			'comm/': {
 				release: false
 			}
 		}
 	})
-
 });
 
-fis.match('/data/**', {
-	release: userSourceMap
-});
-
-fis.match('{*.es6,*:babel}', {
-	parser: fis.plugin('babel-5.x', {
-		sourceMap: userSourceMap
+fis.match('**/*.ts', {
+	parser: fis.plugin('typescript', {
+		sourceMap: isUnderLocal,
+		strictNullChecks: true,
+		module: 1,
+		target: 1,
+		noImplicitAny: true
 	}),
-	rExt: 'js'
-})/*.match('{/es6/**.es6,/js/app.misc.js}', {
- packTo: '/es6.js'
- }) */;
+	//packTo: '/js/ts.js',
+	rExt: '.js'
+});
 
+fis.match('/tsd/**', {
+	release: false
+});
+
+fis.match('{/mock/**}', {
+	release: isUnderLocal
+});
 
 // 开启模块化
 fis.hook('commonjs', {
@@ -72,7 +87,10 @@ fis.hook('commonjs', {
 
 });
 
-fis.match('{*.es6,lib/jquery-3.1.1.js,js/app.misc.js}', {
+// 开启同名依赖
+// 设置成是模块化 js, 编译后会被 define 包裹。
+fis.match('**/*.ts', {
+	useSameNameRequire: true,
 	isMod: true
 });
 
@@ -83,81 +101,36 @@ fis.match('::package', {
 });
 
 
+//SCSS Compile
 fis.match('*.scss', {
 	parser: fis.plugin('node-sass', {
 		outputStyle: 'compact',
-		sourceMap: userSourceMap
+		sourceMap: isUnderLocal
 	}),
 	rExt: '.css'
 });
 
-/*fis.match('*.{html:css,css,scss}', {
- postprocessor : fis.plugin('autoprefixer', {
- "browsers": ['Firefox >= 40', 'Safari >= 6', 'Explorer >= 10', 'Chrome >= 50', "last 2 versions"],
- "cascade": true,
- "flexboxfixer": true,
- "gradientfixer": true
- })
- });*/
 
-
-
-
-// 产品测试，进行合并
-fis.media('test').match('{/es6/**.es6,/js/app.misc.js}', {
-	packTo: '/js/es6.js'
-}).match('*.{html:js,js,es6}', {
-	optimizer: fis.plugin('uglify-js', {
-		compress: {
-			drop_console: true,
-			drop_debugger: true
-		}
-	})
-}).match('*.{html:css,css,scss}', {
-	useSprite: true,
-	optimizer: fis.plugin('clean-css', {
-		keepBreaks: true
-	})
-});
-
-// 根据发布流程，这段配置不再被使用
 // 产品发布，进行合并
-fis.media('prd').match('{/es6/**.es6,/js/app.misc.js}', {
-	packTo: '/js/es6.js'
-}).match('*.{html:js,js,es6}', {
-	optimizer: fis.plugin('uglify-js', {
-		compress: {
-			drop_console: true,
-			drop_debugger: true
-		}
+fis.media('test')
+	.match('/ts/**.ts', {
+		packTo: '/js/ops.js'
 	})
-}).match('*.{html:css,css,scss}', {
-	useSprite: true,
-	optimizer: fis.plugin('clean-css', {
-		keepBreaks: true
+	.match('**.{html:js,js,ts}', {
+		optimizer: fis.plugin('uglify-js', {
+			compress: {
+				drop_console: true,
+				drop_debugger: true
+			}
+		})
 	})
-});
-
-
-// cache query
-var queryPlaceholder = '?v=';
-fis.match('*', {
-	query: queryPlaceholder //占位符
-}).match('::package', {
-	postpackager: [
-		fis.plugin('query', {
-			placeholder: queryPlaceholder // 这里传入占位符
-		}),
-		fis.plugin('loader'/*, {
-		 allInOne: {
-		 js: function (file) {
-		 return "/js/" + file.filename + "_aio.js";
-		 }
-		 }
-		 }*/)
-	]
-});
+	.match('*.{html:css,css,scss}', {
+		useSprite: true,
+		optimizer: fis.plugin('clean-css', {
+			keepBreaks: true
+		})
+	});
 
 
 // fis3 server start --root ../dist
-// fis3 release dev -d ../dist --no-color
+// fis3 release dev -d ../dist

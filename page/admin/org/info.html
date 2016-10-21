@@ -1,0 +1,19 @@
+<% include ('/comm/header.html') %>
+
+
+<table id="tbSearch" class="search-table">
+	<tr>
+		<td class="lead"><label for="orgName"><b class="text-red">*</b>组织名称</label></td>
+		<td><input id="orgName" name="orgName" type="text"/></td>
+	</tr>
+	<tr>
+		<td class="lead"><label for="orgCode"><b class="text-red">*</b>组织编码</label></td>
+		<td><input id="orgCode" name="orgCode" type="text"/></td>
+	</tr>
+</table>
+
+<% include ('/comm/footer.html') %>
+
+<script>
+	require('./info.ts');
+</script>

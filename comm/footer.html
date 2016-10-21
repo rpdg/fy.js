@@ -5,7 +5,20 @@
 </div>
 
 
-<script type="text/javascript" src="/lib/mod.js"></script>
+
+<script src="/lib/mod.js"></script><!--ignore-->
+<script src="/lib/jquery-3.1.1.js"></script><!--ignore-->
+<script src="/lib/jquery.resizableColumns.js"></script><!--ignore-->
+<script src="/lib/jquery.pagination.js"></script><!--ignore-->
+<script src="/js/jquery.plugins.js"></script><!--ignore-->
+
+
+<%if (jScripts){ %>
+<% for (var i in jScripts) {%>
+<script src="<%= jScripts[i] %>"></script>
+<%}%>
+<%}%>
+
 <!--SCRIPT_PLACEHOLDER-->
 
 </body>

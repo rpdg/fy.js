@@ -51,6 +51,7 @@ select, option {
 	text-indent: 0;
 	vertical-align: baseline;
 	white-space: nowrap;
+	min-width: 80px;
 }
 
 textarea {
@@ -78,6 +79,11 @@ label {
 	vertical-align: middle;
 	margin-right: $padding*2;
 	line-height: 2em;
+	
+	&.lbAutoWidth{
+		width: auto !important;
+		margin-right: $padding*2 !important;
+	}
 }
 
 button {

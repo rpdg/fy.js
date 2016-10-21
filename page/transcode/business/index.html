@@ -1,0 +1,24 @@
+<% include ('/comm/header.html') %>
+
+<style>
+
+</style>
+
+	<table id="tbSearch" class="search-table">
+		<tr>
+			<td class="lead"><label for="name">业务名称</label></td>
+			<td><input id="name" name="name" type="text" /></td>
+			<td class="lead"><label for="bizCode">业务编码</label></td>
+			<td><input id="bizCode" name="bizCode" type="text" /></td>
+		</tr>
+	</table>
+
+
+	<table id="tb"></table>
+
+
+<% include ('/comm/footer.html') %>
+
+<script>
+	require('./index.ts');
+</script>

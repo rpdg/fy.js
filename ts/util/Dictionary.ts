@@ -6,7 +6,7 @@ interface IDictionary {
 	values(): any[];
 }
 
-class Dictionary {
+class Dictionary implements IDictionary{
 
 	protected _keys: string[] = [];
 	protected _values: any[] = [];
@@ -46,9 +46,6 @@ class Dictionary {
 		return !(typeof this[key] === "undefined");
 	}
 
-	toLookup(): IDictionary {
-		return this;
-	}
 }
 
 /*interface IPerson {

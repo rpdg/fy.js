@@ -1,4 +1,4 @@
-import {DisplayObject, AjaxDisplayObject} from "./DisplayOject.ts";
+import {DisplayObject, AjaxDisplayObject} from "./DisplayOject";
 
 const defaults: Object = {
     text: "default string"

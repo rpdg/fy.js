@@ -1,4 +1,4 @@
-import {AjaxDisplayObject} from './DisplayOject.ts';
+import {AjaxDisplayObject} from './DisplayOject';
 
 function searchData(data, id) {
 	var v;

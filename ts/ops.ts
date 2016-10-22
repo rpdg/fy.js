@@ -1,13 +1,15 @@
-import {ListBox, CheckBox, RadioBox} from "./ui/FormControls.ts";
-import {api} from  'util/api.ts';
-import Table from "./ui/Table.ts";
-import PopUp from "./ui/Popup.ts";
-import Panel from "./ui/Panel.ts";
-import Tree from "./ui/Tree.ts";
+import {ListBox, CheckBox, RadioBox} from "./ui/FormControls";
+import {api} from  'util/api';
+import Table from "./ui/Table";
+import PopUp from "./ui/Popup";
+import Panel from "./ui/Panel";
+import Tree from "./ui/Tree";
 
-import {request, string, dateTime, is, url, convert, format} from  'util/utils.ts';
+import {request, string, dateTime, is, url, convert, format} from  'util/utils';
 
-class UI {
+
+//a ui factory class
+class OpsUi extends Function{
 
 	jq: JQuery;
 
@@ -49,7 +51,8 @@ class UI {
 
 }
 
-var ops: any = (se: JQuery|any[]|Element|DocumentFragment|Text|string) => new UI(se);
+
+var ops: any = (se: JQuery|any[]|Element|DocumentFragment|Text|string) => new OpsUi(se);
 
 ops.api = api;
 
@@ -79,7 +82,6 @@ ops.warn = function (message, callBack?: Function, options ?: any = {}) {
 ops.danger = function (message, callBack?: Function, options ?: any = {}) {
 	PopUp.confirm('<i class="ico-warn"></i><span>' + message + '</span>', callBack, options);
 };
-
 
 
 //

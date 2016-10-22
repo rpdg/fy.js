@@ -1,6 +1,6 @@
-import cfg from '../app.cfg.ts';
-import store from "./store.ts";
-import {format} from '../util/utils.ts';
+import cfg from '../app.cfg';
+import store from "./store";
+import {format} from '../util/utils';
 
 
 interface AjaxMeta {

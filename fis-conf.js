@@ -80,17 +80,14 @@ fis.match('{/mock/**}', {
 // 开启模块化
 fis.hook('commonjs', {
 	baseUrl: '.',
-	paths: {
-		$: 'lib/jquery-3.1.1',
-		cfg: 'js/app.misc'
-	}
-
+	extList: ['.ts']
 });
 
-// 开启同名依赖
+
 // 设置成是模块化 js, 编译后会被 define 包裹。
 fis.match('**/*.ts', {
-	useSameNameRequire: true,
+	//wrap : false,
+	//useSameNameRequire: true,// 开启同名依赖
 	isMod: true
 });
 
@@ -113,6 +110,26 @@ fis.match('*.scss', {
 
 // 产品发布，进行合并
 fis.media('test')
+	.match('/ts/**.ts', {
+		packTo: '/js/ops.js'
+	})
+	.match('**.{html:js,js,ts}', {
+		optimizer: fis.plugin('uglify-js', {
+			compress: {
+				drop_console: true,
+				drop_debugger: true
+			}
+		})
+	})
+	.match('*.{html:css,css,scss}', {
+		useSprite: true,
+		optimizer: fis.plugin('clean-css', {
+			keepBreaks: true
+		})
+	});
+
+// 产品发布，进行合并
+fis.media('prd')
 	.match('/ts/**.ts', {
 		packTo: '/js/ops.js'
 	})

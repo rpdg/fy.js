@@ -1,5 +1,5 @@
-import {AjaxDisplayObject, DisplayObject} from './DisplayOject.ts';
-import {format} from '../util/utils.ts';
+import {AjaxDisplayObject, DisplayObject} from './DisplayOject';
+import {format} from '../util/utils';
 
 function makeTemplate(sets) {
 

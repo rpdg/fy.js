@@ -1,4 +1,4 @@
-import {DisplayObject} from './DisplayOject.ts';
+import {DisplayObject} from './DisplayOject';
 
 class TabBar extends DisplayObject {
 

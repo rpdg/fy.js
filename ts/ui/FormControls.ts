@@ -1,4 +1,4 @@
-import {AjaxDisplayObject, DisplayObject} from './DisplayOject.ts';
+import {AjaxDisplayObject, DisplayObject} from './DisplayOject';
 
 interface IFormControls {
 	elementName: string;

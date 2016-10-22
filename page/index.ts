@@ -1,5 +1,5 @@
-import store from 'ts/util/store.ts';
-import ops from 'ts/ops.ts';
+import store from 'ts/util/store';
+import ops from 'ts/ops';
 
 //noinspection TypeScriptUnresolvedVariable
 store.set('apiServer', window.CONFIG.apiServer);

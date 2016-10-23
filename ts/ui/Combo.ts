@@ -26,7 +26,6 @@ function bodyBinder() {
 class Combo extends DisplayObject {
 
 	target: JQuery; //drop down
-	allowBlank: boolean;
 
 	//EVENTS
 	onBeforeOpen?: Function;
@@ -39,11 +38,13 @@ class Combo extends DisplayObject {
 
 
 	constructor(jq: JQuery, cfg: any) {
+
 		super(jq, cfg);
 
 	}
 
 	init(jq: JQuery, cfg: any) {
+
 		if (jq[0].tagName === 'INPUT') jq.addClass('combo-input').val(cfg.text);
 		else jq.text(cfg.text);
 

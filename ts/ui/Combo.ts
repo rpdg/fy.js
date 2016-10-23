@@ -9,7 +9,7 @@ var ComboManager = {
 	closeAll: function () {
 		for (let key in this.instances) {
 			var target: Combo = this.instances[key] as Combo;
-			if (target.state === 'opened') target.close();
+			if (target.status === 'opened') target.close();
 		}
 	}
 };
@@ -27,13 +27,13 @@ class Combo extends DisplayObject {
 
 	target: JQuery; //drop down
 	allowBlank: boolean;
-	state: 'closed'|'opened';
 
 	//EVENTS
 	onBeforeOpen?: Function;
 	onOpen?: Function;
 	onClose?: Function;
 
+	private _state: 'closed'|'opened';
 	private _wrapper?: JQuery;
 	private _evtName: string = 'mousedown.ComboEvent';
 
@@ -93,15 +93,15 @@ class Combo extends DisplayObject {
 			this.jq.on(this._evtName, function () {
 				//event.stopImmediatePropagation();
 				var go = true;
-				that.state === "closed" && that.position();
+				that.status === "closed" && that.position();
 
 				if (typeof that.onBeforeOpen === 'function') {
 					go = that.onBeforeOpen.apply(that);
 					if (go === false) return that;
 				}
 				$c.stop(true, true).slideToggle(90, function () {
-					if ($c.css("display") === 'block') that.openHandler();
-					else that.closeHandler();
+					if ($c.css("display") === 'block') that.status = 'opened';
+					else that.status = 'closed';
 				});
 
 				return that;
@@ -140,33 +140,40 @@ class Combo extends DisplayObject {
 		}
 		this.position();
 		this.target.stop(true, true).slideDown(90);
-		this.openHandler();
-	}
-
-	openHandler() {
-		this.state = 'opened';
-		bodyBinder();
-
-		this.target.on('mouseleave.dropDownHide', bodyBinder)
-			.on('mouseenter.dropDownHide', function () {
-				$BODY.off('.dropDownHide');
-			});
-
-		if (typeof this.onOpen === 'function') this.onOpen.apply(this, arguments);
+		this.status = 'opened';
 	}
 
 	close() {
 		this.target.stop(true, true).slideUp(90);
-		this.closeHandler();
+		this.status = 'closed';
 	}
 
-	closeHandler() {
-		this.state = 'closed';
-		$BODY.off('.dropDownHide');
-		this.target.off('.dropDownHide');
 
-		if (typeof this.onClose === 'function') this.onClose.apply(this, arguments);
+	set status(s: string) {
+		if (s === 'opened') {
+			this._state = 'opened';
+			bodyBinder();
+
+			this.target.on('mouseleave.dropDownHide', bodyBinder)
+				.on('mouseenter.dropDownHide', function () {
+					$BODY.off('.dropDownHide');
+				});
+
+			if (typeof this.onOpen === 'function') this.onOpen.apply(this, arguments);
+		}
+		else {
+			this._state = 'closed';
+			$BODY.off('.dropDownHide');
+			this.target.off('.dropDownHide');
+
+			if (typeof this.onClose === 'function') this.onClose.apply(this, arguments);
+		}
 	}
+
+	get status(): string {
+		return this._state;
+	}
+
 
 	get text(): string {
 		return $.trim(this.jq.val());
@@ -174,4 +181,9 @@ class Combo extends DisplayObject {
 }
 
 
-export default Combo;
+interface ICanPutIntoCombo {
+	syncData()
+}
+
+
+export {Combo, ICanPutIntoCombo};

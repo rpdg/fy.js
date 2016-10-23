@@ -1,0 +1,19 @@
+.combo-input {
+	cursor: default;
+}
+
+.combo-dropDown {
+	width: 250px;
+	overflow: auto;
+	position: absolute;
+	z-index: 999;
+	display: none;
+	border-left: 1px solid #ccc;
+	box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+	background-color: #fff;
+}
+
+.treeField-combo {
+	width: 180px;
+	max-height: 250px;
+}

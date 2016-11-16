@@ -33,9 +33,6 @@ interface JQueryStatic {
 }
 
 
-
-
-
 interface IOpsUi {
 	jq: JQuery;
 }
@@ -45,14 +42,14 @@ interface OpsStatic {
 
 
 	request: Map;
-	dateTime : any;
-	string : any;
-	is : any;
-	url : any;
-	convert : any;
-	format : any;
-	array : any;
-	wrapPanel : Function;
+	dateTime: any;
+	string: any;
+	is: any;
+	url: any;
+	convert: any;
+	format: any;
+	array: any;
+	wrapPanel: Function;
 
 	alert: Function;
 	confirm: Function;
@@ -125,4 +122,10 @@ interface plyrPlayer {
 	isPaused(): boolean
 }
 
+
+interface FisUri {
+	(uri: string): string
+}
+
+declare let __uri: FisUri;
 declare let plyr: plyrStatic;

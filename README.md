@@ -1,2 +1,4 @@
-# fy.js
-foyo javascript/jQuery components 
+## fy.js ##
+
+fyUi components 
+

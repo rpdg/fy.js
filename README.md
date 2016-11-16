@@ -17,7 +17,7 @@ fyUi components
 	npm install -g fis3-hook-relative
 	npm install -g fis-parser-art-template
 	npm install -g fis-parser-node-sass
-	<del>npm install -g fis-parser-babel-5.x </del>
+	*npm install -g fis-parser-babel-5.x <-- 这个不要，已改为typescript*
 	npm install -g fis3-parser-typescript
 	npm install -g fis3-postpackager-query
 	npm install -g fis3-postpackager-loader

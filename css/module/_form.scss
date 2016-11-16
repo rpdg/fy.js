@@ -208,3 +208,19 @@ $btnColorClass: (primary #3498db #fff) (warning #f0ad4e #fff) (danger #e74c3c #f
 	vertical-align: bottom;
 	background-image: url("../ico/edit-16.png?__inline");
 }
+
+.ipt-eraser{
+	font-size: 14px;
+	font-family: 'Arial' , sans-serif;
+	color: #333;
+	float: left;
+	margin: 5px 0 0 -26px;
+	line-height: 18px;
+	cursor: pointer;
+	background-color: #f2f2f2;
+	text-align: center;
+	width: 18px;
+	height: 18px;
+	border-radius: 50px;
+	display:none;
+}

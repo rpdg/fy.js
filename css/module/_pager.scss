@@ -51,9 +51,10 @@
 	float: left;
 	margin-left: 1em;
 	
-	select{
+	select,option{
 		height: 1.66em;
 		margin: 0 2px;
+		min-width: 0 !important;
 	}
 }
 

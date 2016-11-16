@@ -4,6 +4,15 @@
 	.search-table .lead{
 		width: 150px;
 	}
+	.search-table .lead.vtop{
+		vertical-align: top;
+	}
+	label.lbAutoWidth {
+		width: 150px !important;
+	}
+	#tdInterfaceVersions label.lbAutoWidth,#tdConnectMode label.lbAutoWidth {
+		width: auto !important;
+	}
 </style>
 
 
@@ -15,78 +24,51 @@
 		<td><input id="name" name="name" type="text" maxlength="20"/></td>
 	</tr>
 	<tr>
-		<td class="lead">业务</td>
+		<td class="lead"><label for="orgName"><b class="text-red">*</b>所属组织</label></td>
+		<td>
+			<input type="text" id="orgName" name="orgName">
+			<input type="hidden" id="orgId" name="orgId">
+		</td>
+		<td class="lead"><b class="text-red">*</b>接口版本</td>
+		<td id="tdInterfaceVersions">
+			<!-- 接口版本 -->
+		</td>
+	</tr>
+	<tr>
+		<td class="lead vtop">业务</td>
 		<td colspan="3" id="tdBusiness">
 			<!-- 业务 checkboxes -->
 		</td>
 	</tr>
 	<tr>
-		<td class="lead"><b class="text-red">*</b>节目媒体文件</td>
-		<td colspan="3">
-			<label><input type="checkbox"> 云IPTV</label>
+		<td class="lead vtop"><b class="text-red">*</b>节目媒体文件</td>
+		<td colspan="3" id="tdMediaType">
+			<!-- 节目媒体文件 checkboxes -->
 		</td>
 	</tr>
 	<tr>
-		<td class="lead"><b class="text-red">*</b>支持图片类型</td>
-		<td colspan="3">
-			<label><input type="checkbox"> 云IPTV</label>
+		<td class="lead vtop"><b class="text-red">*</b>支持图片类型</td>
+		<td colspan="3" id="tdPictureType">
+			<!-- 图片类型 -->
 		</td>
 	</tr>
 	<tr>
-		<td class="lead"><b class="text-red">*</b>接口版本</td>
-		<td>
-			<label><input type="radio"> 云IPTV</label>
-		</td>
-		<td class="lead"><b class="text-red">*</b>所属组织</td>
-		<td>
-			<input type="text">
+		<td class="lead"><label for="serviceUrl"><b class="text-red">*</b>渠道内容接口</label> </td>
+		<td colspan="3">
+			<input type="text" id="serviceUrl" name="serviceUrl">
 		</td>
 	</tr>
 	<tr>
-		<td class="lead"><b class="text-red">*</b>渠道内容接口 </td>
+		<td class="lead"><label for="cmsServiceUrl">渠道业务接口</label></td>
 		<td colspan="3">
-			<input type="text">
-		</td>
-	</tr>
-	<tr>
-		<td class="lead">渠道业务接口</td>
-		<td colspan="3">
-			<input type="text">
+			<input type="text" id="cmsServiceUrl" name="cmsServiceUrl">
 		</td>
 	</tr>
 	<tr>
 		<td class="lead"><b class="text-red">*</b>支持外网访问</td>
-		<td colspan="3">
-			<label class="lbAutoWidth"><input type="radio" name="internet" value="true" checked> 是</label>
-			<label class="lbAutoWidth"><input type="radio" name="internet" value="false"> 否</label>
-		</td>
-	</tr>
-	<tr>
-		<td class="lead"><b class="text-red">*</b>支持分发节目编目关系</td>
-		<td colspan="3">
-			<label class="lbAutoWidth"><input type="radio" name="arrangeDispatch" value="true" checked> 是</label>
-			<label class="lbAutoWidth"><input type="radio" name="arrangeDispatch" value="false"> 否</label>
-		</td>
-	</tr>
-	<tr>
-		<td class="lead"><b class="text-red">*</b>支持分发节目分组关系</td>
-		<td colspan="3">
-			<label class="lbAutoWidth"><input type="radio" name="packageDispatch" value="true" checked> 是</label>
-			<label class="lbAutoWidth"><input type="radio" name="packageDispatch" value="false"> 否</label>
-		</td>
-	</tr>
-	<tr>
-		<td class="lead"><b class="text-red">*</b>是否需要审核</td>
-		<td colspan="3">
-			<label class="lbAutoWidth"><input type="radio" name="auditing" value="true" checked> 是</label>
-			<label class="lbAutoWidth"><input type="radio" name="auditing" value="false"> 否</label>
-		</td>
-	</tr>
-	<tr>
-		<td class="lead"><b class="text-red">*</b>节目单下发</td>
-		<td colspan="3">
-			<label class="lbAutoWidth"><input type="radio" name="contentSchedule" value="true" checked> 是</label>
-			<label class="lbAutoWidth"><input type="radio" name="contentSchedule" value="false"> 否</label>
+		<td id="tdConnectMode" colspan="3">
+			<label class="lbAutoWidth"><input type="radio" name="connectMode" value="1" checked> 是</label>
+			<label class="lbAutoWidth"><input type="radio" name="connectMode" value="0"> 否</label>
 		</td>
 	</tr>
 	<tr>
@@ -98,7 +80,3 @@
 </table>
 
 <% include ('/comm/footer.html') %>
-
-<script>
-	require('./info.ts');
-</script>

@@ -1,0 +1,86 @@
+<% include ('/comm/header.html') %>
+
+<link href="/page/test/videojs/video-js.css" rel="stylesheet">
+
+
+<!--<video id="my-video" class="video-js vjs-default-skin vjs-big-play-centered" controls preload="auto" width="640"
+       height="264" data-setup="{}">
+	<source src="demo.mp4" type='video/mp4'>
+	<p class="vjs-no-js">
+		To view this video please enable JavaScript, and consider upgrading to a web browser that
+		<a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+	</p>
+</video>-->
+
+<video id="my-video" class="video-js vjs-default-skin vjs-big-play-centered"
+       width="640" height="480" controls>
+</video>
+
+
+<% include ('/comm/footer.html') %>
+
+<script src="/page/test/videojs/video.min.js"></script>
+<script src="/page/test/videojs/video.zh-CN.js"></script>
+<!--<script src="./skin.js"></script>-->
+<script>
+	/*var myPlayer = videojs('my-video');
+	 myPlayer.currentTime(2);
+
+	 var timer ;
+
+	 myPlayer.addEvent('play' , function () {
+	 timer = setInterval(function () {
+	 console.warn(myPlayer.currentTime());
+	 }, 1000);
+	 });
+	 myPlayer.addEvent('stop' , function () {
+	 clearInterval(timer);
+	 });*/
+
+	var timer;
+
+	var myPlayer = videojs("my-video", {
+		autoplay: false,
+		//aspectRatio: "640:480",
+		language: 'zh-CN',
+		playbackRates: [1, 1.5, 2],
+		preload: 'metadata',
+		controls: true,
+		controlBar: {
+			captionsButton: false,
+			chaptersButton: false,
+			liveDisplay: false,
+			muteToggle: false,
+			playbackRateMenuButton: false,
+			subtitlesButton: false,
+			volumeMenuButton: {
+				inline: false,
+				vertical: true
+			}
+		},
+		remainingTimeDisplay: false
+
+	}, function () {
+
+		this.on('loadeddata', function () {
+			/*timer = setInterval(function () {
+			 console.warn(myPlayer.currentTime());
+			 }, 1000);*/
+			myPlayer.addChild('BigPlayButton');
+			//myPlayer.play();
+		});
+
+		this.on('ended', function () {
+			clearInterval(timer);
+		});
+
+	});
+
+	myPlayer.src([
+		{
+			type: "video/mp4",
+			//src: "demo.mp4"
+			src: 'http://114.80.184.80/youku/6975269894834811545AB923A9/030008010058226F81F35708BD8A986EA602AB-1D89-EF1F-A4D2-6447DAF58643.mp4?special=true',
+		}
+	]);
+</script>

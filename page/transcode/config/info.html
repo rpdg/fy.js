@@ -1,44 +1,40 @@
 <% include ('/comm/header.html') %>
 
 
-<table id="tbSearch" class="search-table">
+<table id="tbProfile" class="search-table">
 	<tr>
-		<td class="lead"><label for="bizName"><b class="text-red">*</b> 业务名称</label></td>
-		<td colspan="3"><select name="bizName" id="bizName"></select></td>
+		<td class="lead"><label for="businessId"><b class="text-red">*</b> 业务名称</label></td>
+		<td colspan="3"><select name="businessId" id="businessId"></select></td>
 	</tr>
 	<tr>
-		<td class="lead"><label for="inputProfile"><b class="text-red">*</b> 输入类别</label></td>
+		<td class="lead"><label for="inputSourceType"><b class="text-red">*</b> 输入类别</label></td>
 		<td>
-			<select name="inputProfile" id="inputProfile"></select>
+			<select name="inputSourceType" id="inputSourceType"></select>
 		</td>
-		<td class="lead"><label for="inputFileType"><b class="text-red">*</b> 输入源文件类型</label></td>
+		<td class="lead"><label for="inputFileMovieType"><b class="text-red">*</b> 输入源文件类型</label></td>
 		<td>
-			<select name="inputFileType" id="inputFileType"></select>
+			<select name="inputFileMovieType" id="inputFileMovieType"></select>
 		</td>
 	</tr>
 	<tr>
 		<td class="lead"><b class="text-red">*</b> 是否高清输出</td>
 		<td>
-			<label class="lbAutoWidth"><input type="radio" value="true" checked>是</label>
-			<label class="lbAutoWidth"><input type="radio" value="false">否</label>
+			<label class="lbAutoWidth"><input type="radio" name="outputDefinitionType" value="1" checked>是</label>
+			<label class="lbAutoWidth"><input type="radio" name="outputDefinitionType" value="0">否</label>
 		</td>
-		<td class="lead"><label for="outputProfile"><b class="text-red">*</b> 输出文件类型</label></td>
+		<td class="lead"><label for="outputFileMovieType"><b class="text-red">*</b> 输出文件类型</label></td>
 		<td>
-			<select name="inputFileType" id="outputProfile"></select>
+			<select name="outputFileMovieType" id="outputFileMovieType"></select>
 		</td>
 	</tr>
 	<tr>
-		<td class="lead"><label for="bizName"><b class="text-red">*</b> 文件后缀</label></td>
-		<td colspan="3"><input type="text"></td>
+		<td class="lead"><label for="suffix"><b class="text-red">*</b> 文件后缀</label></td>
+		<td colspan="3"><input type="text" id="suffix" name="suffix"></td>
 	</tr>
 	<tr>
-		<td class="lead"><label for="bizDesc">备注</label></td>
-		<td colspan="3"><textarea name="bizDesc" id="bizDesc" cols="30" rows="9"></textarea></td>
+		<td class="lead"><label for="profileDesc">备注</label></td>
+		<td colspan="3"><textarea name="profileDesc" id="profileDesc" cols="30" rows="5" maxlength="80" placeholder="最多可输入80字"></textarea></td>
 	</tr>
 </table>
 
 <% include ('/comm/footer.html') %>
-
-<script>
-	require('./info.ts');
-</script>

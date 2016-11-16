@@ -50,9 +50,9 @@ class Panel extends DisplayObject {
 			this.btnClose = $('<b class="panel-collapse" />');
 			this.titleBar.append(this.btnClose);
 
-			var self = this;
+			let self = this;
 			this.btnClose.on('click', function () {
-				var btn = $(this);
+				let btn = $(this);
 				if (!btn.hasClass('expanded')) {
 					self.body.hide();
 					self.foot.hide();
@@ -85,12 +85,12 @@ class Panel extends DisplayObject {
 	}
 
 	static wrapPanel(selector, cfg) :Panel {
-		var target = $(selector) ;
-		var wrapper = $('<div />');
+		let target = $(selector) ;
+		let wrapper = $('<div />');
 
 		target.replaceWith(wrapper);
 
-		var sets = $.extend({
+		let sets = $.extend({
 			onCreate: function () {
 				this.addToBody(target);
 			}

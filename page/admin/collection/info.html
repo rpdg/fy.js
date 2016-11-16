@@ -8,7 +8,7 @@
 		<td class="lead"><label for="name"><b class="text-red">*</b>采集源名称</label></td>
 		<td><input id="name" name="name" type="text" maxlength="20"/></td>
 		<td class="lead"><label for="code"><b class="text-red">*</b>采集源编码</label></td>
-		<td><input id="code" name="code" type="text" maxlength="20"/></td>
+		<td><input id="code" name="code" type="text" maxlength="32"/></td>
 	</tr>
 	<tr>
 		<td class="lead"><b class="text-red">*</b>状态</td>
@@ -28,20 +28,16 @@
 	</tr>
 	<tr>
 		<td class="lead"><label for="notifyUrl">应答接口</label></td>
-		<td colspan="3"><input type="text" id="notifyUrl" name="notifyUrl"></td>
+		<td colspan="3"><input type="text" id="notifyUrl" name="notifyUrl" maxlength="128"></td>
 	</tr>
 	<tr>
 		<td class="lead"><label for="contentRequestUrl">节目请求接口 </label></td>
-		<td colspan="3"><input type="text" id="contentRequestUrl" name="contentRequestUrl"></td>
+		<td colspan="3"><input type="text" id="contentRequestUrl" name="contentRequestUrl" maxlength="128" value="http://"></td>
 	</tr>
 	<tr>
 		<td class="lead"><label for="workflowUrl">工作流链接</label></td>
-		<td colspan="3"><input type="text" id="workflowUrl" name="workflowUrl"></td>
+		<td colspan="3"><input type="text" id="workflowUrl" name="workflowUrl" maxlength="128" value="http://"></td>
 	</tr>
 </table>
 
 <% include ('/comm/footer.html') %>
-
-<script>
-	require('./info.ts');
-</script>

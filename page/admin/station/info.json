@@ -1,3 +1,4 @@
 {
-	"bodyType" : "pop"
+	"bodyType" : "pop" ,
+	"mainModule" : "./info"
 }

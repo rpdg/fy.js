@@ -1,5 +1,5 @@
-import store from 'ts/util/store';
-import ops from 'ts/ops';
+import store from 'ts/util/store.ts';
+import ops from 'ts/ops.ts';
 
 //noinspection TypeScriptUnresolvedVariable
 store.set('apiServer', window.CONFIG.apiServer);
@@ -22,35 +22,45 @@ ops.api.login.set('codes', {
  }
  else {*/
 
+let form = $('#loginForm');
 
-$('#btnLogin').click(function () {
+let btnLogin = $('#btnLogin').click(function () {
 
-	var param = $('#loginForm').fieldsToJson({
-		orgCode: {}
+	let param = form.fieldsToJson({
+		orgCode: {
+			name: '组织代码',
+			require: true
+		},
+		loginName: {
+			name: '用户名',
+			require: true
+		},
+		password: {
+			name: '密码',
+			require: true
+		}
 	});
 
-	if (!param.orgCode) {
-		$('#orgCode').iptError('组织代码不能为空');
-	}
-	else if (!param.loginName) {
-		$('#loginName').iptError("用户名不能为空");
-	}
-	else if (!param.password) {
-		$('#password').iptError("密码不能为空");
-	}
-
-
-	else {
+	if (param) {
 		ops.api.login(param, function (data) {
 			if (data.permissons && data.permissons.length) {
 				store.set('X-Token', data.token);
 				store.set('userInfo', data.userInfo);
 				store.set('permissons', data.permissons);
 
-				var url = '/page/main.html' , hash = ops.request['returnUrl'];
-				if (hash) {
-					url += hash ;
+				let url = '/page/main.html';
+
+				let previousUser = store.get('userInfo');
+				if (previousUser) {
+					let previousLoginName = previousUser.loginName;
+					if (previousLoginName === param.loginName) {
+						let hash = ops.request['returnUrl'];
+						if (hash) {
+							url += hash;
+						}
+					}
 				}
+
 				window.location.href = url;
 			}
 			else {
@@ -61,8 +71,21 @@ $('#btnLogin').click(function () {
 
 });
 
+
+/*form.on('keypress', evt=> {
+ console.log(evt.keyCode);
+ });*/
+
 /*
  //noinspection TypeScriptUnresolvedVariable
  if(window.env === 'test'){
 
  }*/
+
+
+//noinspection TypeScriptUnresolvedFunction
+/*$("#loginPanel").hover3d({
+
+ selector: "#loginForm",
+ sensitivity: 80,
+ });*/

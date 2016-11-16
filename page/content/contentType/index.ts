@@ -1,6 +1,4 @@
 import ops from 'ts/ops.ts';
-import Panel from "ts/ui/Panel.ts";
-
 
 ops.api({
 	amssp: 'content/contentType/findPage',
@@ -8,28 +6,47 @@ ops.api({
 });
 
 
-
 const infoPage = '/page/content/contentType/info.html';
 
-
-var panel: Panel = ops.wrapPanel('#tbSearch', {
+//wrap as search panel
+let panel = ops.wrapPanel('#tbSearch', {
 	title: '节目类型查询',
 	btnSearchText: '<i class="ico-find"></i> 查询'
 });
 
+//click to search
 panel.btnSearch.click(function () {
-	var param = $('#tbSearch').fieldsToJson();
-	param.pageNo = 1 ;
+	let param = $('#tbSearch').fieldsToJson();
+	param.pageNo = 1;
 	//console.log(panel.jq, param);
 	tb.update(param);
+});
+
+//create a data table
+let tb = ops('#tb').table({
+	api: ops.api.amssp,
+	columns: [
+		{
+			text: '节目类型名称',
+			src: 'name'
+		},
+		{
+			text: '操作',
+			src: 'id',
+			width: 120,
+			render: (val, i, row)=> `<button class="btn-mini btn-danger" data-id="${val}" data-title="${row.name}">删除</button>`
+		}
+	],
+	pagination: {
+		pageSize: 10
+	}
 });
 
 
 //Add new
 $('#btnAdd').click(function () {
 
-	//noinspection TypeScriptUnresolvedVariable
-	var pop = top.ops.confirm(`<iframe src="${infoPage}" />`, function (i , ifr , v) {
+	let pop = top.ops.confirm(`<iframe src="${infoPage}" />`, function (i, ifr) {
 		//debugger;
 		//console.log(i , ifr , v);
 		return ifr.doSave(pop, tb);
@@ -44,37 +61,14 @@ $('#btnAdd').click(function () {
 		}
 	});
 
-	//console.log(pop);
 });
-
-var tb = ops('#tb').table({
-	columns: [
-		{
-			text: '节目类型名称',
-			src: 'name'
-		},
-		{
-			src: 'id', text: '操作', width: 120,
-			render: function (val, i, row) {
-				return `<button class="btn-mini btn-danger" data-id="${val}" data-title="${row.name}">删除</button>`
-			}
-		}
-	],
-	api: ops.api.amssp,
-	//lazy: true,
-	pagination: {
-		pageSize: 10
-	}
-});
-
 
 //edit
 tb.tbody.on('click', '.btn-info', function () {
-	var btn = $(this), title = btn.data('title'), id = btn.data('id');
+	let btn = $(this), title = btn.data('title'), id = btn.data('id');
 
-	//noinspection TypeScriptUnresolvedVariable
-	var pop = top.ops.confirm(`<iframe src="${infoPage}?id=${id}" />`, function (i, ifr) {
-		return ifr.doSave(pop , tb);
+	let pop = top.ops.confirm(`<iframe src="${infoPage}?id=${id}" />`, function (i, ifr) {
+		return ifr.doSave(pop, tb);
 	}, {
 		title: `修改节目类型: ${title}`,
 		btnMax: true,
@@ -88,9 +82,9 @@ tb.tbody.on('click', '.btn-info', function () {
 });
 
 
-//del
+//delete
 tb.tbody.on('click', '.btn-danger', function () {
-	var btn = $(this), title = btn.data('title'), id = btn.data('id');
+	let btn = $(this), title = btn.data('title'), id = btn.data('id');
 
 	ops.danger(`要删除“<b>${title}</b>”吗？`, function () {
 		ops.api.delete({id: id}, ()=>tb.update());

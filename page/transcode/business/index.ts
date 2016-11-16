@@ -5,7 +5,7 @@ import Table from "ts/ui/Table.ts";
 
 
 ops.api({
-	amssp: 'transcode/business/findPage',
+	business: 'transcode/business/findPage',
 	'delete!DELETE!': 'transcode/business/delete/${id}'
 });
 
@@ -19,20 +19,20 @@ ops.api.delete.set('codes', {
 const infoPage = '/page/transcode/business/info.html';
 
 
-var panel: Panel = ops.wrapPanel('#tbSearch', {
+let panel: Panel = ops.wrapPanel('#tbSearch', {
 	title: '业务信息',
 	btnSearchText: '<i class="ico-find"></i> 查询'
 });
 
 panel.btnSearch.click(function () {
-	var param = $('#tbSearch').fieldsToJson();
+	let param = $('#tbSearch').fieldsToJson();
 	param.pageNo = 1 ;
 	//console.log(panel.jq, param);
 	tb.update(param);
 });
 
 
-var tb :Table = ops('#tb').table({
+let tb :Table = ops('#tb').table({
 	titleBar : {
 		title : '业务列表',
 		buttons :[
@@ -56,10 +56,10 @@ var tb :Table = ops('#tb').table({
 			}
 		}
 	],
-	api: ops.api.amssp,
+	api: ops.api.business,
 	//lazy: true,
 	pagination: {
-		pageSize: 20
+		pageSize: 10
 	}
 });
 
@@ -69,7 +69,7 @@ var tb :Table = ops('#tb').table({
 $('#btnAdd').click(function () {
 
 	//noinspection TypeScriptUnresolvedVariable
-	var pop = top.ops.confirm(`<iframe src="${infoPage}" />`, function (i , ifr , v) {
+	let pop = top.ops.confirm(`<iframe src="${infoPage}" />`, function (i , ifr , v) {
 		//debugger;
 		//console.log(i , ifr , v);
 		return ifr.doSave(pop, tb);
@@ -89,10 +89,10 @@ $('#btnAdd').click(function () {
 
 //edit
 tb.tbody.on('click', '.btn-info', function () {
-	var btn = $(this), title = btn.data('title'), id = btn.data('id');
+	let btn = $(this), title = btn.data('title'), id = btn.data('id');
 
 	//noinspection TypeScriptUnresolvedVariable
-	var pop = top.ops.confirm(`<iframe src="${infoPage}?id=${id}" />`, function (i, ifr) {
+	let pop = top.ops.confirm(`<iframe src="${infoPage}?id=${id}" />`, function (i, ifr) {
 		return ifr.doSave(pop , tb);
 	}, {
 		title: `修改业务: ${title}`,
@@ -109,7 +109,7 @@ tb.tbody.on('click', '.btn-info', function () {
 
 //del
 tb.tbody.on('click', '.btn-danger', function () {
-	var btn = $(this), title = btn.data('title'), id = btn.data('id');
+	let btn = $(this), title = btn.data('title'), id = btn.data('id');
 
 	ops.danger(`要删除“<b>${title}</b>”吗？`, function () {
 		ops.api.delete({id: id}, ()=>tb.update());

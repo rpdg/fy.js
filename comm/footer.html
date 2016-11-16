@@ -1,9 +1,11 @@
 
 
 <div id="opsAjaxLoading">
-	<div id="opsAjaxLoadingText">请稍候 ...</div>
+	<div id="opsAjaxLoadingText">
+		<div id="square-spin"></div>
+		请稍候 ...
+	</div>
 </div>
-
 
 
 <script src="/lib/mod.js"></script><!--ignore-->
@@ -20,6 +22,14 @@
 <%}%>
 
 <!--SCRIPT_PLACEHOLDER-->
+
+
+<% if(mainModule) { %>
+<script>
+	//<%= __file_name %>
+	require('<%= mainModule %>');
+</script>
+<% } %>
 
 </body>
 </html>

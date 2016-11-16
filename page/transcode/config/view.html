@@ -1,0 +1,39 @@
+<% include ('/comm/header.html') %>
+
+
+<table id="tbProfile" class="search-table">
+	<tr>
+		<td class="lead"><label for="businessId"><b class="text-red">*</b> 业务名称</label></td>
+		<td colspan="3"><input name="bizName" id="businessId" readonly /></td>
+	</tr>
+	<tr>
+		<td class="lead"><label for="inputSourceType"><b class="text-red">*</b> 输入类别</label></td>
+		<td>
+			<input name="inputSourceTypeName" id="inputSourceType" readonly>
+		</td>
+		<td class="lead"><label for="inputFileMovieType"><b class="text-red">*</b> 输入源文件类型</label></td>
+		<td>
+			<input name="inputFileMovieType" id="inputFileMovieType" readonly>
+		</td>
+	</tr>
+	<tr>
+		<td class="lead"><label for="outputDefinitionType"><b class="text-red">*</b> 输出类别</label></td>
+		<td>
+			<input name="outputDefinitionTypeName" id="outputDefinitionType" readonly>
+		</td>
+		<td class="lead"><label for="outputProfile"><b class="text-red">*</b> 输出文件类型</label></td>
+		<td>
+			<input name="outputFileMvoieType" id="outputProfile" readonly>
+		</td>
+	</tr>
+	<tr>
+		<td class="lead"><label for="suffix"><b class="text-red">*</b> 文件后缀</label></td>
+		<td colspan="3"><input id="suffix" name="suffix" readonly></td>
+	</tr>
+	<tr>
+		<td class="lead"><label for="profileDesc">备注</label></td>
+		<td colspan="3"><textarea name="profileDesc" id="profileDesc" cols="30" rows="5" maxlength="80" placeholder="最多可输入80字" readonly></textarea></td>
+	</tr>
+</table>
+
+<% include ('/comm/footer.html') %>

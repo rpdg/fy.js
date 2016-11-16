@@ -14,11 +14,40 @@
 #opsAjaxLoadingText {
 	background-color: #ed8e00;
 	color: #fff;
-	text-align: center;
-	line-height: 1.6em;
-	width: 160px;
+	//text-align: center;
+	padding: 0.1em 1em;
+	//line-height: 1.6em;
+	width: auto;
+	display: inline-block;
 	margin: 0 auto 0 0;
 	cursor: default;
 	-webkit-user-select: none;
 	-moz-user-select: none;
+}
+
+#square-spin {
+	width: 12px;
+	height: 12px;
+	display: inline-block;
+	background: #fff;
+	animation-fill-mode: both;
+	animation: square-spin 3s 0s cubic-bezier(.09, .57, .49, .9) infinite;
+}
+
+@keyframes square-spin {
+	25% {
+		transform: perspective(100px) rotateX(180deg) rotateY(0);
+	}
+	
+	50% {
+		transform: perspective(100px) rotateX(180deg) rotateY(180deg);
+	}
+	
+	75% {
+		transform: perspective(100px) rotateX(0) rotateY(180deg);
+	}
+	
+	100% {
+		transform: perspective(100px) rotateX(0) rotateY(0);
+	}
 }

@@ -22,11 +22,11 @@ if (!cfg.apiServer) {
 	cfg.onUnauthorizedError();
 }
 
-var onServerError = cfg.onServerError || function (msg) {
+let onServerError = cfg.onServerError || function (msg) {
 		alert("err: " + msg);
 	};
 
-var loading = {
+let loading = {
 	dom: $('#opsAjaxLoading'),
 	handlers: 0,
 	timer: 0,
@@ -41,7 +41,7 @@ var loading = {
 
 
 const xToken = (function () {
-	var token = store.get('X-Token');
+	let token = store.get('X-Token');
 	if (token) {
 		return {'X-Token': token};
 	}
@@ -92,7 +92,7 @@ class ServerFn {
 	}
 
 	invoke(data, callback): JQueryXHR {
-		var that = this;
+		let that = this;
 
 		if (this.accessible || this.unlimited) {
 			this.accessible = false;
@@ -102,7 +102,7 @@ class ServerFn {
 				data = null;
 			}
 
-			var url = this.url;
+			let url = this.url;
 
 			if (data) {
 				if (!this.restful && this.method != 'GET') {
@@ -146,18 +146,26 @@ class ServerFn {
 						that.handleError.call(that, jqXHR.responseJSON.meta.message, callback);
 					}
 					else {
-						var code = jqXHR.status;
-						that.handleError.call(that, 'api.' + that.name + ' error ' + code + ' (' + errorThrown + ')');
+						let code = jqXHR.status;
+
+						if (errorThrown === 'timeout')
+							errorThrown = '连接超时';
+						else if (!errorThrown)
+							errorThrown = '无法连接服务器';
+						else if (errorThrown === 'Not Found')
+							errorThrown = '无此接口';
+
+						that.handleError.call(that, `api.${that.name} error ${code} (${errorThrown})`);
 					}
 
 				},
 				success: function (json: AjaxMessage, textStatus: string, jqXHR: JQueryXHR) {
 
-					var meta = json.meta || defaultErrorMsg;
+					let meta = json.meta || defaultErrorMsg;
 
 					if (meta.success) {
 						if (callback && typeof callback === 'function')
-							callback(json.data, textStatus, jqXHR);
+							callback(json.data === undefined ? {} : json.data, textStatus, jqXHR);
 					}
 					else {
 						that.handleError.call(that, meta.message, callback);
@@ -167,13 +175,13 @@ class ServerFn {
 
 		}
 		else {
-			throw new Error('Server function unusable now.');
+			throw new Error('Server function [' + this.name + '] unusable now.');
 		}
 	}
 }
 
 
-var api = function (apiSet: Map<string>) {
+let api = function (apiSet: Map<string>) {
 
 	for (let key: string in apiSet) {
 		let uArr = key.split('!');
@@ -193,7 +201,7 @@ var api = function (apiSet: Map<string>) {
 					return fn;
 				};
 
-				fn.get = (k:string) => srvFn[k];
+				fn.get = (k: string) => srvFn[k];
 
 				fn.toString = ()=> srvFn.url;
 

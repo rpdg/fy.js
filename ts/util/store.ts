@@ -1,4 +1,4 @@
-var storage: Storage = window.localStorage;
+let storage: Storage = window.localStorage;
 
 const deserialize = (value: string|any): any => {
 	if (typeof value != 'string') {
@@ -18,7 +18,7 @@ const store = {
 		return store;
 	},
 	get: (key: string, defaultVal?: any): any => {
-		var val = deserialize(storage.getItem(key));
+		let val = deserialize(storage.getItem(key));
 		return (val === undefined ? defaultVal : val);
 	},
 	set: (key: string, val: any) => {

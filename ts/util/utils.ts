@@ -3,11 +3,11 @@ function hasOwnProperty(obj, prop) {
 }
 
 function setParamsObject(obj, param, value, castBoolean) {
-	var reg = /^(.+?)(\[.*\])$/, paramIsArray, match, allKeys, key, k;
+	let reg = /^(.+?)(\[.*\])$/, paramIsArray, match, allKeys, key, k;
 	if (match = param.match(reg)) {
 		key = match[1];
 		allKeys = match[2].replace(/^\[|\]$/g, '').split('][');
-		for (var i = 0; k = allKeys[i]; i++) {
+		for (let i = 0; k = allKeys[i]; i++) {
 			paramIsArray = !k || k.match(/^\d+$/);
 			if (!key && is.Array(obj)) key = obj.length;
 			if (!hasOwnProperty(obj, key)) {
@@ -30,10 +30,10 @@ function setParamsObject(obj, param, value, castBoolean) {
 }
 
 const request = (function (str: string, castBoolean) {
-	var result = {}, split;
+	let result = {}, split;
 	str = (str && str.toString) ? str.toString() : '';
-	var arr = str.replace(/^.*?\?/, '').split('&'), p;
-	for (var i = 0; p = arr[i]; i++) {
+	let arr = str.replace(/^.*?\?/, '').split('&'), p;
+	for (let i = 0; p = arr[i]; i++) {
 		split = p.split('=');
 		if (split.length !== 2) continue;
 		setParamsObject(result, split[0], decodeURIComponent(split[1]), castBoolean);
@@ -52,7 +52,7 @@ const is = {
 	Object: $.noop,
 	HTMLDocument: $.noop
 };
-for (var i = 0, c; c = is.types[i++];) {
+for (let i = 0, c; c = is.types[i++];) {
 	is[c] = (function (type) {
 		return function (obj) {
 			return Object.prototype.toString.call(obj) == "[object " + type + "]";
@@ -61,7 +61,7 @@ for (var i = 0, c; c = is.types[i++];) {
 }
 
 function objectToQueryString(base, obj) {
-	var tmp;
+	let tmp;
 	// If a custom toString exists bail here and use that instead
 	if (is.Array(obj) || is.Object(obj)) {
 		tmp = [];
@@ -84,7 +84,7 @@ function sanitizeURIComponent(obj) {
 }
 
 function iterateOverObject(obj, fn) {
-	var key;
+	let key: string;
 	for (key in obj) {
 		if (!hasOwnProperty(obj, key)) continue;
 		if (fn.call(obj, key, obj[key], obj) === false) break;
@@ -95,13 +95,13 @@ function iterateOverObject(obj, fn) {
 const url = {
 	addSearch: function (url, pm1, pm2) {
 
-		for (var i = 1, len = arguments.length; i < len; i++) {
-			var p = arguments[i];
+		for (let i = 1, len = arguments.length; i < len; i++) {
+			let p = arguments[i];
 			if (p !== undefined && p !== null) {
 				if (p.indexOf('?') === 0 || p.indexOf('&') === 0)
 					p = p.substr(1);
 
-				var prefix = i > 1 ? '&' : (url.indexOf('?') > -1 ? '&' : '?');
+				let prefix = i > 1 ? '&' : (url.indexOf('?') > -1 ? '&' : '?');
 
 				url += (prefix + p);
 			}
@@ -116,7 +116,7 @@ const url = {
 	},
 	getParam: function (url, name) {
 		name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-		var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+		let regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
 			results = regex.exec(url.substr(url.indexOf('?')));
 		return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 	}
@@ -125,7 +125,7 @@ const url = {
 
 const string = {
 	_str_pad_repeater: function (s, len) {
-		var collect = '';
+		let collect = '';
 
 		while (collect.length < len) {
 			collect += s;
@@ -140,7 +140,7 @@ const string = {
 		//   example 2: str.pad('Kevin van Zonneveld', 30, '-', 'STR_PAD_BOTH');
 		//   returns 2: '------Kevin van Zonneveld-----'
 
-		var half = '',
+		let half = '',
 			pad_to_go;
 
 		input += '';
@@ -186,7 +186,7 @@ const dateTime = {
 		return Math.round((dateTo.valueOf() - dateFrom.valueOf()) / 86400000);
 	},
 	weekSpan: function (dateTo, dateFrom) {
-		var d = dateTime.daySpan(dateTo, dateFrom);
+		let d = dateTime.daySpan(dateTo, dateFrom);
 		return Math.ceil((d + dateFrom.getDay()) / 7);
 	}
 
@@ -194,15 +194,26 @@ const dateTime = {
 
 
 const convert = {
-	hashToArray: function (obj) {
-		var arr = [];
+	hashKeysToArray: function (obj): Array {
+		let arr = [];
 		for (arr[arr.length] in obj);
 		return arr;
 	},
+	hashToArray: (obj, convertor): Array => {
+		let arr = [];
+		for (let key in obj) {
+			let v = obj[key];
+			if (convertor)
+				v = convertor(v);
+
+			arr.push(v);
+		}
+		return arr;
+	},
 	arrayToHash: function (arr, key) {
-		var obj = {}, i = 0, l = arr.length;
+		let obj = {}, i = 0, l = arr.length;
 		for (; i < l; i++) {
-			var item = arr[i];
+			let item = arr[i];
 			if (!(item[key] in obj)) {
 				obj[item[key]] = item;
 			}
@@ -210,8 +221,8 @@ const convert = {
 		return obj;
 	},
 	stringToDate: function (str, formater) {
-		var format = formater || 'yyyy-MM-dd HH:mm:ss'; // default format
-		var parts = str.match(/(\d+)/g),
+		let format = formater || 'yyyy-MM-dd HH:mm:ss'; // default format
+		let parts = str.match(/(\d+)/g),
 			i = 0,
 			fmt = {};
 		// extract date-part indexes from the format
@@ -231,8 +242,8 @@ const convert = {
 
 const format = {
 	date: function (date, formater) {
-		var format = formater || 'yyyy-MM-dd'; // default format
-		var o = {
+		let format = formater || 'yyyy-MM-dd'; // default format
+		let o = {
 			"M+": date.getMonth() + 1, //month
 			"d+": date.getDate(), //date
 			"h+": (date.getHours() > 12 ? date.getHours() - 12 : date.getHours()), //hour 12
@@ -246,18 +257,18 @@ const format = {
 		if (/(y+)/.test(format))
 			format = format.replace(RegExp.$1, (date.getFullYear() + "").substr(4 - RegExp.$1.length));
 
-		for (var k in o)
+		for (let k in o)
 			if (new RegExp("(" + k + ")").test(format))
 				format = format.replace(RegExp.$1, RegExp.$1.length == 1 ? o[k] : ("00" + o[k]).substr(("" + o[k]).length));
 
 		return format;
 	},
 	toFixed: function (input) {
-		var n = Math.round(+input * 100);
+		let n = Math.round(+input * 100);
 		return format.toNFixed(n * .01);
 	},
 	toNFixed: function (input) {
-		var s = (+input).toString(), i = s.indexOf('.');
+		let s = (+input).toString(), i = s.indexOf('.');
 		if (i < 0) return s + '.00';
 		s += '00';
 		return s.substr(0, i + 3);
@@ -294,18 +305,18 @@ const format = {
 
 		number = (number + '')
 			.replace(/[^0-9+\-Ee.]/g, '');
-		var n = !isFinite(+number) ? 0 : +number,
+		let n = !isFinite(+number) ? 0 : +number,
 			prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
 			sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
 			dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
 			s = '',
 			toFixedFix = function (n, prec) {
-				var k = Math.pow(10, prec);
+				let k = Math.pow(10, prec);
 				return '' + (Math.round(n * k) / k)
 						.toFixed(prec);
 			};
 		// Fix forar IE parseFloat(0.55).toFixed(0) = 0;
-		var s: Array = (prec ? toFixedFix(n, prec) : '' + Math.round(n))
+		let s: Array = (prec ? toFixedFix(n, prec) : '' + Math.round(n))
 			.split('.');
 		if (s[0].length > 3) {
 			s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
@@ -335,7 +346,7 @@ const format = {
 		return filesize;
 	},
 	json: (function () {
-		var pattern = /\${(\w+[.]*\w*)\}(?!})/g;
+		let pattern = /\${(\w+[.]*\w*)\}(?!})/g;
 
 		return function (template: string, json: any) {
 			return template.replace(pattern, function (match, key, value) {
@@ -347,11 +358,65 @@ const format = {
 
 
 const cleanValueObject = function (vo) {
-	for (var key in vo)
+	for (let key in vo)
 		if (key.indexOf(":") > -1) delete vo[key];
 
 	return vo;
 };
 
 
-export {is, url, request, string, dateTime, convert, format, cleanValueObject};
+const array = {
+	unique: (arr: Array): Array => {
+		let tmpArr = [], hash = {};
+		for (let i = 0, l = arr.length; i < l; i++) {
+			if (!hash[arr[i]]) {
+				hash[arr[i]] = true;
+				tmpArr.push(arr[i]);
+			}
+		}
+
+		return tmpArr;
+	},
+	combine: (...needles: Array[]) => {
+		let arr = [];
+		for (let i = 0, l = needles.length; i < l; i++) {
+			let a = needles[i], len = a.length;
+			for (let k = 0; k < len; k = k + 5000) {
+				arr.push.apply(arr, a.slice(k, k + 5000));
+			}
+		}
+		return arr;
+	},
+	sort: (arr: Array, propName: string, sortCompareFunction?: Function): Array => {
+		if (sortCompareFunction && typeof sortCompareFunction === 'function')
+			return arr.sort(sortCompareFunction);
+
+		else {
+			let dup = Array.prototype.slice.call(arr, 0);
+			//let dup = arr.slice(0);
+			if (!arguments.length) return dup.sort();
+			//let args = Array.prototype.slice.call(arguments);
+			return dup.sort(
+				function (a, b) {
+					let A = a[propName], nA = isNaN(A), B = b[propName], nB = isNaN(B);
+					//两者皆非number
+					if (nA && nB) {
+						if (A === '') return -1;
+						if (B === '') return 1;
+						return (A === B ? 0 : A > B ? 1 : -1);
+					}
+					//a[prop] 非 number, b[prop] 是 number
+					else if (nA) return -1;
+					//a[prop] 是 number, b[prop] 非 number
+					else if (nB) return 1;
+					//a[prop], b[prop]  均是 number
+					return A === B ? 0 : A > B ? 1 : -1;
+				}
+			);
+		}
+	}
+
+};
+
+
+export {is, url, request, string, dateTime, convert, format, cleanValueObject, array};

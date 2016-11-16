@@ -1,6 +1,6 @@
 import ops from 'ts/ops.ts';
 
-var id = ops.request['id'] ;
+let id = ops.request['id'] ;
 ops.api({
 	'findById!!': 'content/contentType/findById/${id}',
 	'update!post' : 'content/contentType/update' ,
@@ -17,7 +17,7 @@ ops.api.update.set('codes', codes);
 
 
 
-var form = $('#tbSearch');
+let form = $('#tbSearch');
 if(id){
 	ops.api.findById({id : ops.request['id']} , function (data) {
 		form.jsonToFields(data);
@@ -28,7 +28,7 @@ if(id){
 
 window['doSave'] = function (popWin , table) {
 
-	var action,
+	let action,
 		param = form.fieldsToJson({
 			name: {
 				name: '节目类型名称',

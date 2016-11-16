@@ -44,9 +44,11 @@ fis.match('{**.html,/js/config.js,/js/mockData.js}', {
 			apiServer: apiServer,
 			jScripts: jScripts,
 			'page/': {
+				mainModule: './index' ,
 				'index.html': {
 					orgCode: orgCode,
-					currentMedia: currentMedia
+					currentMedia: currentMedia ,
+					//jScripts : ['/lib/jquery.hover3d.js']
 				},
 				bodyType: ''
 			},

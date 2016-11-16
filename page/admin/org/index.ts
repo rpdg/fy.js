@@ -8,10 +8,15 @@ ops.api({
 });
 
 
+ops.api.delete.set('codes' , {
+	'system_amsorganization_status_stopped' : '组织状态已被停用',
+	'system_amsorganization_suborg_existed' : '该组织存在下级组织',
+});
+
 const infoPage = '/page/admin/org/info.html';
 
 
-var panel = ops.wrapPanel('#tbSearch', {
+let panel = ops.wrapPanel('#tbSearch', {
 	title: '组织信息',
 	btnSearchText: '<i class="ico-edit"></i> 修改'
 });
@@ -19,13 +24,13 @@ var panel = ops.wrapPanel('#tbSearch', {
 panel.btnSearch.click(editRole);
 
 //console.log(panel.jq);
-var roleNameSp = $('#roleName');
-var btnAdd = $('#btnAdd');
+let roleNameSp = $('#roleName') , roleCodeSp = $('#roleCode');
+let btnAdd = $('#btnAdd');
 
 btnAdd.click(function () {
-	//var pId = btnAdd.data('pid');
+	//let pId = btnAdd.data('pid');
 	//noinspection TypeScriptUnresolvedVariable
-	var pop = top.ops.confirm(`<iframe src="${infoPage}?parentId=${currentTableParentId}" />`, function (i, ifr, v) {
+	let pop = top.ops.confirm(`<iframe src="${infoPage}?parentId=${currentTableParentId}" />`, function (i, ifr, v) {
 		//debugger;
 		//console.log(i , ifr , v);
 		return ifr.doSave(pop, tree);
@@ -44,7 +49,7 @@ btnAdd.click(function () {
 });
 
 
-var tb = ops('#tb').table({
+let tb = ops('#tb').table({
 	columns: [
 		{
 			text: '组织名称', width: 200,
@@ -52,7 +57,7 @@ var tb = ops('#tb').table({
 		},
 		{
 			text: '组织编码',
-			src: 'description'
+			src: 'code'
 		},
 		{
 			src: 'id', text: '操作', width: 120,
@@ -69,9 +74,9 @@ var tb = ops('#tb').table({
 tb.tbody.on('click', '.btn-info', editRole);
 
 function editRole() {
-	var btn = $(this), title = btn.data('title'), id = btn.data('id'), pId = btn.data('pid');
+	let btn = $(this), title = btn.data('title'), id = btn.data('id'), pId = btn.data('pid');
 	//noinspection TypeScriptUnresolvedVariable
-	var pop = top.ops.confirm(`<iframe src="${infoPage}?id=${id}&parentId=${pId}" />`, function (i, ifr) {
+	let pop = top.ops.confirm(`<iframe src="${infoPage}?id=${id}&parentId=${pId}" />`, function (i, ifr) {
 		return ifr.doSave(pop, tree);
 	}, {
 		title: `修改组织: ${title}`,
@@ -88,7 +93,7 @@ function editRole() {
 
 //del
 tb.tbody.on('click', '.btn-danger', function () {
-	var btn = $(this), title = btn.data('title'), id = btn.data('id');
+	let btn = $(this), title = btn.data('title'), id = btn.data('id');
 
 	ops.danger(`要删除“<b>${title}</b>”吗？`, function () {
 		ops.api.delete({id}, ()=> {
@@ -100,9 +105,9 @@ tb.tbody.on('click', '.btn-danger', function () {
 	});
 });
 
-var currentTableParentId = -1;
+let currentTableParentId = -1;
 
-var tree: Tree = ops('#leftSec').tree({
+let tree: Tree = ops('#leftSec').tree({
 	root: '系统企业',
 	api: ops.api.org,
 	onAjaxEnd: (json)=> {
@@ -112,17 +117,17 @@ var tree: Tree = ops('#leftSec').tree({
 	onCreate: function () {
 		//console.log(tree, this);
 
-		var tree = this;
+		let tree = this;
 
 		this.jq.on('click', '.sp', function () {
 
-			var id = tree.selectedItemId || -1, data = tree.getSelectedData() || tree.data;
+			let id = tree.selectedItemId || -1, data = tree.getSelectedData() || tree.data;
 			currentTableParentId = id;
 
 			if (id > 0) {
 				panel.jq.show();
 
-				var parentId = tree.currentLi.parent().attr('id').split('Ul_')[1] || -1;
+				let parentId = tree.currentLi.parent().attr('id').split('Ul_')[1] || -1;
 
 				panel.btnSearch.data({'id': id, title: data.name, 'pid': parentId});
 
@@ -130,6 +135,7 @@ var tree: Tree = ops('#leftSec').tree({
 				//console.log(parentId);
 				tb.update(data.children || []);
 				roleNameSp.text(data.name);
+				roleCodeSp.text(data.code);
 			}
 			else {
 				/*panel.jq.hide();

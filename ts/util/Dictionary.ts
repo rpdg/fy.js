@@ -13,7 +13,7 @@ class Dictionary implements IDictionary{
 
 	constructor(init: { key: string; value: any; }[]) {
 
-		for (var x = 0; x < init.length; x++) {
+		for (let x = 0; x < init.length; x++) {
 			this[init[x].key] = init[x].value;
 			this._keys.push(init[x].key);
 			this._values.push(init[x].value);
@@ -27,7 +27,7 @@ class Dictionary implements IDictionary{
 	}
 
 	remove(key: string) {
-		var index = this._keys.indexOf(key, 0);
+		let index = this._keys.indexOf(key, 0);
 		this._keys.splice(index, 1);
 		this._values.splice(index, 1);
 
@@ -71,7 +71,7 @@ class PersonDictionary extends Dictionary {
 		return this;
 	}
 }
- var persons = new PersonDictionary([
+ let persons = new PersonDictionary([
  { key: "p1", value: { firstName: "F1", lastName: "L2" } },
  { key: "p2", value: { firstName: "F2", lastName: "L2" } },
  { key: "p3", value: { firstName: "F3", lastName: "L3" } }

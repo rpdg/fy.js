@@ -3,7 +3,7 @@ import {format} from '../util/utils';
 
 function makeTemplate(sets) {
 
-	var tdTmp = [], render, name, i = 0, l = sets.columns ? sets.columns.length : 0;
+	let tdTmp = [], render, name, i = 0, l = sets.columns ? sets.columns.length : 0;
 	for (let col; i < l , col = sets.columns[i]; i++) {
 
 		if (typeof col.render === 'function') {
@@ -26,19 +26,19 @@ function makeTemplate(sets) {
 		}
 		else {
 
-			var classAlign = "text-" + (col.align ? col.align.toLowerCase() : "center");
+			let classAlign = "text-" + (col.align ? col.align.toLowerCase() : "center");
 
 			tdTmp[i] = '<td class="' + classAlign + '">${' + col.src + render + '}</td>';
 		}
 	}
 
 	//console.log('<tr>' + tdTmp.join('') + '</tr>');
-	var trSrc;
+	let trSrc;
 	if (sets.rows && sets.rows.render) {
 		trSrc = sets.rows.src || '___';
 		sets.bindOptions.itemRender['__renderTr'] = (val, i, row, attr)=> {
-			var cn = sets.rows.render(val, i, row, attr);
-			var sn = ( i % 2 ? 'odd' : 'even');
+			let cn = sets.rows.render(val, i, row, attr);
+			let sn = ( i % 2 ? 'odd' : 'even');
 			return sn + ' ' + cn;
 		}
 	}
@@ -53,7 +53,7 @@ function makeTemplate(sets) {
 
 
 function makeTbStructor(tb, sets) {
-	var i = 0, l = sets.columns ? sets.columns.length : 0, colCss = [], th = [];
+	let i = 0, l = sets.columns ? sets.columns.length : 0, colCss = [], th = [];
 	for (let col; col = sets.columns[i]; i++) {
 		if (col.cmd) {
 			col.width = col.width || 28;
@@ -67,18 +67,18 @@ function makeTbStructor(tb, sets) {
 		colCss[i] = "width:" + (col.width ? col.width + "px;" : "auto; ");
 		th[i] = '<th style="' + colCss[i] + '">' + (col.text || 'column_' + i) + '</th>';
 	}
-	var thead = '<thead><tr>' + th.join('') + '</tr></thead>';
-	var tfoot = (sets.pagination) ? '<tfoot><tr><td colspan="' + (l || '1') + '"></td></tr></tfoot>' : '';
+	let thead = '<thead><tr>' + th.join('') + '</tr></thead>';
+	let tfoot = (sets.pagination) ? '<tfoot><tr><td colspan="' + (l || '1') + '"></td></tr></tfoot>' : '';
 
 	tb.append(thead + '<tbody id="' + tb[0].id + '_tbody"></tbody>' + tfoot);
 }
 
 function setupTitleBar(tb, sets) {
-	var html = `<div class="grid-title-bar">
+	let html = `<div class="grid-title-bar">
 		${sets.title}
 	</div>`, bar = $(html);
 
-	var btns = ``;
+	let btns = ``;
 	if(sets.buttons && sets.buttons.length){
 		for(let i=0,l=sets.buttons.length;i<l;i++){
 			let btn = sets.buttons[i];
@@ -132,7 +132,7 @@ class Table extends AjaxDisplayObject {
 
 		super.init(jq, cfg);
 
-		var isTable = jq[0].tagName === 'TABLE';
+		let isTable = jq[0].tagName === 'TABLE';
 
 		if (isTable) {
 			jq.addClass("grid");
@@ -176,7 +176,7 @@ class Table extends AjaxDisplayObject {
 
 		if (cfg.pagination) {
 
-			var that = this;
+			let that = this;
 			const pageDefaults = {
 				link_to: "javascript:void(0)",
 				num_edge_entries: 1,
@@ -249,9 +249,9 @@ class Table extends AjaxDisplayObject {
 
 	makePager(rowCount) {
 
-		var that = this;
+		let that = this;
 
-		var pageCount = Math.ceil(rowCount / this._param.pageSize);
+		let pageCount = Math.ceil(rowCount / this._param.pageSize);
 
 		if (this._param.pageNo > 1 && pageCount < this.pageCount) {
 			this._param.pageNo -= (this.pageCount - pageCount);
@@ -259,7 +259,7 @@ class Table extends AjaxDisplayObject {
 		}
 
 		this.pageCount = pageCount;
-		var pageNum = this._param.pageNo;
+		let pageNum = this._param.pageNo;
 
 		if (this.tPager) {
 			this.pagination.current_page = this._param.pageNo - 1;
@@ -294,12 +294,12 @@ class Table extends AjaxDisplayObject {
 				if (typeof this.pagination.customizable != 'object')
 					this.pagination.customizable = [10, 20, 50];
 
-				var ps = this.pagination.customizable as Array, arq = [];
+				let ps = this.pagination.customizable as Array, arq = [];
 
 				for (let q = 0, ql = ps.length; q < ql; q++)
 					arq[q] = '<option value="' + ps[q] + '" ' + (ps[q] == this.pagination.pageSize ? 'selected' : '') + '>' + ps[q] + '</option>';
 
-				var pageSelector = $('<select>' + arq.join('') + '</select>');
+				let pageSelector = $('<select>' + arq.join('') + '</select>');
 				this.pageCounter.after($('<label class="pageSelectorLabel">每页</label>').append(pageSelector).append('条'));
 
 				//on change event
@@ -320,11 +320,11 @@ class Table extends AjaxDisplayObject {
 
 	getCheckData() {
 		if (this.cmd) {
-			var key = (this.cmdCheckAll || this.cmdCheckOne).val(),
+			let key = (this.cmdCheckAll || this.cmdCheckOne).val(),
 				chkBoxes = this.tbody.find("input[name='" + key + "']"),
 				rev = this.cmdCheckAll ? [] : null;
 
-			for (var i = 0, l = chkBoxes.length; i < l; i++) {
+			for (let i = 0, l = chkBoxes.length; i < l; i++) {
 				if ((chkBoxes[i] as HTMLInputElement).checked) {
 					if (this.cmdCheckOne) return this.data[i];
 					else rev.push(this.data[i]);

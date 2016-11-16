@@ -8,25 +8,16 @@
 		<tr>
 			<td class="lead"><label for="name">渠道名称</label></td>
 			<td><input id="name" name="name" type="text" /></td>
-			<td class="lead"><label for="media">支持媒体类型</label></td>
-			<td><select id="media" name="media"></select></td>
+			<td class="lead"><label for="mediaFormat">支持媒体类型</label></td>
+			<td><select id="mediaFormat" name="mediaFormat"></select></td>
 		</tr>
 		<tr>
-			<td class="lead"><label for="ver">接口版本</label></td>
-			<td><select id="ver" name="ver"></select></td>
+			<td class="lead"><label for="interfaceVersion">接口版本</label></td>
+			<td><select id="interfaceVersion" name="interfaceVersion"></select></td>
 			<td class="lead"><label for="org">所属组织</label></td>
 			<td>
-				<select name="org" id="org">
-					<optgroup label="Swedish Cars">
-						<option value ="volvo">Volvo</option>
-						<option value ="saab">Saab</option>
-					</optgroup>
-
-					<optgroup label="German Cars">
-						<option value ="mercedes">Mercedes</option>
-						<option value ="audi">Audi</option>
-					</optgroup>
-				</select>
+				<label><input type="text" id="org" name="org" placeholder="请选择" readonly></label>
+				<input type="hidden" id="orgId" name="orgId">
 			</td>
 		</tr>
 	</table>
@@ -39,7 +30,3 @@
 
 
 <% include ('/comm/footer.html') %>
-
-<script>
-	require('./index.ts');
-</script>

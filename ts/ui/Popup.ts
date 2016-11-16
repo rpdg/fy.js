@@ -19,12 +19,12 @@ const BoxyStore = {
 	dragging: null,
 	_handleDrag: (evt)=> {
 		//evt.preventDefault() ;
-		var d = BoxyStore.dragging;
+		let d = BoxyStore.dragging;
 
 		if (d) {
 
-			var w = evt.pageX - d[1];
-			var h = evt.pageY - d[2];
+			let w = evt.pageX - d[1];
+			let h = evt.pageY - d[2];
 
 			if (w < 1) w = 1;
 			else if (w > d[3]) w = d[3];
@@ -39,7 +39,7 @@ const BoxyStore = {
 };
 
 const nextZ = (()=> {
-	var zIndex = 1000;
+	let zIndex = 1000;
 	return ()=> ++zIndex;
 })();
 
@@ -53,7 +53,7 @@ function setTitleBar(cfg) {
 	this.boxy.append(this.titleBar);
 	tb[0].onselectstart = returnFalse;
 
-	var btnSets = $('<div class="dg-title-buttons"></div>').appendTo(tb);
+	let btnSets = $('<div class="dg-title-buttons"></div>').appendTo(tb);
 
 	if (cfg.btnMax) {
 		this.btnMax = $("<b class='dg-btn-max'></b>");
@@ -94,12 +94,12 @@ function setDraggable(self) {
 			tb.on('mousemove.boxy', function (e) {
 				tb.unbind("mousemove.boxy");
 
-				var boxy = self.boxy[0];
+				let boxy = self.boxy[0];
 
 
 				document.onselectstart = returnFalse;
 
-				var size = self.getSize();
+				let size = self.getSize();
 
 				BoxyStore.dragging = [
 					boxy,
@@ -116,7 +116,7 @@ function setDraggable(self) {
 							$(document).unbind(".boxy");
 							BoxyStore.dragging = document.onselectstart = null;
 
-							var pos = self.boxy.position();
+							let pos = self.boxy.position();
 							self.restoreSize.top = pos.top;
 							self.restoreSize.left = pos.left;
 
@@ -134,11 +134,11 @@ function setDraggable(self) {
 }
 
 function setFooter(cfg) {
-	var footer = this.footBar = $('<div class="dg-footer"></div>');
+	let footer = this.footBar = $('<div class="dg-footer"></div>');
 
-	var htmlArr = [];
+	let htmlArr = [];
 	for (let key in cfg.buttons) {
-		var v = cfg.buttons[key], x = htmlArr.length;
+		let v = cfg.buttons[key], x = htmlArr.length;
 
 		let cls, txt;
 
@@ -157,18 +157,18 @@ function setFooter(cfg) {
 	footer.html(htmlArr.join(' '));
 
 
-	var self = this;
+	let self = this;
 	footer.on('click', 'button', function (evt) {
 		if (cfg.callback) {
-			var clicked = this;
-			var ifrWin;
+			let clicked = this;
+			let ifrWin;
 			if (self.iframe) {
 				ifrWin = self.iframe.contentWindow ? self.iframe.contentWindow : self.iframe.contentDocument.defaultView;
 			}
 
-			var i = parseInt(clicked.name, 10);
+			let i = parseInt(clicked.name, 10);
 
-			var wontClose = cfg.callback.call(self, i, ifrWin);
+			let wontClose = cfg.callback.call(self, i, ifrWin);
 
 			if (!wontClose) self.close();
 
@@ -220,7 +220,7 @@ class PopUp extends DisplayObject {
 		this.boxy.append(this.content).appendTo(document.body);
 
 
-		var titleBarHeight = 0, footBarHeight = 0;
+		let titleBarHeight = 0, footBarHeight = 0;
 
 		if (cfg.title) {
 			setTitleBar.call(this, cfg);
@@ -238,7 +238,7 @@ class PopUp extends DisplayObject {
 			this.iframe = this.jq[0] as HTMLIFrameElement;
 
 
-		var contentSize = {
+		let contentSize = {
 			width: cfg.width || this.boxy.outerWidth() || 500,
 			height: cfg.height || this.boxy.outerHeight() || 300
 		};
@@ -247,9 +247,9 @@ class PopUp extends DisplayObject {
 		 this.boxy.css(contentSize);*/
 
 
-		var doc = document.documentElement;//, win = window;
+		let doc = document.documentElement;//, win = window;
 
-		var viewport = {
+		let viewport = {
 			//top: win.pageYOffset,
 			//left: win.pageXOffset,
 			width: doc.clientWidth,
@@ -257,7 +257,7 @@ class PopUp extends DisplayObject {
 		};
 		//console.log(p);
 
-		var pos = {
+		let pos = {
 			width: cfg.width || this.boxy.outerWidth() || 500,
 			height: cfg.height || this.boxy.outerHeight() || 300,
 			top: Math.max(0, (viewport.height - contentSize.height ) / 2),
@@ -292,7 +292,7 @@ class PopUp extends DisplayObject {
 	}
 
 	getPosition(): any {
-		var b = this.boxy[0];
+		let b = this.boxy[0];
 		return {left: b.offsetLeft, top: b.offsetTop};
 	}
 
@@ -311,7 +311,7 @@ class PopUp extends DisplayObject {
 
 		this.mask.css({display: "block", opacity: 1});
 
-		var topPx = this.boxy.position().top;
+		let topPx = this.boxy.position().top;
 
 		//console.warn(this.boxy[0], topPx);
 
@@ -323,8 +323,8 @@ class PopUp extends DisplayObject {
 
 	close(fn) {
 
-		var that = this;
-		var css = this.getPosition();
+		let that = this;
+		let css = this.getPosition();
 		css.opacity = 0;
 		css.top = Math.max(css.top - 40, 0);
 
@@ -424,16 +424,16 @@ class PopUp extends DisplayObject {
 	}
 
 
-	static alert(message, callback, options = {}) {
+	static alert(message, callback, options = {}): PopUp {
 
-		var {html, cfg} = wrapAsk(message, callback, options);
+		let {html, cfg} = wrapAsk(message, callback, options);
 
 		return new PopUp($(html), cfg);
 	}
 
-	static confirm(message, callback, options = {}) {
+	static confirm(message, callback, options = {}): PopUp {
 
-		var {html, cfg} = wrapAsk(message, callback, options);
+		let {html, cfg} = wrapAsk(message, callback, options);
 
 		if (!cfg.buttons.cancel) {
 			cfg.buttons.cancel = '取消';
@@ -447,7 +447,7 @@ class PopUp extends DisplayObject {
 		return new PopUp($(html), cfg);
 	}
 
-	static popTop(iframe, options) {
+	static popTop(iframe, options): PopUp {
 		//noinspection TypeScriptUnresolvedFunction
 		return top.ops(iframe).popup(options);
 	}
@@ -465,7 +465,7 @@ function wrapAsk(msg, cb, cfg) {
 		cfg.buttons.ok = '确定';
 	}
 
-	var html;
+	let html;
 	if (typeof msg === 'string' && msg.indexOf('<iframe ') < 0) {
 		html = `<div class="dg-alert">${msg}</div>`;
 	}

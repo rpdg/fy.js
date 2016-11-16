@@ -3,9 +3,15 @@ import store from 'ts/util/store';
 
 store.use('sessionStorage');
 
-var cfg: any = {};
+let cfg: {
+	apiServer : string ;
+	ajaxTimeOut: number;
+	loginPage : string;
+	version : string;
+	onServerError: Function;
+	onUnauthorizedError: Function;
+} = {};
 
-//noinspection TypeScriptUnresolvedVariable
 cfg.apiServer = store.get('apiServer') || (window.CONFIG ? window.CONFIG.apiServer : null);
 
 cfg.ajaxTimeOut = 20000;
@@ -16,7 +22,7 @@ cfg.version = 'beta version';
 
 
 cfg.onUnauthorizedError = function () {
-	var param = '', url = cfg.loginPage;
+	let param = '', url = cfg.loginPage;
 	if (top.window.location.hash) {
 		param = '?returnUrl=' + encodeURIComponent(top.window.location.hash);
 		url += param;
@@ -35,9 +41,9 @@ const globalErrorCodes = {
 	'token_exception': 'token验证失败',
 };
 
-cfg.onServerError = function (errorMsg) {
+
+cfg.onServerError = function (errorMsg :string = 'unknown error') {
 	//console.log(this);
-	errorMsg = errorMsg || 'unknown error';
 
 	if (errorMsg === 'token_exception' && location.pathname != cfg.loginPage) {
 		cfg.onUnauthorizedError();
@@ -49,6 +55,9 @@ cfg.onServerError = function (errorMsg) {
 	else if (globalErrorCodes[errorMsg]) {
 		errorMsg = globalErrorCodes[errorMsg];
 	}
+	/*else {
+		errorMsg = '服务端发生错误';
+	}*/
 
 	ops.err(errorMsg);
 };

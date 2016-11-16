@@ -1,34 +1,46 @@
-import ops from 'ts/ops.ts';
-import Panel from "ts/ui/Panel.ts";
-import {ListBox} from "ts/ui/FormControls.ts";
+import ops from 'ts/ops';
+import Panel from "ts/ui/Panel";
 
 
 ops.api({
 	collection: 'system/collection/findPage',
-	amssp: 'system/amssp/findPage?pageNo=1&pageSize=9999',
-	'delete!DELETE!': 'system/collection/delete/${id}'
+	amssp: 'system/amssp/findAll',
+	'delete!DELETE!': 'system/collection/delete/${id}',
+	'switch!delete!': 'system/collection/switch/${id}'
 });
 
 
 const infoPage = '/page/admin/collection/info.html';
 
 
-var panel: Panel = ops.wrapPanel('#tbSearch', {
+let panel: Panel = ops.wrapPanel('#tbSearch', {
 	title: '采集源查询',
 	btnSearchText: '<i class="ico-find"></i> 查询'
 });
 
 panel.btnSearch.click(function () {
-	var param = $('#tbSearch').fieldsToJson();
+	let param = $('#tbSearch').fieldsToJson();
 	param.pageNo = 1;
 	//param.spCode = sel.getValue();
 	console.log(param);
 	tb.update(param);
 });
 
-var sel: ListBox = ops('#spCode').listBox({
+let spHash = {};
+
+ops('#spCode').listBox({
 	api: ops.api.amssp,
-	value: 'code'
+	value: 'code',
+	onAjaxEnd: data => {
+		let arr = data.results, l = arr.length;
+		while (l--) {
+			let sp = arr[l];
+			spHash[sp.code] = sp.name;
+		}
+	},
+	onCreate: ()=> {
+		tb.update();
+	}
 });
 
 
@@ -36,7 +48,7 @@ var sel: ListBox = ops('#spCode').listBox({
 $('#btnAdd').click(function () {
 
 	//noinspection TypeScriptUnresolvedVariable
-	var pop = top.ops.confirm(`<iframe src="${infoPage}" />`, function (i, ifr, v) {
+	let pop = top.ops.confirm(`<iframe src="${infoPage}" />`, function (i, ifr, v) {
 		//debugger;
 		//console.log(i , ifr , v);
 		return ifr.doSave(pop, tb);
@@ -54,7 +66,7 @@ $('#btnAdd').click(function () {
 	//console.log(pop);
 });
 
-var tb = ops('#tb').table({
+let tb = ops('#tb').table({
 	columns: [
 		{
 			text: '采集源名称', width: 150,
@@ -81,19 +93,21 @@ var tb = ops('#tb').table({
 		},
 		{
 			text: '内容生产商', width: 150,
-			src: 'spCode'
+			src: 'spCode',
+			render: (code)=> spHash[code]
 		},
 		{
 			src: 'id', text: '操作', width: 160,
 			render: function (val, i, row) {
-				var btnUpdate = `<button class="btn-mini btn-info" data-id="${val}" data-title="${row.name}">修改</button> `;
-				var btnDelete = row.status == 1 ? `<button class="btn-mini btn-danger" data-id="${val}" data-title="${row.name}">删除</button>` : ' 　　　';
-				var btnSwitch = `<button class="btn-mini btn-`+(row.status == 1 ? 'success' : 'warning')+`" data-id="${val}" data-title="${row.name}" data-status="${row.status}">` + (row.status == 1 ? '启用' : '停用') + `</button> `;
+				let btnUpdate = `<button class="btn-mini btn-info" data-id="${val}" data-title="${row.name}">修改</button> `;
+				let btnDelete = row.status == 1 ? `<button class="btn-mini btn-danger" data-id="${val}" data-title="${row.name}">删除</button>` : '<button class="btn-mini" style="visibility: hidden" disabled>删除</button>';
+				let btnSwitch = `<button class="btn-mini btn-` + (row.status == 1 ? 'success' : 'warning') + `" data-id="${val}" data-title="${row.name}" data-status="${row.status}">` + (row.status == 1 ? '启用' : '停用') + `</button> `;
 				return btnSwitch + btnUpdate + btnDelete;
 			}
 		}
 	],
 	api: ops.api.collection,
+	lazy: true,
 	pagination: {
 		pageSize: 10
 	}
@@ -102,10 +116,10 @@ var tb = ops('#tb').table({
 
 //edit
 tb.tbody.on('click', '.btn-info', function () {
-	var btn = $(this), title = btn.data('title'), id = btn.data('id');
+	let btn = $(this), title = btn.data('title'), id = btn.data('id');
 
 	//noinspection TypeScriptUnresolvedVariable
-	var pop = top.ops.confirm(`<iframe src="${infoPage}?id=${id}" />`, function (i, ifr) {
+	let pop = top.ops.confirm(`<iframe src="${infoPage}?id=${id}" />`, function (i, ifr) {
 		return ifr.doSave(pop, tb);
 	}, {
 		title: `修改采集源: ${title}`,
@@ -121,12 +135,12 @@ tb.tbody.on('click', '.btn-info', function () {
 
 
 //switch
-tb.tbody.on('click', '.btn-warning', function () {
-	var btn = $(this), title = btn.data('title'), id = btn.data('id');
-	var state = btn.data('status') == 1 ? '启用' : '停用';
+tb.tbody.on('click', '.btn-warning,.btn-success', function () {
+	let btn = $(this), title = btn.data('title'), id = btn.data('id');
+	let state = btn.data('status') == 1 ? '启用' : '停用';
 
 	ops.confirm(`要${state}“<b>${title}</b>”吗？`, function () {
-		ops.api.stop({id: id}, ()=>tb.update());
+		ops.api.switch({id: id}, ()=>tb.update());
 	}, {
 		title: '请确认'
 	});
@@ -134,7 +148,7 @@ tb.tbody.on('click', '.btn-warning', function () {
 
 //del
 tb.tbody.on('click', '.btn-danger', function () {
-	var btn = $(this), title = btn.data('title'), id = btn.data('id');
+	let btn = $(this), title = btn.data('title'), id = btn.data('id');
 
 	ops.danger(`要删除“<b>${title}</b>”吗？`, function () {
 		ops.api.delete({id: id}, ()=>tb.update());

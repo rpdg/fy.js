@@ -30,7 +30,7 @@ class ListBox extends AjaxDisplayObject implements IFormControls {
 
 
 		if (cfg.autoPrependBlank) {
-			var txt = (typeof cfg.autoPrependBlank === 'string') ? cfg.autoPrependBlank : '请选择';
+			let txt = (typeof cfg.autoPrependBlank === 'string') ? cfg.autoPrependBlank : '请选择';
 			jq.prepend(`<option value="">${txt}</option>`);
 		}
 
@@ -71,7 +71,7 @@ class ListBox extends AjaxDisplayObject implements IFormControls {
 
 		this._selectedIndex = i;
 
-		var evt: Event = {target: this._items[i]} as Event;
+		let evt: Event = {target: this._items[i]} as Event;
 		this.selectHandler(evt);
 
 	}
@@ -81,7 +81,7 @@ class ListBox extends AjaxDisplayObject implements IFormControls {
 	}
 
 	getText(): string {
-		var selectElem: HTMLSelectElement = this.jq[0] as HTMLSelectElement;
+		let selectElem: HTMLSelectElement = this.jq[0] as HTMLSelectElement;
 
 		if (selectElem.options.length) {
 			return (selectElem.options[selectElem.selectedIndex] as HTMLOptionElement).text;
@@ -142,8 +142,8 @@ class CheckBox extends AjaxDisplayObject implements IFormControls {
 
 	public set selectedIndex(arr: number[]) {
 
-		var chkIdx = [], chkItem = [];
-		for (var i = 0, l = arr.length; i < l; i++) {
+		let chkIdx = [], chkItem = [];
+		for (let i = 0, l = arr.length; i < l; i++) {
 			let ix = arr[i];
 			let item = this._items.eq(ix);
 			if (item.length) {
@@ -160,7 +160,7 @@ class CheckBox extends AjaxDisplayObject implements IFormControls {
 		if (chkItem.length) {
 			this._prevIndex = this.selectedIndex;
 			this.selectedIndex = chkIdx;
-			var evt: Event = {target: $(chkItem)} as Event;
+			let evt: Event = {target: $(chkItem)} as Event;
 			this.selectHandler(evt);
 		}
 
@@ -171,7 +171,7 @@ class CheckBox extends AjaxDisplayObject implements IFormControls {
 	}
 
 	get selectedData(): Array {
-		var s = this.selectedItem,
+		let s = this.selectedItem,
 			arr = [],
 			that = this;
 
@@ -188,9 +188,9 @@ class CheckBox extends AjaxDisplayObject implements IFormControls {
 	}
 
 	getValue(): any {
-		var s: JQuery = this.selectedItem;
+		let s: JQuery = this.selectedItem;
 		if (s.length) {
-			var arr = [];
+			let arr = [];
 			s.each(function (i, o: HTMLInputElement) {
 				arr.push(o.value);
 			});
@@ -200,9 +200,9 @@ class CheckBox extends AjaxDisplayObject implements IFormControls {
 	}
 
 	getText(): any {
-		var s: JQuery = this.selectedItem;
+		let s: JQuery = this.selectedItem;
 		if (s.length) {
-			var arr = [];
+			let arr = [];
 			s.each(function (i, o: HTMLInputElement) {
 				arr.push($(o.parentNode).text());
 			});
@@ -270,7 +270,7 @@ class RadioBox extends AjaxDisplayObject implements IFormControls {
 	}
 
 	getText(): string {
-		var s = this.selectedItem;
+		let s = this.selectedItem;
 		if (s.length) {
 			return s.parent().text();
 		}

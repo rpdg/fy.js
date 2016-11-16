@@ -2,7 +2,11 @@
 <script src="/js/config.js"></script><!--ignore-->
 <style>
 	body {
-		background-color: #e5e9ea;
+		background-color: #63cdcd;
+		background-image: url("/css/img/bg1.jpg");
+		background-position: center center;
+		background-repeat: no-repeat;
+		background-size: 100% 100%;
 	}
 
 	label {
@@ -26,7 +30,7 @@
 	}
 
 	#loginForm {
-		background-color: #fff;
+		background-color: rgba(255,255,255,.28);
 		width: 440px;
 		height: 200px;
 		padding: 20px;
@@ -37,7 +41,7 @@
 	#loginPanel {
 		position: absolute;
 		top: 50%;
-		margin-top: -180px;
+		margin-top: -240px;
 		left: 50%;
 		margin-left: -220px;
 		width: 440px;
@@ -45,9 +49,9 @@
 	}
 
 	h1 {
-		font-size: 32px;
+		font-size: 22px;
 		font-weight: 100;
-		color: #6e7882;
+		color: #fff;
 		text-align: center;
 		margin-bottom: 20px;
 	}
@@ -62,7 +66,7 @@
 		width: 36px;
 		height: 33px;
 		display: inline-block;
-		background-color: #a3b6bb;
+		background-color: #38a5a5;
 		vertical-align: bottom;
 		background-position: center center;
 		background-repeat: no-repeat;
@@ -80,21 +84,21 @@
 	#b2 {
 		background-image: url("/css/ico/ic_vpn_key_48px-16.png?__inline");
 	}
+	#avanda{
+		width: 114px;
+		height: 114px;
+	}
 </style>
 <div id="loginPanel">
-	<h1>欢迎登录AMS系统</h1>
+	<p class="text-center"><img src="/css/img/avata.png?__inline" id="avanda"></p>
+	<h1>AMS <%=i18n.login%></h1>
 	<form id="loginForm" action="#" onsubmit="return false">
-		<label><b id="b0" class="box"></b><input id="orgCode" name="orgCode" type="text" placeholder="组织代码" value="<%=orgCode%>"></label>
-		<label><b id="b1" class="box"></b><input id="loginName" name="loginName" type="text" placeholder="用户名"></label>
-		<label><b id="b2" class="box"></b><input id="password" name="password" type="password"
-		                                         placeholder="登录密码"></label>
-		<button id="btnLogin" class="btn-success">　登录 <img src="/css/ico/unlock-12.png?__inline" alt="">　</button>
+		<label><b id="b0" class="box"></b><input id="orgCode" name="orgCode" type="text" maxlength="20" placeholder="<%=i18n.orgCode%>" value="<%=orgCode%>"></label>
+		<label><b id="b1" class="box"></b><input id="loginName" name="loginName" type="text" maxlength="20" placeholder="<%=i18n.loginName%>"></label>
+		<label><b id="b2" class="box"></b><input id="password" name="password" type="password" maxlength="18" placeholder="<%=i18n.password%>"></label>
+		<button id="btnLogin" class="btn-warning">　<%=i18n.login%> <img src="/css/ico/unlock-12.png?__inline" alt="">　</button>
 	</form>
 </div>
 
 
 <% include ('/comm/footer.html') %>
-
-<script>
-	require('./index');
-</script>

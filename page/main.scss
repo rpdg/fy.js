@@ -22,18 +22,29 @@ body {
 		//border-right: 1px solid darken($topbar-bg , 2%) ;
 		text-align: center;
 		color: #fff;
-		font-size: 32px;
+		font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
+		font-size: 36px;
 		float: left;
+		img{
+			height: 28px;
+			width: 28px;
+			margin-top: -4px;
+			vertical-align: middle;
+		}
 	}
 	
 	.ico-more-vert{
+		position: absolute;
+		z-index: 5;
+		right: 0;
+		
 		display: inline-block;
 		//transform: scale(0.5);
 		width: 36px;
 		height: 36px;
 		//cursor: pointer;
-		float: right;
-		margin-top: 8px;
+		//float: right;
+		margin-top: 10px;
 		margin-right: 16px;
 		border-radius: 50px;
 		background: {
@@ -44,35 +55,43 @@ body {
 		&:hover{
 			background-color: darken($topbar-bg , 3%) ;
 			
-			ul{
+			#moreMenu{
 				//display: block;
-				right: 0;
+				right: 0 - 16px ;
 			}
 		}
 		
-		ul{
+		#moreMenu{
+			
 			//display: none;
 			position: absolute;
 			z-index: 50;
 			
 			padding: $topbar-height 0 1em 1em;
-			top: 0 ;
-			right: -160px;
+			
+			top: -1px - 8px;
+			right: -160px - 16px;
 			
 			width: 150px;
 			
 			transition-duration: 0.3s;
 			
+		}
+		
+		ul{
+			box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
 			li{
-				box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
 				background-color: #fff;
-				padding: 1em 2em;
-				border-bottom: 1px solid #eee;
+				padding: 1em 1.2em;
+				//border-bottom: 1px solid #eee;
 				cursor: pointer;
 				
 				&:hover{
 					background-color: #e9e9e9;
 				}
+			}
+			#liLogOff{
+				border-top: 1px solid #eee;
 			}
 		}
 	}
@@ -81,6 +100,7 @@ body {
 		position: absolute;
 		display: inline-block;
 		height: $topbar-height;
+		white-space: nowrap;
 				
 		>a{
 			display: inline-block;
@@ -107,6 +127,12 @@ body {
 		
 		&.small-menu>a{
 			font-size: 16px;
+		}
+		&.mini-menu>a{
+			font-size: 14px;
+		}
+		&.nano-menu>a{
+			font-size: 12px;
 		}
 	}
 }

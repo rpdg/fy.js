@@ -1,6 +1,6 @@
 import ops from 'ts/ops.ts';
 
-var id = ops.request['id'];
+let id = ops.request['id'];
 ops.api({
 	'findById!!': 'system/amssp/findById/${id}',
 	'update!post': 'system/amssp/update',
@@ -18,7 +18,7 @@ ops.api.add.set('codes', codes);
 ops.api.update.set('codes', codes);
 
 
-var form = $('#tbSearch');
+let form = $('#tbSearch');
 if (id) {
 	ops.api.findById({id: ops.request['id']}, function (data) {
 		form.jsonToFields(data);
@@ -28,7 +28,7 @@ if (id) {
 
 window['doSave'] = function (popWin, table) {
 
-	var action,
+	let action,
 		param = form.fieldsToJson({
 			name: {
 				name: '内容生产商名称',

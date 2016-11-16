@@ -1,41 +1,77 @@
 import ops from 'ts/ops.ts';
 
-var id = ops.request['id'];
+let id = ops.request['id'];
+
 ops.api({
 	'findById!!': 'transcode/business/findById/${id}',
-	'update!post': 'transcode/business/update',
-	'add!post': 'transcode/business/add'
+	'add!post': 'transcode/bizProfile/add' ,
+
+	business: 'transcode/business/findAll' ,
+	sourceTypes: 'base/sourceTypes' ,
+	outTypes: 'base/outTypes' ,
+	movietype: 'system/movietype/findAll' ,
 });
 
-const codes = {
-	'transcode_business_name_empty': '业务名称为空',
-	'transcode_business_code_empty': '业务代码为空',
-	'transcode_business_name_existed': '业务名称已被占用',
-	'transcode_business_code_existed': '业务代码已被占用',
-};
 
-ops.api.add.set('codes', codes);
-ops.api.update.set('codes', codes);
+//业务名称
+ops('#businessId').listBox({
+	api : ops.api.business ,
+});
 
 
-var form = $('#tbSearch');
-if (id) {
-	ops.api.findById({id: ops.request['id']}, function (data) {
-		form.jsonToFields(data);
-	});
-}
+//输入类别
+ops('#inputSourceType').listBox({
+	api : ops.api.sourceTypes ,
+	value : 'code'
+});
+
+
+//
+ops.api.movietype(data=>{
+	const cfg = {
+		data : data ,
+		value  :'movieType'
+	};
+
+	ops('#inputFileMovieType').listBox(cfg);
+	ops('#outputFileMovieType').listBox(cfg);
+});
+
+
+const form = $('#tbProfile');
 
 
 window['doSave'] = function (popWin, table) {
 
-	var action,
+	let action,
 		param = form.fieldsToJson({
-			name: {
+			businessId: {
 				name: '业务名称',
+				type : 'number',
 				require: true
 			},
-			bizCode: {
-				name: '业务编码',
+			inputSourceType: {
+				name: '输入类别',
+				type : 'number',
+				require: true
+			},
+			inputFileMovieType: {
+				name: '输入源文件类型',
+				type : 'number',
+				require: true
+			},
+			outputFileMovieType: {
+				name: '输出文件类型',
+				type : 'number',
+				require: true
+			},
+			outputDefinitionType: {
+				name: '输出类别',
+				type : 'number',
+				require: true
+			},
+			suffix:{
+				name: '文件后缀',
 				require: true
 			}
 		});

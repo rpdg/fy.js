@@ -11,9 +11,11 @@
 		return !!string;
 	};
 	validate.empty = function (string) {
+		if (!string) return true;
 		return String(string).replace(/\s+/g, '').length == 0;
 	};
 	validate.require = function (str) {
+		if (!str) return false;
 		return !validate.empty(str);
 	};
 	validate.email = function (string) {
@@ -79,14 +81,41 @@
 	validate.ns = function (str) {
 		return (/[`~!@#$%\^&\*\+=\{\};"'<>\?,\.]/gim).test(str);
 	};
+	validate.password = function (str) {
+		var res = '';
+		if (str.length < 8 || str.length > 15) {
+			res = '密码长度需要8～15位';
+		}
+		else if (!(/(?=.*[A-Z])(?=.*[a-z])(?=.*\d)/).test(str)) {
+			res = '密码需要由大小写字母与数字混合';
+		}
+
+		return res;
+	};
 
 	//复选框组作全选全非选的同步checkBox
 	$.fn.syncCheckBoxGroup = function (expr, context) {
 		var $t = this, $cxt = $(context || document);
 		$cxt.on('change', expr, function () {
 			var $chks = $(expr, $cxt);
-			console.log($chks, $chks.length, $chks.filter(':checked').length);
+			//console.log($chks, $chks.length, $chks.filter(':checked').length);
 			$t.prop("checked", $chks.filter(':checked').length === $chks.length);
+		});
+		$t.on('change', function () {
+			$(expr, $cxt).prop("checked", this.checked);
+		});
+		return this;
+	};
+
+	//复选框组作全选全非选的同步checkBox, 单向
+	$.fn.checkBoxAll = function (expr, context) {
+		var $t = this, $cxt = $(context || document);
+		$cxt.on('change', expr, function () {
+			if ($t.prop('checked')) {
+				var $chks = $(expr, $cxt);
+				//console.log($chks, $chks.length, $chks.filter(':checked').length);
+				$t.prop("checked", $chks.filter(':checked').length === $chks.length);
+			}
 		});
 		$t.on('change', function () {
 			$(expr, $cxt).prop("checked", this.checked);
@@ -120,16 +149,13 @@
 		var objResult = {}, a, form;
 
 		if (this[0].tagName !== "FORM") {
-			var tmp = $('<form/>').append(this.clone());
-			form = tmp;
-			a = tmp.serializeArray();
-			tmp = null;
+			form = $(':input', this);
 		}
 		else {
 			form = this;
-			a = this.serializeArray();
 		}
 		//a = this.serializeArray() ;
+		a = form.serializeArray();
 
 		$.each(a, function () {
 			var i = this.name.indexOf("[]"),
@@ -162,6 +188,16 @@
 				if (rules.hasOwnProperty(ruleName)) {
 					var rule = rules[ruleName];
 
+					if (rule.maxLength && !validate.maxlength(objResult[ruleName], rule.maxLength)) {
+						$('[name=' + ruleName + ']', this).iptError(rule.name + '长度不可超过' + rule.maxLength + '字');
+						return;
+					}
+
+					if (rule.minLength && !validate.minlength(objResult[ruleName], rule.minLength)) {
+						$('[name=' + ruleName + ']', this).iptError(rule.name + '长度不可少于' + rule.maxLength + '字');
+						return;
+					}
+
 					if (rule.require && validate.empty(objResult[ruleName])) {
 						$('[name=' + ruleName + ']', this).iptError(rule.name + '不可为空');
 						return;
@@ -170,6 +206,31 @@
 					if (rule.type === 'ns' && validate.ns(objResult[ruleName])) {
 						$('[name=' + ruleName + ']', this).iptError(rule.name + '不可含特殊字符');
 						return;
+					}
+
+					if (rule.type === 'password') {
+						var rs = validate.password(objResult[ruleName]);
+						if (rs) {
+							$('[name=' + ruleName + ']', this).iptError(rs);
+							return;
+						}
+					}
+					else if (rule.type === 'number') {
+						if (objResult[ruleName]) {
+							if (!validate.numeric(objResult[ruleName])) {
+								$('[name=' + ruleName + ']', this).iptError(rule.name + '应该是数字');
+								return;
+							}
+							objResult[ruleName] = +objResult[ruleName];
+						}
+					}
+					else if (rule.type === 'number[]') {
+						if (objResult[ruleName] && objResult[ruleName].length && objResult[ruleName].push) {
+							var nArr = objResult[ruleName], l = nArr.length;
+							while (l--) {
+								nArr[l] = +nArr[l];
+							}
+						}
 					}
 
 
@@ -196,7 +257,7 @@
 			isDroplist = false;
 		}
 
-		var elem, val , b;
+		var elem, val, b;
 
 		loopElement :
 			for (var i = 0, l = element.length; i < l; i++) {
@@ -208,7 +269,7 @@
 					for (var j = 0, f = a.length; j < f; j++) {
 						if (val == a[j]) {
 							if (isSingleSelector) {
-								isDroplist ? (elem.setAttribute('selected' , 'selected')) : (elem.checked = true);
+								isDroplist ? (elem.setAttribute('selected', 'selected')) : (elem.checked = true);
 								break loopElement;
 							}
 							else {
@@ -484,6 +545,33 @@
 		return this;
 	};
 
+	//a static function to detect ie browser
+	//returns : not ie => 0 , ie => 6~11 , edge => 12+
+	$.detectIE = function () {
+		var ua = window.navigator.userAgent;
+
+		var msie = ua.indexOf('MSIE ');
+		if (msie > 0) {
+			// IE 10 or older => return version number
+			return parseInt(ua.substring(msie + 5, ua.indexOf('.', msie)), 10);
+		}
+
+		var trident = ua.indexOf('Trident/');
+		if (trident > 0) {
+			// IE 11 => return version number
+			var rv = ua.indexOf('rv:');
+			return parseInt(ua.substring(rv + 3, ua.indexOf('.', rv)), 10);
+		}
+
+		var edge = ua.indexOf('Edge/');
+		if (edge > 0) {
+			// Edge (IE 12+) => return version number
+			return parseInt(ua.substring(edge + 5, ua.indexOf('.', edge)), 10);
+		}
+
+		// other browser
+		return 0;
+	};
 
 })(jQuery);
 

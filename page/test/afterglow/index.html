@@ -1,0 +1,18 @@
+<% include ('/comm/header.html') %>
+
+<script src="/page/test/afterglow/afterglow.min.jslow.min.js"></script><!--ignore-->
+
+<video id="my-video" class="afterglow"
+       width="640" height="480" controls>
+	<source type="video/mp4" src="../demo.mp4" />
+</video>
+
+
+<% include ('/comm/footer.html') %>
+
+
+<script>
+
+	var myPlayer = afterglow.getPlayer('my-video');
+
+</script>

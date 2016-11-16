@@ -5,11 +5,11 @@ import PopUp from "./ui/Popup";
 import Panel from "./ui/Panel";
 import Tree from "./ui/Tree";
 
-import {request, string, dateTime, is, url, convert, format} from  'util/utils';
+import {request, string, dateTime, is, url, convert, format, array} from  'util/utils';
 
 
 //a ui factory class
-class OpsUi extends Function{
+class OpsUi {
 
 	jq: JQuery;
 
@@ -41,18 +41,19 @@ class OpsUi extends Function{
 		return new RadioBox(this.jq, cfg);
 	}
 
-	popup(cfg) {
+	popup(cfg): PopUp {
 		return new PopUp(this.jq, cfg);
 	}
 
-	panel(cfg) {
+	panel(cfg): Panel {
 		return new Panel(this.jq, cfg);
 	}
 
 }
 
 
-var ops: any = (se: JQuery|any[]|Element|DocumentFragment|Text|string) => new OpsUi(se);
+let ops: any = (se: JQuery|any[]|Element|DocumentFragment|Text|string) => new OpsUi(se);
+
 
 ops.api = api;
 
@@ -63,6 +64,7 @@ ops.is = is;
 ops.url = url;
 ops.convert = convert;
 ops.format = format;
+ops.array = array;
 
 
 //
@@ -73,7 +75,7 @@ ops.confirm = PopUp.confirm;
 ops.ok = function (message, callBack?: Function, options ?: any = {}) {
 	PopUp.alert('<i class="ico-ok"></i><span>' + message + '</span>', callBack, options);
 };
-ops.err = function (message, callBack?: Function, options ?: any = {}) {
+ops.err = function (message, callBack?: Function, options ?: any = {}): void {
 	PopUp.alert('<i class="ico-error"></i><span>' + message + '</span>', callBack, options);
 };
 ops.warn = function (message, callBack?: Function, options ?: any = {}) {

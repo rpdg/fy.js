@@ -1,6 +1,6 @@
 import {DisplayObject} from './DisplayOject';
 
-var ComboManager = {
+let ComboManager = {
 	zIndex: 999,
 	instances: {},
 	remove: function (key) {
@@ -8,7 +8,7 @@ var ComboManager = {
 	},
 	closeAll: function () {
 		for (let key in this.instances) {
-			var target: Combo = this.instances[key] as Combo;
+			let target: Combo = this.instances[key] as Combo;
 			if (target.status === 'opened') target.close();
 		}
 	}
@@ -17,13 +17,15 @@ var ComboManager = {
 const $BODY = $("body");
 
 function bodyBinder() {
-	$BODY.on("mousedown.dropDownHideAll", function () {
+	$BODY.on("mousedown.dropDownHide", function () {
 		ComboManager.closeAll();
 	});
 }
 
 
 class Combo extends DisplayObject {
+
+	jqValueField :JQuery; //to put value
 
 	target: JQuery; //drop down
 
@@ -39,6 +41,8 @@ class Combo extends DisplayObject {
 
 	constructor(jq: JQuery, cfg: any) {
 
+		cfg = $.extend({}, cfg);
+
 		super(jq, cfg);
 
 	}
@@ -48,12 +52,11 @@ class Combo extends DisplayObject {
 		if (jq[0].tagName === 'INPUT') jq.addClass('combo-input').val(cfg.text);
 		else jq.text(cfg.text);
 
+		this.jqValueField = $(cfg.valueField);
+
 		this.target = cfg.target; //drop down
 
-		this.target.css({
-			display: 'none',
-			position: 'absolute'
-		}).on('mousedown', (evt) => {
+		this.target.addClass('combo-dropDown').on('mousedown', (evt) => {
 			evt.stopPropagation();
 		});
 
@@ -70,11 +73,13 @@ class Combo extends DisplayObject {
 			}).wrap('<span style="display: inline-block;vertical-align: middle;"></span>').parents('span:first');
 
 			let that = this;
-			let eraser = $('<div style="font: 12px Arial;color:#d00;float:left;margin:5px 0 0 -26px ;width:8px;line-height:12px;cursor:pointer;display:none;">x</div>')
+			let eraser = $('<div class="ipt-eraser">&times;</div>')
 				.appendTo(this._wrapper)
 				.click(function () {
-					if (!that.jq.prop('disabled'))
+					if (!that.jq.prop('disabled')) {
 						that.jq.val('');
+						that.jqValueField.val('');
+					}
 				});
 
 			this._wrapper.hover(function () {
@@ -88,12 +93,12 @@ class Combo extends DisplayObject {
 
 	set enable(b: boolean) {
 		if (b) {
-			var that = this,
+			let that = this,
 				$c = this.target;
 
 			this.jq.on(this._evtName, function () {
 				//event.stopImmediatePropagation();
-				var go = true;
+				let go = true;
 				that.status === "closed" && that.position();
 
 				if (typeof that.onBeforeOpen === 'function') {
@@ -117,11 +122,11 @@ class Combo extends DisplayObject {
 	}
 
 	position() {
-		var $t = this.jq,  //input
+		let $t = this.jq,  //input
 			$c = this.target, //drop down
 			offset = $t.offset();
 
-		var top = offset.top + $t.outerHeight(), ch = $c.outerHeight();
+		let top = offset.top + $t.outerHeight(), ch = $c.outerHeight();
 
 		if (top + ch > $(document).outerHeight() && offset.top > ch) {
 			top = offset.top - $c.outerHeight();
@@ -136,7 +141,7 @@ class Combo extends DisplayObject {
 
 	open() {
 		if (typeof this.onBeforeOpen === 'function') {
-			var go = this.onBeforeOpen();
+			let go = this.onBeforeOpen();
 			if (go === false) return this;
 		}
 		this.position();
@@ -176,6 +181,10 @@ class Combo extends DisplayObject {
 	}
 
 
+	setValue(txt , val) {
+		this.jq.val(txt);
+		this.jqValueField.val(val);
+	}
 	get text(): string {
 		return $.trim(this.jq.val());
 	}
@@ -183,7 +192,7 @@ class Combo extends DisplayObject {
 
 
 interface ICanPutIntoCombo {
-	syncData()
+	syncData(current: any)
 }
 
 

@@ -115,9 +115,24 @@
 }
 
 .filetree span.folder, .filetree span.file {
-	padding: 1px 0 1px 16px;
-	display: block;
+	padding: 1px 0 1px 18px;
+	//display: block;
 	line-height: 1em;
+	//cursor: default;
+	
+	
+	label{
+		display: inline-block !important;
+		width: auto !important;
+		line-height: 1em;
+		margin: 0 2px 0 5px;
+	}
+	input[type='radio'], input[type='checkbox']{
+		margin: 0;
+	}
+}
+.filetree .sp{
+	
 	cursor: pointer;
 	
 	&:hover{
@@ -127,24 +142,16 @@
 	&.selected{
 		font-weight: 900;
 	}
-	
-	label{
-		line-height: 1em;
-		margin: 0 2px 0 5px;
-	}
-	input[type='radio'], input[type='checkbox']{
-		margin: 0;
-	}
 }
 
 .filetree span.folder {
-	background: url(../tree/folder.gif) 0 0 no-repeat;
+	background: url(../tree/folder.png) 0 0 no-repeat;
 }
 
 .filetree li.expandable span.folder {
-	background: url(../tree/folder-closed.gif) 0 0 no-repeat;
+	background: url(../tree/folder-closed.png) 0 0 no-repeat;
 }
 
 .filetree span.file {
-	background: url(../tree/file.gif) 0 0 no-repeat;
+	background: url(../tree/file.png) 0 0 no-repeat;
 }

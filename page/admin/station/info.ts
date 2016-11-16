@@ -1,32 +1,71 @@
 import ops from 'ts/ops.ts';
 
-var id = ops.request['id'];
 ops.api({
-	'findById!!': 'system/amssp/findById/${id}',
-	'update!post': 'system/amssp/update',
-	'add!post': 'system/amssp/add',
-	'businessList': 'transcode/business/findAll'
+	'findById!!': 'system/station/findById/${id}',
+	'update!post': 'system/station/update',
+	'add!post': 'system/station/add',
+
+	'businessList': 'transcode/business/findAll', //业务
+	'movietype': 'system/movietype/findAll', //媒体格式
+	'picturetype': 'system/picturetype/findAll', //图片格式类型
+	'interfaceVersions': 'base/interfaceVersions', //接口版本号
+	'orgTree': 'system/organization/orgsubstree/0', //组织
 });
 
-const codes = {
-	'system_amssp_name_empty': '内容生产商名称为空',
-	'system_amssp_code_empty': '内容生产商代码为空',
-	'system_amssp_name_existed': '内容生产商名称已被占用',
-	'system_amssp_code_existed': '内容生产商名称已被占用',
-};
 
-ops.api.add.set('codes', codes);
-ops.api.update.set('codes', codes);
+const id: number = ~~ops.request['id'];
 
-
-var form = $('#tbInfo');
+const form: JQuery = $('#tbInfo');
 
 $.when(
 	ops.api.businessList((data)=> {
 		ops('#tdBusiness').checkBox({
-			name  :'bizCode' ,
-			value: 'bizCode',
+			name: 'busiCodes[]',
 			data: data
+		});
+	}),
+	ops.api.movietype((data)=> {
+		ops('#tdMediaType').checkBox({
+			name: 'mediaFormat[]',
+			text: 'name',
+			value: 'movieType',
+			data: data
+		});
+	}),
+	ops.api.picturetype((data)=> {
+		ops('#tdPictureType').checkBox({
+			name: 'pictureFormat[]',
+			text: 'picSize',
+			data: data
+		});
+	}),
+	ops.api.interfaceVersions((data)=> {
+		let arr = [];
+		for (let key in data) {
+			arr.push({
+				id: key,
+				name: data[key]
+			});
+		}
+		data.results = arr;
+		ops('#tdInterfaceVersions').radioBox({
+			name: 'interfaceVersion',
+			data: data,
+		});
+	}),
+	ops.api.orgTree((data)=> {
+		data.results = data.root.children;
+
+		ops('<div id="tree2"></div>').tree({
+			data: data,
+			text: 'name',
+			value: 'id',
+			combo: {
+				allowBlank: true,
+				closeOnClick: true,
+				textField: '#orgName',
+				valueField: '#orgId',
+			}
 		});
 	})
 ).done(()=> {
@@ -38,26 +77,63 @@ $.when(
 });
 
 
-
 window['doSave'] = function (popWin, table) {
 
-	var action,
+	let action,
 		param = form.fieldsToJson({
-			name: {
-				name: '内容生产商名称',
+			code: {
+				name: '渠道编码',
 				type: 'ns',
 				require: true
 			},
-			code: {
-				name: '内容生产商编码',
+			name: {
+				name: '渠道名称',
 				type: 'ns',
 				require: true
+			},
+			orgName: {
+				name: '所属组织',
+				require: true
+			},
+			orgId: {
+				name: '组织Id',
+				type : 'number' ,
+				require: true
+			},
+			interfaceVersion: {
+				name: '接口版本',
+				require: true
+			},
+			mediaFormat: {
+				name: '节目媒体文件',
+				type : 'number[]',
+				require: true
+			},
+			pictureFormat: {
+				name: '支持图片类型',
+				type : 'number[]',
+				require: true
+			},
+			serviceUrl: {
+				name: '渠道内容接口',
+				require: true
+			},
+			busiCodes : {
+				type : 'number[]',
+			},
+			connectMode:{
+				type : 'number',
 			}
 		});
 
 	if (!param)
 		return true;
 
+	console.log(param);
+
+	delete param.orgName;
+
+	//return true;
 
 	if (id) {
 		param.id = id;

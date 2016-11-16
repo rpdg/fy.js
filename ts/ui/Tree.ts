@@ -1,7 +1,9 @@
 import {AjaxDisplayObject} from './DisplayOject';
+import {Combo, ICanPutIntoCombo} from './Combo'
+
 
 function searchData(data, id) {
-	var v;
+	let v;
 	for (let i = 0, l = data.length; i < l; i++) {
 		let obj = data[i];
 		if (obj.id == id) {
@@ -19,7 +21,7 @@ function searchData(data, id) {
 	return v;
 }
 
-class Tree extends AjaxDisplayObject {
+class Tree extends AjaxDisplayObject implements ICanPutIntoCombo {
 
 	selectedItemId: number;
 	prevItemId: number;
@@ -28,36 +30,47 @@ class Tree extends AjaxDisplayObject {
 	root ?: JQuery;
 	currentLi ?: JQuery;
 	prevLi ?: JQuery;
+	combo?: Combo;
+	textSrc ?: string;
+	valueSrc ?: string;
 
 	constructor(jq: JQuery, cfg: any) {
-		var template;
-
-		if (cfg.cmd === 'checkAll') {
-			template = '<label><input type="checkbox" value="${id}"> ${name}</label>';
-		}
-		else {
-			template = '${name}';
-		}
 		cfg = $.extend({
-			template: template
+			text: 'name',
+			value: 'id'
 		}, cfg);
 
 		super(jq, cfg);
 	}
 
+	/*set rootName(name: string) {
+	 this.jq.find('folder:eq(0)').text(name);
+	 }*/
+
 	init(jq: JQuery, cfg: any) {
+
 		super.init(jq, cfg);
 
 
-		var self = this;
+		if (!cfg.template) {
+			if (cfg.cmd === 'checkAll') {
+				cfg.template = '<label><input id="tree' + this.guid + 'Chk_${id}" type="checkbox" value="${' + cfg.value + '}"> ${' + cfg.text + '}</label>';
+			}
+			else {
+				cfg.template = '${' + cfg.text + '}';
+			}
+		}
+
+
+		let self = this;
 
 		this.cmd = cfg.cmd;
 
 		if (cfg.root) {
 			this.root = $('<ul></ul>');
 
-			var node = $(`<ul class="filetree treeview"><li class="last">
-							<span class="sp folder">${cfg.root}</span>
+			let node = $(`<ul class="filetree treeview rootUl"><li class="last rootLi">
+							<span class="folder rootSp">${cfg.root}</span>
 						</li></ul>`);
 			node.find('li').append(this.root);
 			node.appendTo(this.jq);
@@ -81,10 +94,10 @@ class Tree extends AjaxDisplayObject {
 			//
 			//
 
-			var $div = $(this);
+			let $div = $(this);
 			$div.toggleClass('collapsable-hitarea expandable-hitarea').siblings('ul').toggle();
 
-			var $li = $div.parent();
+			let $li = $div.parent();
 			$li.toggleClass('collapsable expandable');
 
 			if (this.className.indexOf('last') > -1) {
@@ -95,7 +108,7 @@ class Tree extends AjaxDisplayObject {
 
 
 		this.jq.on('click', '.sp', function (e) {
-			var sp = $(this);
+			let sp = $(this);
 
 			if (self.selectedItemId != sp.data('id')) {
 
@@ -110,9 +123,35 @@ class Tree extends AjaxDisplayObject {
 
 				sp.addClass('selected');
 
+				if (typeof self.onSelect === 'function') self.onSelect(e);
 			}
 
 		});
+
+		//combo
+		if (cfg.combo) {
+			let textField = $(cfg.combo.textField) ;
+			textField.after(this.jq);
+
+			this.combo = new Combo(textField,
+				{
+					allowBlank : cfg.combo.allowBlank,
+					target: this.jq.addClass('treeField-combo'),
+					valueField: cfg.combo.valueField,
+				}
+			);
+
+			this.textSrc = cfg.text;
+			this.valueSrc = cfg.value;
+
+			this.jq.on('click', '.sp', ()=> {
+				this.syncData(this.getSelectedData());
+			});
+			//
+			if(cfg.combo.closeOnClick){
+				this.jq.on('click', ()=>this.combo.close());
+			}
+		}
 
 	}
 
@@ -123,7 +162,7 @@ class Tree extends AjaxDisplayObject {
 
 	bindData(data: any) {
 
-		var json = data, list;
+		let json = data, list;
 
 		if ($.isArray(data)) {
 			list = data;
@@ -151,7 +190,7 @@ class Tree extends AjaxDisplayObject {
 
 	add(data, parent?: any) {
 
-		var self = this, parentUl;
+		let self = this, parentUl;
 
 		if (!parent) {
 			parentUl = this.root;
@@ -167,7 +206,7 @@ class Tree extends AjaxDisplayObject {
 			itemRender: {
 				getDiv: (id, i, row)=> {
 					if (row.children || row.hasChildren) {
-						var cls = 'hitarea collapsable-hitarea';
+						let cls = 'hitarea collapsable-hitarea';
 						if ((i + 1) === data.length)
 							cls += ' lastCollapsable-hitarea';
 						return '<div class="' + cls + '"></div>';
@@ -181,7 +220,7 @@ class Tree extends AjaxDisplayObject {
 					return '';
 				},
 				getLiClass: (id, i, row)=> {
-					var cls = '';
+					let cls = '';
 					if (row.children || row.hasChildren) {
 						cls = 'collapsable';
 
@@ -213,13 +252,19 @@ class Tree extends AjaxDisplayObject {
 		if (this.cmd === 'checkAll') {
 			parentUl.find('.folder').each(function (x, span) {
 				let sp = $(span), ul = sp.siblings('ul');
-				sp.find(':checkbox').syncCheckBoxGroup(':checkbox', ul);
+				sp.find(':checkbox').checkBoxAll(':checkbox', ul);
 			});
 		}
 	}
 
 	findObjectById(id) {
 		return searchData(this.data, id);
+	}
+
+
+	syncData(data: any) {
+		console.log(data);
+		this.combo.setValue(data[this.textSrc], data[this.valueSrc]);
 	}
 }
 

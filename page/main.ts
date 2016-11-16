@@ -8,25 +8,26 @@ import cfg from 'ts/app.cfg.ts';
 
 //ops.api.menu(function (json) {
 
-var permissions = store.get('permissons');
+let permissions = store.get('permissons');
 
 
-var menu = {}, curMainMenuId;
+let menu = {}, curMainMenuId;
 
 for (let i = 0, l = permissions.length; i < l; i++) {
 	let mn = permissions[i];
 	menu['#' + mn.id] = mn;
 }
 
-var mainMenu = $('#mainMenu'), subMenu = $('#subMenu'), mainFrame: JQuery = $('#mainFrame');
+let mainMenu = $('#mainMenu'), subMenu = $('#subMenu'), mainFrame: JQuery = $('#mainFrame');
 
-if (permissions.length > 6) {
-	mainMenu.addClass('small-menu');
-}
+/*if (permissions.length > 6) {
+ mainMenu.addClass('small-menu');
+ }*/
 
-var mainMenuSelector = 'a:eq(0)', subMenuSelector = 'a:eq(0)';
+
+let mainMenuSelector = 'a:eq(0)', subMenuSelector = 'a:eq(0)';
 if (location.hash.length > 1) {
-	var ph = location.hash.split('/');
+	let ph = location.hash.split('/');
 	mainMenuSelector = '#\\' + ph[0];
 	if (ph[1]) {
 		subMenuSelector = '#\\/' + ph[1];
@@ -34,10 +35,11 @@ if (location.hash.length > 1) {
 }
 
 subMenu.on('click', 'a', function () {
-	var sm = $(this);
+	let sm = $(this);
 	sm.addClass('cur').siblings('.cur').removeClass('cur');
 	mainFrame.attr('src', sm.attr('href') as string);
 	location.hash = curMainMenuId + sm[0].id;
+
 
 	if (sm.hasClass('hasChildren')) {
 		console.warn(sm.text() + ' has permission control!');
@@ -46,7 +48,7 @@ subMenu.on('click', 'a', function () {
 });
 
 mainMenu.on('click', 'a', function () {
-	var cur = $(this), mnId = cur.attr('href');
+	let cur = $(this), mnId = cur.attr('href');
 	curMainMenuId = mnId;
 	cur.addClass('cur').siblings('.cur').removeClass('cur');
 
@@ -74,7 +76,18 @@ mainMenu.bindList({
 }).find(mainMenuSelector).click();
 
 
-//});
+let wViewport = window.document.documentElement.clientWidth, wMenu = mainMenu.outerWidth();
+console.log(wViewport - wMenu);
+
+if (wViewport - wMenu < 0) {
+	mainMenu.addClass('nano-menu');
+}
+if (wViewport - wMenu < 150) {
+	mainMenu.addClass('mini-menu');
+}
+else if (wViewport - wMenu < 300) {
+	mainMenu.addClass('small-menu');
+}
 
 
 $('#liAbout').click(function () {
@@ -84,13 +97,13 @@ $('#liAbout').click(function () {
 });
 
 
-var modifyPsw = (function () {
+let modifyPsw = (function () {
 
-	var form, pop;
+	let form, pop;
 
 	return function () {
 		if (!form) {
-			var strForm = `<form style="width: 490px; padding: 20px;">
+			let strForm = `<form style="width: 490px; padding: 20px;">
 					<p><label>原有密码： <input id="old_password" name="old_password" type="password" maxlength="15" style="width:150px;"/></label></p>
 					<p><label>新设密码： <input id="new_password" name="new_password" type="password" maxlength="15" style="width:150px;"/></label> <span class="text-gray"> (密码8~15位，大小写字母数字混合)</span></p>
 					<p><label>重新输入： <input id="again_password" name="again_password" type="password" maxlength="15" style="width:150px;"/></label> <span class="text-gray"> (再次确认您要修改的密码)</span></p>
@@ -99,7 +112,7 @@ var modifyPsw = (function () {
 			form = $(strForm);
 
 			pop = ops.confirm(form, function () {
-				var obj = form.fieldsToJson();
+				let obj = form.fieldsToJson();
 
 				if (!obj.old_password) {
 
@@ -112,7 +125,7 @@ var modifyPsw = (function () {
 
 				}
 
-				else if (!(/\w{8,15}/g).test(obj.new_password)) {
+				else if (obj.new_password.length < 8 || obj.new_password.length > 15) {
 					$('#new_password').iptError('密码长度需要8～15位');
 				}
 
@@ -128,7 +141,7 @@ var modifyPsw = (function () {
 				else {
 					ops.api.editPassword(obj, function (json) {
 						if (json.result) {
-							pop.hide();
+							pop.close();
 							ops.ok('修改成功');
 						}
 						else
@@ -153,7 +166,49 @@ var modifyPsw = (function () {
 
 $('#liChangePsw').click(modifyPsw);
 
-$('#liLogOff').click(function () {
+$('#liLogOff').click(()=> {
 	store.clear();
 	window.location.href = cfg.loginPage;
 });
+
+/*
+$('#liFullScreen').click(evt=> {
+	// Test for each of the supported versions of full screen APIs and call
+	// either requestFullscreen or cancelFullScreen (or exitFullScreen)
+	//  Structure:
+	//  Does the incoming target support requestFullscreen (or prefaced version)
+	//  if (there is a fullscreen element)
+	//      then cancel or exit
+	//  else request full screen mode
+
+	let divObj = evt.target as Node;  //  get the target element
+
+	if (divObj.requestFullscreen)
+		if (document.fullScreenElement) {
+			document.cancelFullScreen();
+		} else {
+			document.documentElement.requestFullscreen();
+		}
+	else if (divObj.webkitRequestFullscreen)
+		if (document.webkitFullscreenElement) {
+			document.webkitCancelFullScreen();
+		} else {
+			document.documentElement.webkitRequestFullscreen();
+		}
+	else if (divObj.msRequestFullscreen)
+		if (document.msFullscreenElement) {
+			document.msExitFullscreen();
+		} else {
+			document.body.msRequestFullscreen();
+		}
+	else if (divObj.mozRequestFullScreen)
+		if (document.mozFullScreenElement) {
+			document.mozCancelFullScreen();
+		} else {
+			document.documentElement.mozRequestFullScreen();
+		}
+	//  stop bubbling so we don't get bounce back
+	evt.stopPropagation();
+
+})
+*/

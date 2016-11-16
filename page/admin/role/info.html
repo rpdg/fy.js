@@ -3,28 +3,46 @@
 	#tbSearch{
 		height: 100%;
 	}
+	#menuTree,#permissions{
+		/*width: 49%;
+		display: inline-block;*/
+		vertical-align: top;
+		height: 100%;
+		overflow-y: auto;
+		overflow-x: hidden;
+	}
+	#permissions{
+		padding-left: 20px;
+	}
+	#spPermissions{
+		line-height: 2em;
+	}
 </style>
 <table id="tbSearch" class="search-table">
+	<thead id="tbdSearch">
 	<tr style="height: 2em;">
 		<td class="lead"><b class="text-red">*</b>角色名称</td>
 		<td><label><input id="roleName" name="roleName" type="text" maxlength="20"></label></td>
 	</tr>
 	<tr style="height: 2em;">
 		<td class="lead">角色描述</td>
-		<td><label><textarea id="roleDescription" name="roleDescription"></textarea></label></td>
+		<td><label><textarea id="roleDesc" name="roleDesc" placeholder="描述信息请在80字以内" maxlength="80"></textarea></label></td>
 	</tr>
+	</thead>
+	<tbody>
 	<tr>
-		<td class="lead"><b class="text-red">*</b>权限列表</td>
+		<td class="lead" style="vertical-align: top;"><b class="text-red">*</b>权限列表</td>
 		<td style="vertical-align: top;">
 			<div id="menuTree">
 
 			</div>
+			<!--<div id="permissions">
+				<p><b>特殊权限:</b></p>
+				<div id="spPermissions"></div>
+			</div>-->
 		</td>
 	</tr>
+	</tbody>
 </table>
 
 <% include ('/comm/footer.html') %>
-
-<script>
-	require('./info.ts');
-</script>

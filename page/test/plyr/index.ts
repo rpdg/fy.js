@@ -9,7 +9,6 @@ ops.api({
 });
 
 
-//noinspection TypeScriptUnresolvedFunction
 const SVG_PATH = __uri('plyr.svg');
 
 //button to add mark
@@ -17,6 +16,8 @@ let btnAddMark = $('#btnMark');
 
 //button to save data
 let btnSave = $('#btnSave');
+
+
 
 let auditTable = new AuditTable('tbMarkBody', SVG_PATH);
 
@@ -50,10 +51,13 @@ auditPlayer.onVideoReady = ()=> {
 		console.log( JSON.stringify(auditTable.data)) ;
 	});
 
+
+	//load data
+	auditTable.data = [{"time": 96 ,"text":"gdf\nnn\n\nmm"}] ;
+
 };
 
 
 auditPlayer.source = 'https://media.w3.org/2010/05/sintel/trailer.mp4';
 
-auditTable.data = [{"time": 96 ,"text":"gdf\nnn\n\nmm"}] ;
 

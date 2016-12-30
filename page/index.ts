@@ -1,4 +1,4 @@
-import store from 'ts/util/store.ts';
+import {store} from 'ts/util/store.ts';
 import ops from 'ts/ops.ts';
 
 //noinspection TypeScriptUnresolvedVariable
@@ -44,6 +44,7 @@ let btnLogin = $('#btnLogin').click(function () {
 	if (param) {
 		ops.api.login(param, function (data) {
 			if (data.permissons && data.permissons.length) {
+
 				store.set('X-Token', data.token);
 				store.set('userInfo', data.userInfo);
 				store.set('permissons', data.permissons);

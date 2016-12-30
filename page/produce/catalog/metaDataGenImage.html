@@ -1,0 +1,70 @@
+<% include ('/comm/header.html') %>
+<style>
+	#imgContainer {
+		/*display: none;*/
+		background-image: url("/css/img/viewport_background.gif");
+		width: 1150px;
+		height: 650px;
+		overflow: hidden;
+	}
+
+	#zoomBar {
+		position: fixed;
+		width: 24px;
+		height: 100px;
+		top: 50px;
+		left: 970px;
+		z-index: 100;
+		background-color: #fff;
+		border: 1px solid #777;
+		overflow: hidden;
+	}
+
+	#zoomBg {
+		background: #fff url("/css/img/zoom_bar.png") repeat-y;
+		width: 8px;
+		height: 100%;
+		margin-left: 8px;
+	}
+
+	#zoomSlider {
+		background-color: #bbb;
+		width: 16px;
+		height: 16px;
+		border-radius: 30px;
+		border: 1px solid #aaa;
+		position: fixed;
+		top: 92px;
+		left: 974px;
+		z-index: 100;
+		cursor: pointer;
+	}
+
+	#info {
+		background-color: rgba(0, 0, 0, 0.4);
+		color: #fff;
+		font-size: 12px;
+		border: 1px solid rgba(0, 0, 0, 0.5);
+		position: absolute;
+		top: 50px;
+		left: 1000px;
+		z-index: 10;
+		width: 150px;
+		padding: 1em;
+	}
+</style>
+
+
+<input id="iptFileUpload" type="file" accept="image/*"/>
+
+<div id="imgContainer"></div>
+
+<div id="info">
+	<div id="infoLog"></div>
+</div>
+<div id="zoomBar">
+	<div id="zoomBg"></div>
+	<div id="zoomSlider"></div>
+</div>
+
+<% include ('/comm/footer.html') %>

@@ -43,7 +43,6 @@ const request = (function (str: string, castBoolean) {
 
 
 const is = {
-	types: ["Array", "RegExp", "Date", "Number", "String", "Object", "HTMLDocument"],
 	Array: $.noop,
 	RegExp: $.noop,
 	Date: $.noop,
@@ -52,7 +51,8 @@ const is = {
 	Object: $.noop,
 	HTMLDocument: $.noop
 };
-for (let i = 0, c; c = is.types[i++];) {
+let isTypes = ["Array", "RegExp", "Date", "Number", "String", "Object", "HTMLDocument"];
+for (let i = 0, c; c = isTypes[i++];) {
 	is[c] = (function (type) {
 		return function (obj) {
 			return Object.prototype.toString.call(obj) == "[object " + type + "]";
@@ -134,7 +134,7 @@ const string = {
 
 		return collect;
 	},
-	pad: function (input, result_full_length, pad_string, pad_type) {
+	pad: function (input:string, result_full_length:number, pad_string:string='0', pad_type:'STR_PAD_LEFT'|'STR_PAD_BOTH'|'STR_PAD_RIGHT'='STR_PAD_RIGHT') {
 		//   example 1: str.pad('Kevin van Zonneveld', 30, '-=', 'STR_PAD_LEFT');
 		//   returns 1: '-=-=-=-=-=-Kevin van Zonneveld'
 		//   example 2: str.pad('Kevin van Zonneveld', 30, '-', 'STR_PAD_BOTH');
@@ -165,28 +165,28 @@ const string = {
 
 		return input;
 	},
-	padLeft: function (oStr, result_full_length, oPad) {
-		return string.pad(oStr, result_full_length, oPad || 0, 'STR_PAD_LEFT');
+	padLeft: function (oStr, result_full_length, pad_string:string='0') {
+		return string.pad(oStr, result_full_length, pad_string , 'STR_PAD_LEFT');
 	},
-	padRight: function (oStr, result_full_length, oPad) {
-		return string.pad(oStr, result_full_length, oPad || 0, 'STR_PAD_RIGHT');
+	padRight: function (oStr, result_full_length, pad_string:string = '0') {
+		return string.pad(oStr, result_full_length, pad_string || 0, 'STR_PAD_RIGHT');
 	}
 };
 
 
 const dateTime = {
-	addSeconds: function (d, s) {
+	addSeconds: function (d:Date, s:number) {
 		return new Date(d.getTime() + s * 1000);
 	}
 	,
-	addDays: function (d, s) {
+	addDays: function (d:Date, s:number) {
 		return new Date(d.getTime() + s * 24 * 3600 * 1000);
 	},
-	daySpan: function (dateTo, dateFrom) {
+	daySpan: function (dateFrom:Date , dateTo:Date) {
 		return Math.round((dateTo.valueOf() - dateFrom.valueOf()) / 86400000);
 	},
-	weekSpan: function (dateTo, dateFrom) {
-		let d = dateTime.daySpan(dateTo, dateFrom);
+	weekSpan: function (dateFrom:Date , dateTo:Date) {
+		let d = dateTime.daySpan( dateFrom , dateTo );
 		return Math.ceil((d + dateFrom.getDay()) / 7);
 	}
 
@@ -194,12 +194,17 @@ const dateTime = {
 
 
 const convert = {
-	hashKeysToArray: function (obj): Array {
-		let arr = [];
-		for (arr[arr.length] in obj);
-		return arr;
+	hashKeysToArray: function (obj:Object): Array {
+		if(Object.keys){
+			return Object.keys(obj);
+		}
+		else{
+			let arr = [];
+			for (arr[arr.length] in obj);
+			return arr;
+		}
 	},
-	hashToArray: (obj, convertor): Array => {
+	hashToArray: (obj, convertor?:Function): Array => {
 		let arr = [];
 		for (let key in obj) {
 			let v = obj[key];
@@ -241,8 +246,7 @@ const convert = {
 
 
 const format = {
-	date: function (date, formater) {
-		let format = formater || 'yyyy-MM-dd'; // default format
+	date: function (date:Date, format:string = 'yyyy-MM-dd' ):string {
 		let o = {
 			"M+": date.getMonth() + 1, //month
 			"d+": date.getDate(), //date
@@ -377,7 +381,7 @@ const array = {
 
 		return tmpArr;
 	},
-	combine: (...needles: Array[]) => {
+	combine: (...needles: Array[]) :Array => {
 		let arr = [];
 		for (let i = 0, l = needles.length; i < l; i++) {
 			let a = needles[i], len = a.length;

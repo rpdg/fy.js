@@ -51,9 +51,6 @@ fis.match('{**.html,/js/config.js,/js/mockData.js}', {
 					//jScripts : ['/lib/jquery.hover3d.js']
 				},
 				bodyType: ''
-			},
-			'comm/': {
-				release: false
 			}
 		}
 	})
@@ -71,9 +68,11 @@ fis.match('**/*.ts', {
 	rExt: '.js'
 });
 
-fis.match('/tsd/**', {
+
+fis.match('{/@types/**.*,/comm/**.*}', {
 	release: false
 });
+
 
 fis.match('{/mock/**}', {
 	release: isUnderLocal

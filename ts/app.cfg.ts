@@ -1,5 +1,5 @@
 import ops from "./ops";
-import store from 'ts/util/store';
+import {store} from 'ts/util/store';
 
 store.use('sessionStorage');
 

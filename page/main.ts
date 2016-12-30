@@ -1,5 +1,5 @@
 import ops from 'ts/ops.ts';
-import store from 'ts/util/store.ts';
+import {store} from 'ts/util/store.ts';
 import cfg from 'ts/app.cfg.ts';
 
 /*ops.api({

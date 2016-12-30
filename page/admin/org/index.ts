@@ -109,6 +109,7 @@ let currentTableParentId = -1;
 
 let tree: Tree = ops('#leftSec').tree({
 	root: '系统企业',
+	name : 'orgTree' ,
 	api: ops.api.org,
 	onAjaxEnd: (json)=> {
 		console.log(json);

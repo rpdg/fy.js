@@ -1,7 +1,7 @@
 import ops from 'ts/ops.ts';
 import Panel from "ts/ui/Panel.ts";
 import {ListBox} from "ts/ui/FormControls.ts";
-import store from "../../../ts/util/store";
+import {store} from "../../../ts/util/store";
 
 
 ops.api({

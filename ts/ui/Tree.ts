@@ -1,6 +1,6 @@
 import {AjaxDisplayObject} from './DisplayOject';
 import {Combo, ICanPutIntoCombo} from './Combo'
-
+import {LocalStore} from '../util/store';
 
 function searchData(data, id) {
 	let v;
@@ -23,9 +23,12 @@ function searchData(data, id) {
 
 class Tree extends AjaxDisplayObject implements ICanPutIntoCombo {
 
+	treeName :string;
+	cache :boolean;
 	selectedItemId: number;
 	prevItemId: number;
 	template: string;
+	render : any ;
 	cmd ?: string;
 	root ?: JQuery;
 	currentLi ?: JQuery;
@@ -34,10 +37,14 @@ class Tree extends AjaxDisplayObject implements ICanPutIntoCombo {
 	textSrc ?: string;
 	valueSrc ?: string;
 
+	private _cachedExpandedLeaf :any ;
+	private _store :LocalStore ;
+
 	constructor(jq: JQuery, cfg: any) {
 		cfg = $.extend({
 			text: 'name',
-			value: 'id'
+			value: 'id' ,
+			cache : true
 		}, cfg);
 
 		super(jq, cfg);
@@ -51,10 +58,27 @@ class Tree extends AjaxDisplayObject implements ICanPutIntoCombo {
 
 		super.init(jq, cfg);
 
+		this.cache = cfg.cache ;
+		this.treeName = cfg.name ;
+		this._store =  new LocalStore(false) ;
+		this._cachedExpandedLeaf =  {} ;
+
+		if(!this.treeName){
+			this.treeName = `${this.guid}`;
+			if(this.cache)
+				this.cache = false ;
+		}
+		this.treeName = `tree_${this.treeName}`;
+
+		if(this.cache){
+			this._cachedExpandedLeaf = this._store.get(this.treeName) || {} ;
+		}
+
+		console.log('aaa' , this._cachedExpandedLeaf);
 
 		if (!cfg.template) {
 			if (cfg.cmd === 'checkAll') {
-				cfg.template = '<label><input id="tree' + this.guid + 'Chk_${id}" type="checkbox" value="${' + cfg.value + '}"> ${' + cfg.text + '}</label>';
+				cfg.template = '<label><input id="tree' + this.treeName + 'Chk_${id}" type="checkbox" value="${' + cfg.value + '}"> ${' + cfg.text + '}</label>';
 			}
 			else {
 				cfg.template = '${' + cfg.text + '}';
@@ -83,8 +107,8 @@ class Tree extends AjaxDisplayObject implements ICanPutIntoCombo {
 		this.selectedItemId = -1;
 		//this.currentData = null;
 		this.currentLi = null;
-
-		this.template = '<li id="tree' + this.guid + 'Li_${id}" class="${id:=getLiClass}">${id:=getDiv}<span id="tree' + this.guid + 'Sp_${id}" data-id="${id}" class="sp ${id:=getSpClass}">' + cfg.template + '</span>${id:=getUl}</li>';
+		this.render = cfg.render;
+		this.template = '<li id="tree' + this.treeName + 'Li_${id}" class="${id:=_getLiClass}" data-id="${id}">${id:=_getDiv}<span id="tree' + this.treeName + 'Sp_${id}" data-id="${id}" class="sp ${id:=_getSpClass}">' + cfg.template + '</span>${id:=_getUl}</li>';
 
 		//this.render = {};
 
@@ -97,8 +121,19 @@ class Tree extends AjaxDisplayObject implements ICanPutIntoCombo {
 			let $div = $(this);
 			$div.toggleClass('collapsable-hitarea expandable-hitarea').siblings('ul').toggle();
 
-			let $li = $div.parent();
+			let $li = $div.parent() , leafId = $li.data('id');
 			$li.toggleClass('collapsable expandable');
+
+			if(self.cache){
+				if(leafId in self._cachedExpandedLeaf){
+					delete self._cachedExpandedLeaf[leafId];
+				}
+				else{
+					self._cachedExpandedLeaf[leafId] = 1;
+				}
+				self._store.set(self.treeName , self._cachedExpandedLeaf);
+			}
+
 
 			if (this.className.indexOf('last') > -1) {
 				$div.toggleClass('lastCollapsable-hitarea lastExpandable-hitarea');
@@ -191,53 +226,82 @@ class Tree extends AjaxDisplayObject implements ICanPutIntoCombo {
 	add(data, parent?: any) {
 
 		let self = this, parentUl;
+		console.warn(self._cachedExpandedLeaf);
 
 		if (!parent) {
 			parentUl = this.root;
 		}
 		else {
-			parentUl = $('#tree' + self.guid + 'Ul_' + parent.id);
+			parentUl = $('#tree' + self.treeName + 'Ul_' + parent.id);
 		}
 
-
-		parentUl.bindList({
-			list: data,
-			template: self.template,
-			itemRender: {
-				getDiv: (id, i, row)=> {
-					if (row.children || row.hasChildren) {
-						let cls = 'hitarea collapsable-hitarea';
+		let renders = {
+			_getDiv: (id, i, row)=> {
+				if (row.children || row.hasChildren) {
+					let cls ;
+					if(id in self._cachedExpandedLeaf){
+						cls = 'hitarea collapsable-hitarea';
 						if ((i + 1) === data.length)
 							cls += ' lastCollapsable-hitarea';
-						return '<div class="' + cls + '"></div>';
 					}
-					return '';
-				},
-				getUl: (id, i, row)=> {
-					if (row.children || row.hasChildren) {
-						return `<ul id="tree` + self.guid + `Ul_${id}"></ul>`;
+					else{
+						cls = 'hitarea expandable-hitarea';
+						if ((i + 1) === data.length)
+							cls += ' lastExpandable-hitarea';
 					}
-					return '';
-				},
-				getLiClass: (id, i, row)=> {
-					let cls = '';
-					if (row.children || row.hasChildren) {
+
+					return '<div class="' + cls + '"></div>';
+				}
+				return '';
+			},
+			_getUl: (id, i, row)=> {
+				if (row.children || row.hasChildren) {
+					let style = (id in self._cachedExpandedLeaf) ? '': ' style="display: none;"';
+					return `<ul id="tree` + self.treeName + `Ul_${id}" ${style}></ul>`;
+				}
+				return '';
+			},
+			_getLiClass: (id, i, row)=> {
+
+				let cls = '';
+				if (row.children || row.hasChildren) {
+					if(id in self._cachedExpandedLeaf){
 						cls = 'collapsable';
 
 						if ((i + 1) === data.length)
 							cls += ' lastCollapsable';
 					}
-					else {
-						if ((i + 1) === data.length)
-							cls = 'last';
-					}
+					else{
+						cls = 'expandable';
 
-					return cls;
-				},
-				getSpClass: (id, i, row)=> {
-					return (row.children || row.hasChildren) ? 'folder' : 'file';
+						if ((i + 1) === data.length)
+							cls += ' lastExpandable';
+					}
 				}
+				else {
+					if ((i + 1) === data.length)
+						cls = 'last';
+				}
+
+				return cls;
 			},
+			_getSpClass: (id, i, row)=> {
+				return (row.children || row.hasChildren) ? 'folder' : 'file';
+			}
+		};
+
+		if(self.render){
+			for(let ky in self.render){
+				if(!(ky in renders)){
+					renders[ky] = self.render[ky] ;
+				}
+			}
+		}
+
+		parentUl.bindList({
+			list: data,
+			template: self.template,
+			itemRender: renders,
 			mode: (parent ? 'append' : 'html')
 		});
 

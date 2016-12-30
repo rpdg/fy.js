@@ -1,0 +1,23 @@
+<% include ('/comm/header.html') %>
+<style>
+	.search-table .lead.text-center {
+		text-align: center;
+		font-weight: bold;
+	}
+</style>
+
+<table id="selectedTb">
+	<tfoot>
+	<tr>
+		<td colspan="2" class="text-right"><button id="btnSelectGroups" class="btn-mini btn-success">　确定　</button></td>
+	</tr>
+	</tfoot>
+</table>
+
+<div class="grid-title-bar" style="margin-top: 1em;">
+	<label>查询：<input type="text" name="groupName" placeholder="分组名称"></label>
+	<button id="btnSearch" class="btn-primary btn-mini"><i class="ico-find"></i> 查询</button>
+</div>
+<table id="groupTb"></table>
+
+<% include ('/comm/footer.html') %>

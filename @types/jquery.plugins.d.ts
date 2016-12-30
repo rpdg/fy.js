@@ -25,6 +25,7 @@ interface JQuery {
 	syncCheckBoxGroup(select: any, context: any): any
 	checkBoxAll(select: any, context: any): any
 	pagination(count: number, sets: any): any
+	datetimepicker(rules?: any) :JQuery;
 }
 
 interface JQueryStatic {
@@ -41,29 +42,71 @@ interface OpsStatic {
 	(se: JQuery|any[]|Element|DocumentFragment|Text|string): IOpsUi;
 
 
-	request: Map;
-	dateTime: any;
-	string: any;
-	is: any;
-	url: any;
-	convert: any;
-	format: any;
-	array: any;
-	wrapPanel: Function;
+	request: Map<string , string>;
 
-	alert: Function;
-	confirm: Function;
-	popTop: Function;
+	dateTime: {
+		addSeconds(d:Date, s:number):Date,
+		addDays(d:Date, s:number):Date,
+		daySpan(dateFrom:Date , dateTo:Date):Date,
+		weekSpan(dateFrom:Date , dateTo:Date):Date,
+	};
+
+	string: {
+		pad(input:string, result_full_length:number, pad_string:string, pad_type:'STR_PAD_LEFT'|'STR_PAD_BOTH'|'STR_PAD_RIGHT'):string ,
+		padLeft(oStr:string, result_full_length:number, pad_string:string='0'):string,
+		padRight(oStr:string, result_full_length:number, pad_string:string='0'):string,
+	};
+
+	is: {
+		Array(obj:Object):boolean ,
+		RegExp(obj:Object):boolean ,
+		Date(obj:Object):boolean ,
+		Number(obj:Object):boolean ,
+		String(obj:Object):boolean ,
+		Object(obj:Object):boolean ,
+		HTMLDocument(obj:Object):boolean ,
+	};
+
+	url: any;
+
+	convert: {
+		arrayToHash(arr:Array, keyName:string):Object ,
+		hashToArray(obj:Object, converter?:Function):Array ,
+		hashKeysToArray(obj:Object): Array
+	};
+	format: {
+		date(date:Date, format:string):string ,
+		fileSize(size:number):string ,
+		number (number, decimals, dec_point?, thousands_sep?):string ,
+		json(template: string, json: any): string,
+	};
+
+	array: {
+		sort(arr: Array, sortPropName: string, sortCompareFunction?: Function):Array ,
+		combine (...arrays: Array[]) :Array ,
+		unique (arr: Array) :Array ,
+	};
+
+
+	wrapPanel(selector, cfg);
+
+	alert(message, callback, options);
+	confirm(message, callback, options);
+	popTop(iframe:JQuery|HTMLIFrameElement|string , options);
 
 	ok (message, callBack?: Function, options ?: any): void ;
 	err (message, callBack?: Function, options ?: any): void ;
 	warn (message, callBack?: Function, options ?: any): void ;
 	danger (message, callBack?: Function, options ?: any): void ;
+
+	listen (events: string, handler: (eventObject: JQueryEventObject, ...args: any[]) => any):void;
+	unListen ():void;
+	dispatch (eventType: string, extraParameters?: any[]|Object):void;
 }
 
 interface Window {
 	CONFIG: any;
-	ops: any;
+	ops: OpsStatic ;
 	__uri(path: string): string
 }
 
@@ -129,3 +172,4 @@ interface FisUri {
 
 declare let __uri: FisUri;
 declare let plyr: plyrStatic;
+declare let ops: OpsStatic;

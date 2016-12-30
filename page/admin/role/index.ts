@@ -19,6 +19,7 @@ let rootAdminId = 0;
 let tree = ops('#leftSec').tree({
 	api: ops.api.roles,
 	root: '角色',
+	name : 'rolesTree' ,
 	onAjaxEnd: (json)=> {
 		console.log(json);
 

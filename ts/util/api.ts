@@ -1,6 +1,6 @@
 import cfg from '../app.cfg';
-import store from "./store";
-import {format} from '../util/utils';
+import {store} from "./store";
+import {format} from './utils';
 
 
 interface AjaxMeta {
@@ -11,10 +11,18 @@ interface AjaxMessage {
 	data ?: any ,
 	meta: AjaxMeta
 }
-interface ApiCall extends Function {
-	set(key: string, value: any): ApiCall ;
+
+interface ApiCall {
+	(param: any, callback: Function):void ;
+	(callback: Function) :void ;
+	set(key: string, value: any): this ;
 	get(key: string): any
 }
+
+interface IApiConfig {
+	(apiSets: Map): void
+}
+
 //noinspection TypeScriptUnresolvedVariable
 //cfg.apiServer = window.apiServer ;
 
@@ -181,7 +189,7 @@ class ServerFn {
 }
 
 
-let api = function (apiSet: Map<string>) {
+let api: IApiConfig = function (apiSet: Map<string>) {
 
 	for (let key: string in apiSet) {
 		let uArr = key.split('!');
@@ -203,7 +211,7 @@ let api = function (apiSet: Map<string>) {
 
 				fn.get = (k: string) => srvFn[k];
 
-				fn.toString = ()=> srvFn.url;
+				fn.toString = () => srvFn.url;
 
 				/*fn.post = (data , cb)=>{
 				 fn.set('method' , 'POST') ;

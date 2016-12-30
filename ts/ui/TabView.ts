@@ -2,13 +2,19 @@ import {DisplayObject} from './DisplayOject';
 
 class TabBar extends DisplayObject {
 
-	prevIndex:number;
-	selectedIndex:number;
-	onSelect?:Function;
+	prevIndex: number;
+	selectedIndex: number;
+	onSelect?: Function;
 
-	data :any;
-	bar :JQuery;
-	items :JQuery;
+	data: any;
+	bar: JQuery;
+	items: JQuery;
+
+
+	protected _prevIndex: number;
+	protected _selectedIndex: number;
+	protected _initSelectedIndex: number;
+
 
 	constructor(jq, cfg) {
 		cfg = $.extend({
@@ -21,18 +27,12 @@ class TabBar extends DisplayObject {
 
 		super(jq, cfg);
 
-		this.prevIndex = -1;
-		this.selectedIndex = -1;
 
-
-		if (typeof cfg.onSelect === 'function')
-			this.onSelect = cfg.onSelect;
-
-		this.create(jq, cfg);
+		//this.create(jq, cfg);
 	}
 
 
-	create(jq, cfg) {
+	init(jq, cfg) {
 		jq.css({display: 'table'});
 
 		let navi = $('<div class="tabNavigator"></div>');
@@ -49,13 +49,20 @@ class TabBar extends DisplayObject {
 
 		this.items = this.bar.find("li");
 
-		this.selectedIndex = (this.items.length > cfg.selectedIndex) ? cfg.selectedIndex : (this.items.length ? 0 : -1);
+
+		this._prevIndex = -1;
+		this._selectedIndex = -1;
+		this._initSelectedIndex = (this.items.length > cfg.selectedIndex) ? cfg.selectedIndex : (this.items.length ? 0 : -1);
 
 
 		let self = this;
 		this.bar.on('click.ops', 'li', function (evt) {
 			self.selectHandler.call(self, evt);
 		});
+
+
+		if (typeof cfg.onSelect === 'function')
+			this.onSelect = cfg.onSelect;
 
 
 		this.createdHandler(this.data);
@@ -69,22 +76,33 @@ class TabBar extends DisplayObject {
 
 
 	selectHandler(evt) {
+		evt.stopImmediatePropagation();
+
 		let li = evt.target, i = this.items.index(li);
-		if (i === this.selectedIndex && this.prevIndex != -1) return;
+		if (i === this._selectedIndex && this._prevIndex != -1) return;
 
 		$(li).addClass("current").siblings("li.current").removeClass("current");
-
-		this.prevIndex = this.selectedIndex;
 		this.selectedIndex = i;
 
-		if (typeof this.onSelect === 'function') this.onSelect(evt);
+		if (typeof this.onSelect === 'function') this.onSelect.call(this , evt);
 	}
 
-	set selectedIndex(i:number) {
-		this.bar.find("li:eq(" + i + ")").trigger('click.ops');
+	set selectedIndex(i: number) {
+		if (this._selectedIndex != i) {
+			this._prevIndex = this._selectedIndex;
+			this._selectedIndex = i;
+			this.bar.find("li:eq(" + i + ")").trigger('click.ops');
+		}
 	}
 
-	getSelectedData(original?:boolean) {
+	get selectedIndex(): number {
+		return this._selectedIndex;
+	}
+	get prevIndex():number{
+		return this._prevIndex;
+	}
+
+	getSelectedData(original?: boolean) {
 		let src = this.data[this.selectedIndex];
 		//过滤对象中的绑定时增加的属性
 		if (!original) {
@@ -100,15 +118,15 @@ class TabBar extends DisplayObject {
 
 class TabNavigator extends DisplayObject {
 
-	tabBar :TabBar;
-	iframe :JQuery;
+	tabBar: TabBar;
+	iframe: JQuery;
 
 	constructor(jq, cfg) {
 
 
 		super(jq, cfg);
 
-		this.create(jq, cfg);
+		//this.create(jq, cfg);
 	}
 
 	create(jq, cfg) {
@@ -130,9 +148,9 @@ class TabNavigator extends DisplayObject {
 
 class TabView extends DisplayObject {
 
-	views :Array;
-	tabBar :TabBar;
-	stack :JQuery;
+	views: Array;
+	tabBar: TabBar;
+	stack: JQuery;
 
 	constructor(jq, cfg) {
 
@@ -150,7 +168,7 @@ class TabView extends DisplayObject {
 		cfg.selectedIndex = -1;
 		this.tabBar = new TabBar(jq, cfg);
 
-		this.stack = $('<div class="tabStack"></div>').appendTo(jq);
+		this.stack = $('<div class="tabStack"></div>').appendTo($('<div style="display: table-row;height: 100%;"></div>').appendTo(jq));
 
 		for (let i = 0, l = cfg.data.length; i < l; i++) {
 			let div = cfg.data[i]['view'];
@@ -158,9 +176,10 @@ class TabView extends DisplayObject {
 		}
 
 		this.tabBar.onSelect = function () {
-			if(self.views[self.tabBar.prevIndex])
+			if (self.views[self.tabBar.prevIndex])
 				self.views[self.tabBar.prevIndex].toggle();
-			if(self.views[self.tabBar.selectedIndex])
+
+			if (self.views[self.tabBar.selectedIndex])
 				self.views[self.tabBar.selectedIndex].toggle();
 		};
 		this.tabBar.selectedIndex = (x);

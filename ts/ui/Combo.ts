@@ -35,7 +35,7 @@ class Combo extends DisplayObject {
 	onClose?: Function;
 
 	private _state: 'closed'|'opened';
-	private _wrapper?: JQuery;
+	//private _wrapper?: JQuery;
 	private _evtName: string = 'mousedown.ComboEvent';
 
 
@@ -67,28 +67,32 @@ class Combo extends DisplayObject {
 
 		//ereaser
 		if (cfg.allowBlank) {
-			this._wrapper = this.jq.css({
-				float: 'left',
-				margin: 0
-			}).wrap('<span style="display: inline-block;vertical-align: middle;"></span>').parents('span:first');
-
-			let that = this;
-			let eraser = $('<div class="ipt-eraser">&times;</div>')
-				.appendTo(this._wrapper)
-				.click(function () {
-					if (!that.jq.prop('disabled')) {
-						that.jq.val('');
-						that.jqValueField.val('');
-					}
-				});
-
-			this._wrapper.hover(function () {
-				eraser.toggle();
-			});
+			Combo.makeClearableInput(this.jq , this.jqValueField);
 		}
 
 		ComboManager.instances[this.guid] = this;
 		this.enable = true;
+	}
+
+	public static makeClearableInput(ipt :JQuery , valueIpt:JQuery) :void{
+		let wrapper = ipt.css({
+			float: 'left',
+			margin: 0
+		}).wrap('<span class="sp-eraserWrap"></span>').parents('span:first');
+
+		let eraser = $('<div class="ipt-eraser">&times;</div>')
+			.appendTo(wrapper)
+			.click(function () {
+				if (!ipt.prop('disabled')) {
+					ipt.val('');
+					valueIpt.val('');
+				}
+			});
+
+		wrapper.hover(function () {
+			eraser.toggle();
+		});
+
 	}
 
 	set enable(b: boolean) {
@@ -185,6 +189,7 @@ class Combo extends DisplayObject {
 		this.jq.val(txt);
 		this.jqValueField.val(val);
 	}
+
 	get text(): string {
 		return $.trim(this.jq.val());
 	}

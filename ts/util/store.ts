@@ -13,7 +13,7 @@ const deserialize = (value: string|any): any => {
 };
 
 const store = {
-	use: (storageType: 'localStorage'|'sessionStorage')=> {
+	use: (storageType: 'localStorage'|'sessionStorage') => {
 		storage = window[storageType];
 		return store;
 	},
@@ -28,10 +28,10 @@ const store = {
 		storage.setItem(key, JSON.stringify(val));
 		return val;
 	},
-	remove: (key: string)=> {
+	remove: (key: string) => {
 		storage.removeItem(key);
 	},
-	clear: ()=> {
+	clear: () => {
 		storage.clear();
 	},
 	each: function (callback: Function) {
@@ -42,4 +42,30 @@ const store = {
 	}
 };
 
-export default store;
+
+class LocalStore {
+	private storage: Storage;
+
+	constructor(isSession: boolean = true) {
+		this.storage = window[isSession ? 'sessionStorage' : 'localStorage'];
+	}
+
+	get(key: string, defaultVal?: any): any {
+		let val = deserialize(this.storage.getItem(key));
+		return (val === undefined ? defaultVal : val);
+	}
+
+	set(key: string, val: any) {
+		if (val === undefined) {
+			return this.remove(key);
+		}
+		this.storage.setItem(key, JSON.stringify(val));
+		return val;
+	}
+
+	remove(key: string) {
+		this.storage.removeItem(key);
+	}
+}
+
+export {store, LocalStore};

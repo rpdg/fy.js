@@ -4,6 +4,7 @@ import Table from "./ui/Table";
 import PopUp from "./ui/Popup";
 import Panel from "./ui/Panel";
 import Tree from "./ui/Tree";
+import {TabBar, TabNavigator, TabView} from "./ui/TabView";
 
 import {request, string, dateTime, is, url, convert, format, array} from  'util/utils';
 
@@ -49,6 +50,10 @@ class OpsUi {
 		return new Panel(this.jq, cfg);
 	}
 
+	tabView(cfg): TabView {
+		return new TabView(this.jq, cfg);
+	}
+
 }
 
 
@@ -83,6 +88,21 @@ ops.warn = function (message, callBack?: Function, options ?: any = {}) {
 };
 ops.danger = function (message, callBack?: Function, options ?: any = {}) {
 	PopUp.confirm('<i class="ico-warn"></i><span>' + message + '</span>', callBack, options);
+};
+
+
+//Pub/Sub
+//https://github.com/cowboy/jquery-tiny-pubsub
+let ps_obj = $({});
+
+ops.listen = function (events: string, handler: (eventObject: JQueryEventObject, ...args: any[]) => any) {
+	ps_obj.on.apply(ps_obj, arguments);
+};
+ops.dispatch = function (eventType: string, extraParameters?: any[]|Object) {
+	ps_obj.trigger.apply(ps_obj, arguments);
+};
+ops.unListen = function () {
+	ps_obj.off.apply(ps_obj, arguments);
 };
 
 

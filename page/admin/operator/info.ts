@@ -25,6 +25,7 @@ $.when(
 		tree1 = ops('#tree1').tree({
 			data: data,
 			root: '角色',
+			name : 'rolesTree' ,
 			cmd: 'checkAll'
 		});
 

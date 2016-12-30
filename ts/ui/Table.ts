@@ -70,7 +70,7 @@ function makeTbStructor(tb, sets) {
 	let thead = '<thead><tr>' + th.join('') + '</tr></thead>';
 	let tfoot = (sets.pagination) ? '<tfoot><tr><td colspan="' + (l || '1') + '"></td></tr></tfoot>' : '';
 
-	tb.append(thead + '<tbody id="' + tb[0].id + '_tbody"></tbody>' + tfoot);
+	tb.prepend(thead + '<tbody id="' + tb[0].id + '_tbody"></tbody>' + tfoot);
 }
 
 function setupTitleBar(tb, sets) {

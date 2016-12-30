@@ -67,7 +67,7 @@ class ListBox extends AjaxDisplayObject implements IFormControls {
 		this._prevIndex = this._selectedIndex;
 
 		//(this.jq[0] as HTMLSelectElement).selectedIndex = i;
-		$(this._items).removeAttr('selected').eq(i).attr('selected' , 'selected');
+		$(this._items).removeAttr('selected').eq(i).attr('selected', 'selected');
 
 		this._selectedIndex = i;
 
@@ -124,7 +124,7 @@ class CheckBox extends AjaxDisplayObject implements IFormControls {
 		this._selectedIndex = [];
 
 		//add event listener
-		jq.on("change.ops", ':checkbox', (evt)=> {
+		jq.on("change.ops", ':checkbox', (evt) => {
 			this.selectHandler(evt);
 		});
 	}
@@ -175,7 +175,7 @@ class CheckBox extends AjaxDisplayObject implements IFormControls {
 			arr = [],
 			that = this;
 
-		s.each((i, opt)=> {
+		s.each((i, opt) => {
 			let src = that.data[that._items.index(opt)],
 				tar = {};
 			for (let key: string in src)
@@ -185,6 +185,12 @@ class CheckBox extends AjaxDisplayObject implements IFormControls {
 			arr.push(tar);
 		});
 		return arr;
+	}
+
+	set selectedData(arr: Array) {
+		this._items.each((i, elem: HTMLInputElement) => {
+			elem.checked = arr.indexOf(elem.value) > -1;
+		})
 	}
 
 	getValue(): any {

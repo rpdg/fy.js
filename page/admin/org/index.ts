@@ -1,14 +1,14 @@
-import ops from 'ts/ops.ts';
+import opg from 'ts/opg.ts';
 import Tree from "ts/ui/Tree.ts";
 
 
-ops.api({
+opg.api({
 	org: 'system/organization/orgsubstree/0',
 	'delete!delete!': 'system/organization/delete/${id}'
 });
 
 
-ops.api.delete.set('codes' , {
+opg.api.delete.set('codes' , {
 	'system_amsorganization_status_stopped' : '组织状态已被停用',
 	'system_amsorganization_suborg_existed' : '该组织存在下级组织',
 });
@@ -16,7 +16,7 @@ ops.api.delete.set('codes' , {
 const infoPage = '/page/admin/org/info.html';
 
 
-let panel = ops.wrapPanel('#tbSearch', {
+let panel = opg.wrapPanel('#tbSearch', {
 	title: '组织信息',
 	btnSearchText: '<i class="ico-edit"></i> 修改'
 });
@@ -30,7 +30,7 @@ let btnAdd = $('#btnAdd');
 btnAdd.click(function () {
 	//let pId = btnAdd.data('pid');
 	//noinspection TypeScriptUnresolvedVariable
-	let pop = top.ops.confirm(`<iframe src="${infoPage}?parentId=${currentTableParentId}" />`, function (i, ifr, v) {
+	let pop = top.opg.confirm(`<iframe src="${infoPage}?parentId=${currentTableParentId}" />`, function (i, ifr, v) {
 		//debugger;
 		//console.log(i , ifr , v);
 		return ifr.doSave(pop, tree);
@@ -49,7 +49,7 @@ btnAdd.click(function () {
 });
 
 
-let tb = ops('#tb').table({
+let tb = opg('#tb').table({
 	columns: [
 		{
 			text: '组织名称', width: 200,
@@ -76,7 +76,7 @@ tb.tbody.on('click', '.btn-info', editRole);
 function editRole() {
 	let btn = $(this), title = btn.data('title'), id = btn.data('id'), pId = btn.data('pid');
 	//noinspection TypeScriptUnresolvedVariable
-	let pop = top.ops.confirm(`<iframe src="${infoPage}?id=${id}&parentId=${pId}" />`, function (i, ifr) {
+	let pop = top.opg.confirm(`<iframe src="${infoPage}?id=${id}&parentId=${pId}" />`, function (i, ifr) {
 		return ifr.doSave(pop, tree);
 	}, {
 		title: `修改组织: ${title}`,
@@ -95,8 +95,8 @@ function editRole() {
 tb.tbody.on('click', '.btn-danger', function () {
 	let btn = $(this), title = btn.data('title'), id = btn.data('id');
 
-	ops.danger(`要删除“<b>${title}</b>”吗？`, function () {
-		ops.api.delete({id}, ()=> {
+	opg.danger(`要删除“<b>${title}</b>”吗？`, function () {
+		opg.api.delete({id}, ()=> {
 			tree.update();
 		});
 
@@ -107,10 +107,10 @@ tb.tbody.on('click', '.btn-danger', function () {
 
 let currentTableParentId = -1;
 
-let tree: Tree = ops('#leftSec').tree({
+let tree: Tree = opg('#leftSec').tree({
 	root: '系统企业',
 	name : 'orgTree' ,
-	api: ops.api.org,
+	api: opg.api.org,
 	onAjaxEnd: (json)=> {
 		console.log(json);
 		json.results = json.root.children;

@@ -21,7 +21,7 @@ class ListBox extends AjaxDisplayObject implements IFormControls {
 			}
 		}, cfg);
 
-		cfg.name = cfg.name || ( 'opsElem_' + DisplayObject.guid() );
+		cfg.name = cfg.name || ( 'opgElem_' + DisplayObject.guid() );
 
 		//如果是从空容器创建的，将jq对象指定到select控件上
 		if (jq[0].tagName !== 'SELECT') {
@@ -46,7 +46,7 @@ class ListBox extends AjaxDisplayObject implements IFormControls {
 		this.elementName = cfg.name;
 
 		//add event listener
-		jq.on("change.ops", (evt) => {
+		jq.on("change.opg", (evt) => {
 			this.selectedIndex = evt.target.selectedIndex;
 		});
 	}
@@ -98,7 +98,7 @@ class CheckBox extends AjaxDisplayObject implements IFormControls {
 
 	constructor(jq: JQuery, cfg: any) {
 
-		cfg.name = cfg.name || ( 'opsElem_' + DisplayObject.guid() );
+		cfg.name = cfg.name || ( 'opgElem_' + DisplayObject.guid() );
 
 		cfg = $.extend({
 			bindOptions: {
@@ -124,7 +124,7 @@ class CheckBox extends AjaxDisplayObject implements IFormControls {
 		this._selectedIndex = [];
 
 		//add event listener
-		jq.on("change.ops", ':checkbox', (evt) => {
+		jq.on("change.opg", ':checkbox', (evt) => {
 			this.selectHandler(evt);
 		});
 	}
@@ -193,28 +193,26 @@ class CheckBox extends AjaxDisplayObject implements IFormControls {
 		})
 	}
 
-	getValue(): any {
+	getValue(): Array {
+		let arr = [];
 		let s: JQuery = this.selectedItem;
 		if (s.length) {
-			let arr = [];
 			s.each(function (i, o: HTMLInputElement) {
 				arr.push(o.value);
 			});
-			return arr;
 		}
-		return null;
+		return arr;
 	}
 
-	getText(): any {
+	getText(): Array {
+		let arr = [];
 		let s: JQuery = this.selectedItem;
 		if (s.length) {
-			let arr = [];
 			s.each(function (i, o: HTMLInputElement) {
 				arr.push($(o.parentNode).text());
 			});
-			return arr;
 		}
-		return null;
+		return arr;
 	}
 }
 
@@ -224,7 +222,7 @@ class RadioBox extends AjaxDisplayObject implements IFormControls {
 
 	constructor(jq: JQuery, cfg: any) {
 
-		cfg.name = cfg.name || ( 'opsElem_' + DisplayObject.guid() );
+		cfg.name = cfg.name || ( 'opgElem_' + DisplayObject.guid() );
 
 		cfg = $.extend({
 			bindOptions: {
@@ -246,7 +244,7 @@ class RadioBox extends AjaxDisplayObject implements IFormControls {
 		this._initSelectedIndex = ~~cfg.selectedIndex;
 
 		//add event listener
-		jq.on("change.ops", (evt) => {
+		jq.on("change.opg", (evt) => {
 			this.selectedIndex = this._items.index(evt.target);
 		});
 	}

@@ -1,15 +1,15 @@
 import {store} from 'ts/util/store.ts';
-import ops from 'ts/ops.ts';
+import opg from 'ts/opg.ts';
 
 //noinspection TypeScriptUnresolvedVariable
 store.set('apiServer', window.CONFIG.apiServer);
 
-ops.api({
+opg.api({
 	'login!post': 'system/user/login'
 });
 
 
-ops.api.login.set('codes', {
+opg.api.login.set('codes', {
 	/*identification_orgcode_empty: '用户所属组织代码为空',
 	 identification_loginname_empty: '登录名为空',
 	 identification_passwod_empty: '密码为空',*/
@@ -42,7 +42,7 @@ let btnLogin = $('#btnLogin').click(function () {
 	});
 
 	if (param) {
-		ops.api.login(param, function (data) {
+		opg.api.login(param, function (data) {
 			if (data.permissons && data.permissons.length) {
 
 				store.set('X-Token', data.token);
@@ -55,17 +55,17 @@ let btnLogin = $('#btnLogin').click(function () {
 				if (previousUser) {
 					let previousLoginName = previousUser.loginName;
 					if (previousLoginName === param.loginName) {
-						let hash = ops.request['returnUrl'];
+						let hash = opg.request['returnUrl'];
 						if (hash) {
 							url += hash;
 						}
 					}
 				}
 
-				window.location.href = url;
+				window.location.replace(url);
 			}
 			else {
-				ops.err('账户没有权限');
+				opg.err('账户没有权限');
 			}
 		});
 	}

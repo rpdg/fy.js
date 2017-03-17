@@ -1,7 +1,7 @@
-import ops from 'ts/ops.ts';
+import opg from 'ts/opg.ts';
 
-let id = ops.request['id'];
-ops.api({
+let id = opg.request['id'];
+opg.api({
 	'findById!!': 'system/amssp/findById/${id}',
 	'update!post': 'system/amssp/update',
 	'add!post': 'system/amssp/add'
@@ -14,13 +14,13 @@ const codes = {
 	'system_amssp_code_existed': '内容生产商名称已被占用',
 };
 
-ops.api.add.set('codes', codes);
-ops.api.update.set('codes', codes);
+opg.api.add.set('codes', codes);
+opg.api.update.set('codes', codes);
 
 
 let form = $('#tbSearch');
 if (id) {
-	ops.api.findById({id: ops.request['id']}, function (data) {
+	opg.api.findById({id: opg.request['id']}, function (data) {
 		form.jsonToFields(data);
 	});
 }
@@ -56,7 +56,7 @@ window['doSave'] = function (popWin, table) {
 
 
 
-	return ops.api[action](param, function () {
+	return opg.api[action](param, function () {
 		popWin.close();
 		table.update();
 	});

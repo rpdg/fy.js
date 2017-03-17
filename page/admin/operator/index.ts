@@ -1,10 +1,10 @@
-import ops from 'ts/ops.ts';
+import opg from 'ts/opg.ts';
 import Panel from "ts/ui/Panel.ts";
 import {ListBox} from "ts/ui/FormControls.ts";
 import {store} from "../../../ts/util/store";
 
 
-ops.api({
+opg.api({
 	operators: 'system/user/findPage',
 	amssp: 'system/amssp/findPage?pageNo=1&pageSize=9999',
 	'delete!DELETE!': 'system/user/${id}',
@@ -17,7 +17,7 @@ ops.api({
 const infoPage = '/page/admin/operator/info.html';
 
 
-let panel: Panel = ops.wrapPanel('#tbSearch', {
+let panel: Panel = opg.wrapPanel('#tbSearch', {
 	title: '操作员查询',
 	btnSearchText: '<i class="ico-find"></i> 查询'
 });
@@ -31,7 +31,7 @@ panel.btnSearch.click(function () {
 });
 
 let mine = store.get('userInfo'), myId = mine ? mine.id : 0;
-let tb = ops('#tb').table({
+let tb = opg('#tb').table({
 	titleBar: {
 		title: '操作员列表',
 		buttons: [
@@ -78,7 +78,7 @@ let tb = ops('#tb').table({
 			}
 		}
 	],
-	api: ops.api.operators,
+	api: opg.api.operators,
 	pagination: {
 		pageSize: 10
 	}
@@ -89,7 +89,7 @@ let tb = ops('#tb').table({
 $('#btnAdd').click(function () {
 
 	//noinspection TypeScriptUnresolvedVariable
-	let pop = top.ops.confirm(`<iframe src="${infoPage}" />`, function (i, ifr, v) {
+	let pop = top.opg.confirm(`<iframe src="${infoPage}" />`, function (i, ifr, v) {
 		//debugger;
 		//console.log(i , ifr , v);
 		return ifr.doSave(pop, tb);
@@ -112,7 +112,7 @@ tb.tbody.on('click', '.btn-info', function () {
 	let btn = $(this), title = btn.data('title'), id = btn.data('id');
 
 	//noinspection TypeScriptUnresolvedVariable
-	let pop = top.ops.confirm(`<iframe src="${infoPage}?id=${id}" />`, function (i, ifr) {
+	let pop = top.opg.confirm(`<iframe src="${infoPage}?id=${id}" />`, function (i, ifr) {
 		return ifr.doSave(pop, tb);
 	}, {
 		title: `修改操作员: ${title}`,
@@ -139,7 +139,7 @@ tb.tbody.on('click', '.btn-primary', function () {
 
 	form = $(strForm);
 
-	let pop = ops.confirm(form, function () {
+	let pop = opg.confirm(form, function () {
 
 		let obj = form.fieldsToJson({
 			password: {
@@ -156,8 +156,8 @@ tb.tbody.on('click', '.btn-primary', function () {
 			else {
 				delete obj.again_password;
 
-				ops.api.changePassword(obj, ()=> {
-					ops.ok('修改成功');
+				opg.api.changePassword(obj, ()=> {
+					opg.ok('修改成功');
 					pop.close();
 				});
 			}
@@ -176,8 +176,8 @@ tb.tbody.on('click', '.btn-warning,.btn-success', function () {
 	let btn = $(this), title = btn.data('title'), id = btn.data('id'), status = btn.data('status');
 	let stateTxt = status == 1 ? '启用' : '禁用';
 
-	ops.confirm(`要${stateTxt}操作员“<b>${title}</b>”吗？`, function () {
-		ops.api[status == 1 ? 'enable' : 'disable']({id}, ()=>tb.update());
+	opg.confirm(`要${stateTxt}操作员“<b>${title}</b>”吗？`, function () {
+		opg.api[status == 1 ? 'enable' : 'disable']({id}, ()=>tb.update());
 	}, {
 		title: '请确认'
 	});
@@ -187,8 +187,8 @@ tb.tbody.on('click', '.btn-warning,.btn-success', function () {
 tb.tbody.on('click', '.btn-danger', function () {
 	let btn = $(this), title = btn.data('title'), id = btn.data('id');
 
-	ops.danger(`要删除操作员“<b>${title}</b>”吗？`, function () {
-		ops.api.delete({id}, ()=>tb.update());
+	opg.danger(`要删除操作员“<b>${title}</b>”吗？`, function () {
+		opg.api.delete({id}, ()=>tb.update());
 	}, {
 		title: '请确认'
 	});

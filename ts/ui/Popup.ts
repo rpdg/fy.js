@@ -10,14 +10,16 @@ const DEFAULTS = {
 	modal: true,          // make dialog modal?
 	show: true,           // show dialog immediately?
 	destroy: true,          // should this dialog be removed from the DOM after being hidden?
-	onClose: $.noop,        // callback fired after dialog is hidden. executed in context of Boxy instance.
-	onDestroy: $.noop,
+	onClose: null,        // callback fired after dialog is hidden. executed in context of Boxy instance.
+	onDestroy: null,
 	buttons: null
 };
 
 const BoxyStore = {
+	manager: [],
+	managerHash: {},
 	dragging: null,
-	_handleDrag: (evt)=> {
+	_handleDrag: (evt) => {
 		//evt.preventDefault() ;
 		let d = BoxyStore.dragging;
 
@@ -38,13 +40,13 @@ const BoxyStore = {
 	}
 };
 
-const nextZ = (()=> {
+const nextZ = (() => {
 	let zIndex = 1000;
-	return ()=> ++zIndex;
+	return () => ++zIndex;
 })();
 
 
-const returnFalse = ()=>false;
+const returnFalse = () => false;
 
 
 function setTitleBar(cfg) {
@@ -161,14 +163,14 @@ function setFooter(cfg) {
 	footer.on('click', 'button', function (evt) {
 		if (cfg.callback) {
 			let clicked = this;
-			let ifrWin;
+			let ifrWin = null;
 			if (self.iframe) {
 				ifrWin = self.iframe.contentWindow ? self.iframe.contentWindow : self.iframe.contentDocument.defaultView;
 			}
 
 			let i = parseInt(clicked.name, 10);
 
-			let wontClose = cfg.callback.call(self, i, ifrWin);
+			let wontClose = cfg.callback.call(self, i, ifrWin, clicked);
 
 			if (!wontClose) self.close();
 
@@ -200,6 +202,14 @@ class PopUp extends DisplayObject {
 
 		super(jq, cfg);
 
+		BoxyStore.manager.push(this);
+
+		if (cfg.popId) {
+			if (cfg.popId in BoxyStore.managerHash)
+				throw new Error(`Duplicated PopId "${cfg.popId}"`);
+			else
+				BoxyStore.managerHash[cfg.popId] = this;
+		}
 	}
 
 	init(jq: JQuery, cfg: any) {
@@ -321,7 +331,7 @@ class PopUp extends DisplayObject {
 		return this;
 	}
 
-	close(fn) {
+	close(fn?: Function) {
 
 		let that = this;
 		let css = this.getPosition();
@@ -341,12 +351,13 @@ class PopUp extends DisplayObject {
 
 
 			if (that.cfg.destroy)
-				that.destroy();
-			else {
+				that.destroy.call(that);
+			else{
 				that.visible = false;
 				that.boxy.css({top: css.top + 40});
 				that.mask.css({display: 'none'});
 			}
+
 		});
 
 
@@ -400,6 +411,16 @@ class PopUp extends DisplayObject {
 
 
 		this.mask.remove();
+
+		BoxyStore.manager.splice(BoxyStore.manager.indexOf(this), 1);
+
+		if (this.cfg.popId) {
+			delete BoxyStore.managerHash[this.cfg.popId];
+		}
+
+		if (typeof this.cfg.onDestroy === 'function') {
+			this.cfg.onDestroy.call(this);
+		}
 	}
 
 	toggle() {
@@ -449,7 +470,25 @@ class PopUp extends DisplayObject {
 
 	static popTop(iframe, options): PopUp {
 		//noinspection TypeScriptUnresolvedFunction
-		return top.ops(iframe).popup(options);
+		return top.opg(iframe).popup(options);
+	}
+
+	static closeLast() {
+		if (BoxyStore.manager.length > 0) {
+			let pop = BoxyStore.manager[BoxyStore.manager.length - 1] as PopUp;
+			return pop.close();
+		}
+		else
+			return null;
+	}
+
+	static closeById(popId: string) {
+		if (BoxyStore.managerHash[popId]) {
+			let pop = BoxyStore.managerHash[popId] as PopUp;
+			return pop.close();
+		}
+		else
+			return null;
 	}
 }
 

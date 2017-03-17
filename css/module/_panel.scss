@@ -45,10 +45,12 @@
 .search-table {
 	width: 100%;
 	//display: none;
+	
 	td {
 		border: 1px solid $border-color;
 		padding: 0.3em 0.8em;
 		vertical-align: middle;
+		//min-height: 37px;
 		
 		label {
 			line-height: 1em;
@@ -66,5 +68,12 @@
 		text-align: right;
 		width: 120px;
 		background-color: #fafafa;
+		
+		+ td{
+			width: 30%;
+		}
 	}
+}
+.pop .search-table .lead + td{
+	width: auto;
 }

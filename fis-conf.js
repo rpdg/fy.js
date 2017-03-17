@@ -1,8 +1,9 @@
 fis.set('project.fileType.text', 'ts');
 
-
-var currentVersion = 'beta 1';
+// 需要：完整协议+ url +‘/’ 结尾
+// 如： http://54.223.126.249:8080/api/
 var apiServer; //以 / 开头结尾
+
 var isUnderLocal = false;
 var orgCode = 'sys';
 
@@ -62,6 +63,7 @@ fis.match('**/*.ts', {
 		strictNullChecks: true,
 		module: 1,
 		target: 1,
+		//showNotices : true ,
 		noImplicitAny: true
 	}),
 	//packTo: '/js/ts.js',
@@ -80,6 +82,13 @@ fis.match('{/mock/**}', {
 
 // 开启模块化
 fis.hook('commonjs', {
+	/*packages: [
+		{
+			name: 'opm',
+			location: './ts/opm',
+			main: 'Auto.ts'
+		}
+	] ,*/
 	baseUrl: '.',
 	extList: ['.ts']
 });
@@ -112,7 +121,7 @@ fis.match('*.scss', {
 // 产品发布，进行合并
 fis.media('test')
 	.match('/ts/**.ts', {
-		packTo: '/js/ops.js'
+		packTo: '/js/opg.js'
 	})
 	.match('**.{html:js,js,ts}', {
 		optimizer: fis.plugin('uglify-js', {
@@ -132,7 +141,7 @@ fis.media('test')
 // 产品发布，进行合并
 fis.media('prd')
 	.match('/ts/**.ts', {
-		packTo: '/js/ops.js'
+		packTo: '/js/opg.js'
 	})
 	.match('**.{html:js,js,ts}', {
 		optimizer: fis.plugin('uglify-js', {

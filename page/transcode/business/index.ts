@@ -1,16 +1,16 @@
-import ops from 'ts/ops.ts';
+import opg from 'ts/opg.ts';
 import Panel from "ts/ui/Panel.ts";
 import Table from "ts/ui/Table.ts";
 
 
 
-ops.api({
+opg.api({
 	business: 'transcode/business/findPage',
 	'delete!DELETE!': 'transcode/business/delete/${id}'
 });
 
 
-ops.api.delete.set('codes', {
+opg.api.delete.set('codes', {
 	'transcode_business_occupied' : '业务占用中,不能删除'
 });
 
@@ -19,7 +19,7 @@ ops.api.delete.set('codes', {
 const infoPage = '/page/transcode/business/info.html';
 
 
-let panel: Panel = ops.wrapPanel('#tbSearch', {
+let panel: Panel = opg.wrapPanel('#tbSearch', {
 	title: '业务信息',
 	btnSearchText: '<i class="ico-find"></i> 查询'
 });
@@ -32,7 +32,7 @@ panel.btnSearch.click(function () {
 });
 
 
-let tb :Table = ops('#tb').table({
+let tb :Table = opg('#tb').table({
 	titleBar : {
 		title : '业务列表',
 		buttons :[
@@ -56,7 +56,7 @@ let tb :Table = ops('#tb').table({
 			}
 		}
 	],
-	api: ops.api.business,
+	api: opg.api.business,
 	//lazy: true,
 	pagination: {
 		pageSize: 10
@@ -69,7 +69,7 @@ let tb :Table = ops('#tb').table({
 $('#btnAdd').click(function () {
 
 	//noinspection TypeScriptUnresolvedVariable
-	let pop = top.ops.confirm(`<iframe src="${infoPage}" />`, function (i , ifr , v) {
+	let pop = top.opg.confirm(`<iframe src="${infoPage}" />`, function (i , ifr , v) {
 		//debugger;
 		//console.log(i , ifr , v);
 		return ifr.doSave(pop, tb);
@@ -92,7 +92,7 @@ tb.tbody.on('click', '.btn-info', function () {
 	let btn = $(this), title = btn.data('title'), id = btn.data('id');
 
 	//noinspection TypeScriptUnresolvedVariable
-	let pop = top.ops.confirm(`<iframe src="${infoPage}?id=${id}" />`, function (i, ifr) {
+	let pop = top.opg.confirm(`<iframe src="${infoPage}?id=${id}" />`, function (i, ifr) {
 		return ifr.doSave(pop , tb);
 	}, {
 		title: `修改业务: ${title}`,
@@ -111,8 +111,8 @@ tb.tbody.on('click', '.btn-info', function () {
 tb.tbody.on('click', '.btn-danger', function () {
 	let btn = $(this), title = btn.data('title'), id = btn.data('id');
 
-	ops.danger(`要删除“<b>${title}</b>”吗？`, function () {
-		ops.api.delete({id: id}, ()=>tb.update());
+	opg.danger(`要删除“<b>${title}</b>”吗？`, function () {
+		opg.api.delete({id: id}, ()=>tb.update());
 	}, {
 		title: '请确认'
 	});

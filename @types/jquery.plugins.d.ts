@@ -1,3 +1,4 @@
+
 interface BindOption {
 	list ?: Array;
 	template ?: string;
@@ -20,6 +21,7 @@ interface JQuery {
 	bindList(target: any): JQuery;
 	fieldsToJson(rules?: any): any;
 	jsonToFields(obj: any): any;
+	decimalMask(mask:string) : JQuery ;
 	iptError(sets: string|Function): any;
 	resizableColumns(sets: any): any;
 	syncCheckBoxGroup(select: any, context: any): any
@@ -29,17 +31,25 @@ interface JQuery {
 }
 
 interface JQueryStatic {
-	detectIE(): number
-	escapeSelector(selector: string|number): string
+	detectIE(): number;
+	escapeSelector(selector: string|number): string;
 }
 
 
-interface IOpsUi {
+interface IOpgUi {
 	jq: JQuery;
+	table(cfg:any)
+	tree(cfg:any)
+	listBox(cfg:any)
+	checkBox(cfg:any)
+	radioBox(cfg:any)
+	panel(cfg:any)
+	tabView(cfg:any)
+	popup(cfg:any)
 }
 
-interface OpsStatic {
-	(se: JQuery|any[]|Element|DocumentFragment|Text|string): IOpsUi;
+interface OpgStatic {
+	(se: JQuery|any[]|Element|DocumentFragment|Text|string): IOpgUi;
 
 
 	request: Map<string , string>;
@@ -72,13 +82,15 @@ interface OpsStatic {
 	convert: {
 		arrayToHash(arr:Array, keyName:string):Object ,
 		hashToArray(obj:Object, converter?:Function):Array ,
-		hashKeysToArray(obj:Object): Array
+		hashKeysToArray(obj:Object): Array,
+		stringToDate(dateStr :string , formater?:string): Date,
 	};
 	format: {
 		date(date:Date, format:string):string ,
 		fileSize(size:number):string ,
 		number (number, decimals, dec_point?, thousands_sep?):string ,
 		json(template: string, json: any): string,
+		timeLength(seconds:number): string,
 	};
 
 	array: {
@@ -106,7 +118,7 @@ interface OpsStatic {
 
 interface Window {
 	CONFIG: any;
-	ops: OpsStatic ;
+	opg: OpgStatic ;
 	__uri(path: string): string
 }
 
@@ -172,4 +184,6 @@ interface FisUri {
 
 declare let __uri: FisUri;
 declare let plyr: plyrStatic;
-declare let ops: OpsStatic;
+
+declare let opg: OpgStatic;
+

@@ -1,5 +1,5 @@
 import {AjaxDisplayObject, DisplayObject} from './DisplayOject';
-import {format} from '../util/utils';
+import {format} from 'ts/util/utils';
 
 function makeTemplate(sets) {
 
@@ -17,11 +17,16 @@ function makeTemplate(sets) {
 
 			if (col.cmd === 'checkAll') {
 				tdTmp[i] = '<td class="text-center"><input type="checkbox" name="chk_' + i + '" value="${' + col.src + render + '}"></td>';
-				if (!this.cmd) this.cmd = 'checkAll';
+
 			}
 			else {
 				tdTmp[i] = '<td class="text-center"><input type="radio" name="chk_' + i + '" value="${' + col.src + render + '}"></td>';
-				if (!this.cmd) this.cmd = 'checkOne';
+
+			}
+
+			if (!this.cmd) {
+				this.cmd = col.cmd ;
+				this.cmdColumnIndex = i;
 			}
 		}
 		else {
@@ -56,7 +61,7 @@ function makeTbStructor(tb, sets) {
 	let i = 0, l = sets.columns ? sets.columns.length : 0, colCss = [], th = [];
 	for (let col; col = sets.columns[i]; i++) {
 		if (col.cmd) {
-			col.width = col.width || 28;
+			col.width = col.width || 32;
 
 			if (col.cmd === 'checkAll')
 				col.text = '<input type="checkbox" name="' + col.src + '" value="chk_' + i + '">';
@@ -105,14 +110,15 @@ class Table extends AjaxDisplayObject {
 
 	resizable?: boolean;
 
-	cmd?: string;
+	cmd?: 'checkOne'|'checkAll';
+	cmdColumnIndex?: number;
 	cmdCheckAll?: JQuery;
 	cmdCheckOne?: JQuery;
 
 	pageTemplate?: string;
 	pagination?: Pagination;
 
-	private pageCount: number = 1;
+	private pageCount: number ;
 
 	constructor(jq: JQuery, cfg: any) {
 
@@ -214,15 +220,20 @@ class Table extends AjaxDisplayObject {
 
 	createdHandler(data: any) {
 		if (this.cmd === 'checkAll') {
-			this.cmdCheckAll = this.thead.find('th:eq(0)').find('input');
-			this.cmdCheckAll.syncCheckBoxGroup('td:eq(0)>:checkbox:enabled', this.tbody.find('tr'));
+			this.cmdCheckAll = this.thead.find('th:eq('+this.cmdColumnIndex+')').find('input');
+			this.cmdCheckAll.syncCheckBoxGroup('td:eq('+this.cmdColumnIndex+')>:checkbox:enabled', this.tbody.find('tr'));
 		}
 		else if (this.cmd === 'checkOne') {
-			this.cmdCheckOne = this.thead.find('th:eq(0)').find('input:hidden');
+			this.cmdCheckOne = this.thead.find('th:eq('+this.cmdColumnIndex+')').find('input:hidden');
 		}
+
 
 
 		this._created = true;
+
+		if(this._createdPromise){
+			this._createdPromise.resolve();
+		}
 		if (this.onCreate) this.onCreate(data);
 	}
 
@@ -236,7 +247,7 @@ class Table extends AjaxDisplayObject {
 	updateHandler(json) {
 		if (this.cmdCheckAll) {
 			this.cmdCheckAll.prop("checked", false);
-			this.cmdCheckAll.syncCheckBoxGroup('td:eq(0)>:checkbox:enabled', this.tbody.find('tr'));
+			this.cmdCheckAll.syncCheckBoxGroup('td:eq('+this.cmdColumnIndex+')>:checkbox:enabled', this.tbody.find('tr'));
 		}
 
 
@@ -247,11 +258,13 @@ class Table extends AjaxDisplayObject {
 		return this;
 	}
 
+	//分页
 	makePager(rowCount) {
 
 		let that = this;
 
 		let pageCount = Math.ceil(rowCount / this._param.pageSize);
+		if(pageCount===0) pageCount=1;
 
 		if (this._param.pageNo > 1 && pageCount < this.pageCount) {
 			this._param.pageNo -= (this.pageCount - pageCount);
@@ -303,7 +316,7 @@ class Table extends AjaxDisplayObject {
 				this.pageCounter.after($('<label class="pageSelectorLabel">每页</label>').append(pageSelector).append('条'));
 
 				//on change event
-				pageSelector.on('change.ops', function () {
+				pageSelector.on('change.opg', function () {
 
 					that.pagination.items_per_page = that._param.pageSize = ~~(this.options[this.selectedIndex] as HTMLOptionElement).value;
 					that._param.pageNo = 1;
@@ -318,6 +331,7 @@ class Table extends AjaxDisplayObject {
 
 	}
 
+	//@return object array
 	getCheckData() {
 		if (this.cmd) {
 			let key = (this.cmdCheckAll || this.cmdCheckOne).val(),
@@ -326,14 +340,40 @@ class Table extends AjaxDisplayObject {
 
 			for (let i = 0, l = chkBoxes.length; i < l; i++) {
 				if ((chkBoxes[i] as HTMLInputElement).checked) {
-					if (this.cmdCheckOne) return this.data[i];
-					else rev.push(this.data[i]);
+					if (this.cmdCheckOne)
+						return this.data[i];
+					else
+						rev.push(this.data[i]);
 				}
 			}
 
 			return rev;
 		}
-		else return null;
+		else
+			return null;
+	}
+
+	//@return string value array
+	getCheckedValue(){
+		if (this.cmd) {
+			let key = (this.cmdCheckAll || this.cmdCheckOne).val(),
+				chkBoxes = this.tbody.find("input[name='" + key + "']:checked") ;
+			let rev ;
+
+			if(this.cmdCheckAll){
+				rev = [];
+				chkBoxes.each((i, elem:HTMLInputElement)=>{
+					rev.push(elem.value);
+				});
+			}
+			else{
+				rev = chkBoxes.length? chkBoxes.val():null;
+			}
+
+			return rev;
+		}
+		else
+			return null;
 	}
 }
 

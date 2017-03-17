@@ -1,13 +1,13 @@
-import ops from 'ts/ops.ts';
+import opg from 'ts/opg.ts';
 
 
 let checkedInfo = parent.window['checkedInfo'];
-let checkedCategory = checkedInfo.category , checkedCategoryHash = ops.convert.arrayToHash(checkedCategory , 'id') ;
+let checkedCategory = checkedInfo.category , checkedCategoryHash = opg.convert.arrayToHash(checkedCategory , 'id') ;
 console.log(checkedCategoryHash);
 
 
-ops.api({
-	roles: 'system/role/list',
+opg.api({
+	categoryTree: 'system/category/getCategoryTree',
 });
 
 
@@ -35,15 +35,16 @@ let data = [
 	},
 ];
 
-let tree = ops('#tree').tree({
-	data: data ,
+let tree = opg('#tree').tree({
+	api: opg.api.categoryTree ,
+	arrSrc : 'children',
 	root: '站点分类' ,
 	name : 'categoryTree' ,
 	template : '<label>${id:=mkChk} ${name}</label>' ,
 	render : {
 		mkChk : (id , i , row)=>{
 			let html = '';
-			if(row.type == 1){
+			if(!row.children){
 				let chked = (id in checkedCategoryHash)? 'checked': '';
 				html += `<input type="checkbox" name="chkCategory" value="${id}" data-name="${row.name}" ${chked}>`;
 			}

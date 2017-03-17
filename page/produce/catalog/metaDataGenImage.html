@@ -1,12 +1,5 @@
 <% include ('/comm/header.html') %>
 <style>
-	#imgContainer {
-		/*display: none;*/
-		background-image: url("/css/img/viewport_background.gif");
-		width: 1150px;
-		height: 650px;
-		overflow: hidden;
-	}
 
 	#zoomBar {
 		position: fixed;
@@ -45,26 +38,78 @@
 		color: #fff;
 		font-size: 12px;
 		border: 1px solid rgba(0, 0, 0, 0.5);
-		position: absolute;
+		position: fixed;
 		top: 50px;
 		left: 1000px;
 		z-index: 10;
 		width: 150px;
 		padding: 1em;
 	}
+	#editorWrapper{
+		position: absolute;
+		width: 1150px;
+		height: 650px;
+		background-image: url("/css/img/viewport_background.gif");
+	}
+	#imgContainer {
+		/*display: none;*/
+		position: absolute;
+		width: 1150px;
+		height: 650px;
+		overflow: hidden;
+	}
+	.dragHover{
+		background-color: rgba(255,0,0,0.1);
+	}
+	#imgContainer img{
+		position: absolute;
+		cursor: pointer;
+	}
+	#cropView{
+		border:1px solid yellow;
+		background-color: rgba(255,255,255,.2);
+		position: absolute;
+	}
+
+	#divInput{
+		display: none;
+		position: fixed;
+		width: 300px;
+		z-index: 10;
+		top: 200px;
+		left: 850px;
+		background-color: #fff;
+		padding: 1em;
+		border: 1px solid #aaa;
+	}
+	#divInput label{
+		display: block;
+	}
+	#divInput input{
+		width: 200px;
+	}
 </style>
-
-
+<link rel="stylesheet" href="./asset/jquery-ui.min.css">
+<h2 id="h2Size" class="text-center" style="line-height: 1.2em;"></h2>
 <input id="iptFileUpload" type="file" accept="image/*"/>
 
-<div id="imgContainer"></div>
+<div id="editorWrapper">
+	<div id="imgContainer"></div>
+	<div id="cropView"></div>
+</div>
 
 <div id="info">
-	<div id="infoLog"></div>
+	<div id="infoLog">请选择图像文件</div>
 </div>
 <div id="zoomBar">
 	<div id="zoomBg"></div>
 	<div id="zoomSlider"></div>
 </div>
+<div id="divInput">
+	<h3>输入文字（14个字符以内）</h3>
+	<label>第一行：<input type="text" id="row1" placeholder="" maxlength="14"></label>
+	<label>第二行：<input type="text" id="row2" placeholder="" maxlength="14"></label>
+</div>
 
 <% include ('/comm/footer.html') %>
+<script src="./asset/jquery-ui.min.js"></script>

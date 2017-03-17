@@ -1,13 +1,13 @@
-import ops from 'ts/ops';
+import opg from 'ts/opg';
 
 
-ops.api({
+opg.api({
 	roleTree: 'system/role/${parentRoleId}',
 	'findById!!': 'system/role/edit/${roleId}',
 	'save!post': 'system/role/save'
 });
 
-ops.api['save'].set('codes', {
+opg.api['save'].set('codes', {
 	'role_name_exist': '角色名已存在',
 	'role_name_not_empty': '角色名称不能为空',
 	'role_parentId_not_empty': '角色父id不能为空',
@@ -16,14 +16,14 @@ ops.api['save'].set('codes', {
 let form = $('#tbdSearch');
 let tree2;
 
-const id = ops.request['id'] ? ~~ops.request['id'] : null;
-const parentRoleId = ~~ops.request['parentId'];
+const id = opg.request['id'] ? ~~opg.request['id'] : null;
+const parentRoleId = ~~opg.request['parentId'];
 
 let permissions = {};
 let reservedPermissionIdHash = {};
 
 
-ops.api.roleTree({parentRoleId}, (data)=> {
+opg.api.roleTree({parentRoleId}, (data)=> {
 
 	let actions = data.actions, x = actions.length;
 	while (x--) {
@@ -54,7 +54,7 @@ ops.api.roleTree({parentRoleId}, (data)=> {
 	console.log('permissions', permissions);
 
 
-	tree2 = ops('#menuTree').tree({
+	tree2 = opg('#menuTree').tree({
 		data: menuData,
 		root: '菜单列表',
 		cmd: 'checkAll'
@@ -74,7 +74,7 @@ ops.api.roleTree({parentRoleId}, (data)=> {
 
 	if (id) {
 
-		ops.api.findById({roleId: id}, function (data) {
+		opg.api.findById({roleId: id}, function (data) {
 			form.jsonToFields(data.role);
 
 			let checkedIds = data.checkedIds ? data.checkedIds : [];
@@ -90,7 +90,7 @@ ops.api.roleTree({parentRoleId}, (data)=> {
 				let l = data.checkedIds.length;
 				while (l--) {
 					let curId = data.checkedIds[l];
-					let chk = document.getElementById(`tree${tree2.guid}Chk_${curId}`);
+					let chk = document.getElementById(`${tree2.treeName}Chk_${curId}`);
 					if (chk) {
 						$(chk).prop('checked', true);
 						delete reservedPermissionIdHash[curId];
@@ -104,10 +104,10 @@ ops.api.roleTree({parentRoleId}, (data)=> {
 				l = data.checkedIds.length;
 				while (l--) {
 
-					let sp = $('#tree' + tree2.guid + 'Sp_' + data.checkedIds[l]);
+					let sp = $('#' + tree2.treeName + 'Sp_' + data.checkedIds[l]);
 
 					if (sp.hasClass('folder')) {
-						let ul = $('#tree' + tree2.guid + 'Ul_' + data.checkedIds[l]);
+						let ul = $('#' + tree2.treeName + 'Ul_' + data.checkedIds[l]);
 						/*let li = ul.children('li');
 						 let all = li.length;
 						 if (all != li.children('span').children('label').children(':checkbox:checked').length) {
@@ -164,19 +164,19 @@ window['doSave'] = function (popWin, tree) {
 		}
 	});
 
-	let menuIds = ops.convert.hashKeysToArray(ids);
-	let reservedPermissions = ops.convert.hashKeysToArray(reservedPermissionIdHash);
+	let menuIds = opg.convert.hashKeysToArray(ids);
+	let reservedPermissions = opg.convert.hashKeysToArray(reservedPermissionIdHash);
 
-	param.pIds = ops.array.unique(ops.array.combine(menuIds, reservedPermissions));
+	param.pIds = opg.array.unique(opg.array.combine(menuIds, reservedPermissions));
 
 
 	param.id = id;
-	param.parentId = ~~ops.request['parentId'];
+	param.parentId = ~~opg.request['parentId'];
 
 	console.log('param', param);
 
 
-	ops.api.save(param, function () {
+	opg.api.save(param, function () {
 		popWin.close();
 		tree.update();
 	});

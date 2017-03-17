@@ -95,8 +95,8 @@
 	}
 	
 	.dg-content {
-		display: table-row;
-		overflow: auto;
+		display: table-cell;
+		overflow: hidden;
 	}
 	
 	.dg-footer{

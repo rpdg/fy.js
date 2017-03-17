@@ -1,8 +1,8 @@
-import ops from 'ts/ops.ts';
+import opg from 'ts/opg.ts';
 
-let id = ops.request['id'];
+let id = opg.request['id'];
 
-ops.api({
+opg.api({
 	'findById!!': 'transcode/business/findById/${id}',
 	'add!post': 'transcode/bizProfile/add' ,
 
@@ -14,27 +14,27 @@ ops.api({
 
 
 //业务名称
-ops('#businessId').listBox({
-	api : ops.api.business ,
+opg('#businessId').listBox({
+	api : opg.api.business ,
 });
 
 
 //输入类别
-ops('#inputSourceType').listBox({
-	api : ops.api.sourceTypes ,
+opg('#inputSourceType').listBox({
+	api : opg.api.sourceTypes ,
 	value : 'code'
 });
 
 
 //
-ops.api.movietype(data=>{
+opg.api.movietype(data=>{
 	const cfg = {
 		data : data ,
 		value  :'movieType'
 	};
 
-	ops('#inputFileMovieType').listBox(cfg);
-	ops('#outputFileMovieType').listBox(cfg);
+	opg('#inputFileMovieType').listBox(cfg);
+	opg('#outputFileMovieType').listBox(cfg);
 });
 
 
@@ -88,7 +88,7 @@ window['doSave'] = function (popWin, table) {
 		action = 'add';
 	}
 
-	return ops.api[action](param, function () {
+	return opg.api[action](param, function () {
 		popWin.close();
 		table.update();
 	});

@@ -1,7 +1,7 @@
-import ops from 'ts/ops.ts';
+import opg from 'ts/opg.ts';
 
-let id = ops.request['id'] ;
-ops.api({
+let id = opg.request['id'] ;
+opg.api({
 	'findById!!': 'content/contentType/findById/${id}',
 	'update!post' : 'content/contentType/update' ,
 	'add!post' : 'content/contentType/add'
@@ -12,14 +12,14 @@ const codes = {
 	'content_contenttype_name_existed' : '节目类型名称已存在',
 };
 
-ops.api.add.set('codes', codes);
-ops.api.update.set('codes', codes);
+opg.api.add.set('codes', codes);
+opg.api.update.set('codes', codes);
 
 
 
 let form = $('#tbSearch');
 if(id){
-	ops.api.findById({id : ops.request['id']} , function (data) {
+	opg.api.findById({id : opg.request['id']} , function (data) {
 		form.jsonToFields(data);
 	});
 }
@@ -49,7 +49,7 @@ window['doSave'] = function (popWin , table) {
 		action = 'add';
 	}
 
-	return ops.api[action](param, function () {
+	return opg.api[action](param, function () {
 		popWin.close();
 		table.update();
 	});

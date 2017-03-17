@@ -56,7 +56,7 @@ class TabBar extends DisplayObject {
 
 
 		let self = this;
-		this.bar.on('click.ops', 'li', function (evt) {
+		this.bar.on('click.opg', 'li', function (evt) {
 			self.selectHandler.call(self, evt);
 		});
 
@@ -91,7 +91,7 @@ class TabBar extends DisplayObject {
 		if (this._selectedIndex != i) {
 			this._prevIndex = this._selectedIndex;
 			this._selectedIndex = i;
-			this.bar.find("li:eq(" + i + ")").trigger('click.ops');
+			this.bar.find("li:eq(" + i + ")").trigger('click.opg');
 		}
 	}
 

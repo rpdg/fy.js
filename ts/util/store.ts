@@ -46,8 +46,8 @@ const store = {
 class LocalStore {
 	private storage: Storage;
 
-	constructor(isSession: boolean = true) {
-		this.storage = window[isSession ? 'sessionStorage' : 'localStorage'];
+	constructor(inSession: boolean = true) {
+		this.storage = window[inSession ? 'sessionStorage' : 'localStorage'];
 	}
 
 	get(key: string, defaultVal?: any): any {
@@ -68,4 +68,41 @@ class LocalStore {
 	}
 }
 
-export {store, LocalStore};
+class Cache{
+	private static instance :Cache ;
+	private cache :any ;
+
+	private constructor(){
+		if(!top.window['__Cache'])
+			top.window['__Cache'] = {};
+
+		this.cache = top.window['__Cache'] ;
+	}
+
+	static getInstance(){
+		if(!Cache.instance)
+			Cache.instance = new Cache();
+		return Cache.instance ;
+	}
+	static empty(){
+		if(top.window['__Cache'])
+			top.window['__Cache'] = null;
+	}
+
+	get(key: string, defaultVal?: any): any {
+		let val = this.cache[key];
+		return (val === undefined ? defaultVal : val);
+	}
+
+	set(key: string, val: any) {
+		if (val === undefined) {
+			return this.remove(key);
+		}
+		this.cache[key] = val;
+	}
+	remove(key: string) {
+		delete this.cache[key];
+	}
+}
+
+export {store, LocalStore , Cache};

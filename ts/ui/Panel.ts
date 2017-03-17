@@ -8,6 +8,7 @@ class Panel extends DisplayObject {
 	titleBar ?: JQuery;
 	btnClose ?: JQuery;
 	btnSearch ?: JQuery;
+	btnSearchClick ?: Function;
 
 	constructor(jq: JQuery, cfg: any) {
 		cfg = $.extend({
@@ -68,6 +69,9 @@ class Panel extends DisplayObject {
 		if (cfg.btnSearchId) {
 			this.btnSearch = $(`<button id="${cfg.btnSearchId}" class="${cfg.btnClass}">${cfg.btnSearchText}</button>`);
 			this.addToFoot(this.btnSearch);
+		}
+		if(this.btnSearch && cfg.btnSearchClick){
+			this.btnSearch.click(cfg.btnSearchClick) ;
 		}
 
 		jq.append(this.panel);

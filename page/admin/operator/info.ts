@@ -1,28 +1,28 @@
-import ops from 'ts/ops';
+import opg from 'ts/opg';
 
-ops.api({
+opg.api({
 	roles: 'system/role/list',
 	org: 'system/organization/orgsubstree/0',
 	'findById!!': 'system/user/edit/${id}',
 	'save!post': 'system/user/save',
 });
 
-ops.api.save.set('codes' , {
+opg.api.save.set('codes' , {
 	'loginName_exist' : '登录名已经存在'
 });
 
-const id = ops.request['id'];
+const id = opg.request['id'];
 let reservedCheckedRolesHash = {};
 
 let form = $('#tbSearch');
 
 let tree1;//, tree2;
 $.when(
-	ops.api.roles(data => {
+	opg.api.roles(data => {
 		let d = data;
 		data.results = [d];
 
-		tree1 = ops('#tree1').tree({
+		tree1 = opg('#tree1').tree({
 			data: data,
 			root: '角色',
 			name : 'rolesTree' ,
@@ -40,9 +40,9 @@ $.when(
 			}
 		});*/
 	})/*,
-	 ops.api.org(data => {
+	 opg.api.org(data => {
 	 let treeDiv = $('<div id="tree2"></div>').appendTo('#lbOrg');
-	 tree2 = ops(treeDiv).tree({
+	 tree2 = opg(treeDiv).tree({
 	 data: data.root.children,
 	 root: data.root.name,
 	 text: 'name',
@@ -58,7 +58,7 @@ $.when(
 	 })*/
 ).done(()=> {
 	if (id) {
-		ops.api.findById({id: id}, data => {
+		opg.api.findById({id: id}, data => {
 			form.jsonToFields(data);
 
 			if (data.roleIds) {
@@ -71,18 +71,18 @@ $.when(
 				//选中全部被选择的
 				let l = data.roleIds.length;
 				while (l--) {
-					$('#tree' + tree1.guid + 'Chk_' + data.roleIds[l]).prop('checked', true);
+					$('#' + tree1.treeName + 'Chk_' + data.roleIds[l]).prop('checked', true);
 				}
 				//将子节点选中的条数与全部子节点比较
 				l = data.roleIds.length;
 				while (l--) {
 					let curRoleId = data.roleIds[l];
-					let sp = $('#tree' + tree1.guid + 'Sp_' + curRoleId);
+					let sp = $('#' + tree1.treeName + 'Sp_' + curRoleId);
 
 					if(sp.length){
 
 						if (sp.hasClass('folder')) {
-							let ul = $('#tree' + tree1.guid + 'Ul_' + curRoleId);
+							let ul = $('#' + tree1.treeName + 'Ul_' + curRoleId);
 							ul.find(':checkbox').prop('checked' , true);
 						}
 
@@ -150,14 +150,14 @@ window['doSave'] = function (popWin, table) {
 	});
 
 
-	let checkedRoleIds = ops.convert.hashKeysToArray(ids);
-	let reservedCheckedRoles = ops.convert.hashKeysToArray(reservedCheckedRolesHash);
+	let checkedRoleIds = opg.convert.hashKeysToArray(ids);
+	let reservedCheckedRoles = opg.convert.hashKeysToArray(reservedCheckedRolesHash);
 
-	param.roleIds = ops.array.unique(ops.array.combine(checkedRoleIds, reservedCheckedRoles));
+	param.roleIds = opg.array.unique(opg.array.combine(checkedRoleIds, reservedCheckedRoles));
 
 
 	if(!param.roleIds.length){
-		ops.warn('请选择角色');
+		opg.warn('请选择角色');
 		return true;
 	}
 
@@ -170,7 +170,7 @@ window['doSave'] = function (popWin, table) {
 		}
 	}
 
-	return ops.api.save(param, ()=> {
+	return opg.api.save(param, ()=> {
 		popWin.close();
 		table.update();
 	});

@@ -1,10 +1,10 @@
-import ops from 'ts/ops.ts';
+import opg from 'ts/opg.ts';
 
 import AuditPlayer from './AuditPlayer';
 import AuditTable from './AuditTable';
 
 
-ops.api({
+opg.api({
 	saveAudit: ''
 });
 

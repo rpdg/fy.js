@@ -1,8 +1,8 @@
-import ops from 'ts/ops.ts';
+import opg from 'ts/opg.ts';
 import Panel from "ts/ui/Panel.ts";
 
 
-ops.api({
+opg.api({
 	amssp: 'system/amssp/findPage',
 	'delete!DELETE!': 'system/amssp/delete/${id}'
 });
@@ -12,7 +12,7 @@ ops.api({
 const infoPage = '/page/admin/sp/info.html';
 
 
-let panel: Panel = ops.wrapPanel('#tbSearch', {
+let panel: Panel = opg.wrapPanel('#tbSearch', {
 	title: '内容生产商查询',
 	btnSearchText: '<i class="ico-find"></i> 查询'
 });
@@ -26,7 +26,7 @@ panel.btnSearch.click(function () {
 
 
 
-let tb = ops('#tb').table({
+let tb = opg('#tb').table({
 	titleBar : {
 		title : '内容生产商列表',
 		buttons :[
@@ -50,7 +50,7 @@ let tb = ops('#tb').table({
 			}
 		}
 	],
-	api: ops.api.amssp,
+	api: opg.api.amssp,
 	//lazy: true,
 	pagination: {
 		pageSize: 20
@@ -61,7 +61,7 @@ let tb = ops('#tb').table({
 $('#btnAdd').click(function () {
 
 	//noinspection TypeScriptUnresolvedVariable
-	let pop = top.ops.confirm(`<iframe src="${infoPage}" />`, function (i , ifr , v) {
+	let pop = top.opg.confirm(`<iframe src="${infoPage}" />`, function (i , ifr , v) {
 		//debugger;
 		//console.log(i , ifr , v);
 		return ifr.doSave(pop, tb);
@@ -84,7 +84,7 @@ tb.tbody.on('click', '.btn-info', function () {
 	let btn = $(this), title = btn.data('title'), id = btn.data('id');
 
 	//noinspection TypeScriptUnresolvedVariable
-	let pop = top.ops.confirm(`<iframe src="${infoPage}?id=${id}" />`, function (i, ifr) {
+	let pop = top.opg.confirm(`<iframe src="${infoPage}?id=${id}" />`, function (i, ifr) {
 		return ifr.doSave(pop , tb);
 	}, {
 		title: `修改生产商: ${title}`,
@@ -103,8 +103,8 @@ tb.tbody.on('click', '.btn-info', function () {
 tb.tbody.on('click', '.btn-danger', function () {
 	let btn = $(this), title = btn.data('title'), id = btn.data('id');
 
-	ops.danger(`要删除“<b>${title}</b>”吗？`, function () {
-		ops.api.delete({id: id}, ()=>tb.update());
+	opg.danger(`要删除“<b>${title}</b>”吗？`, function () {
+		opg.api.delete({id: id}, ()=>tb.update());
 	}, {
 		title: '请确认'
 	});

@@ -9,6 +9,8 @@ body {
 	overflow: hidden;
 }
 
+
+
 #header {
 	height: $topbar-height;
 	//min-width: 1160px;
@@ -34,7 +36,7 @@ body {
 	}
 	
 	.ico-more-vert{
-		position: absolute;
+		//position: absolute;
 		z-index: 5;
 		right: 0;
 		
@@ -43,7 +45,7 @@ body {
 		width: 36px;
 		height: 36px;
 		//cursor: pointer;
-		//float: right;
+		float: right;
 		margin-top: 10px;
 		margin-right: 16px;
 		border-radius: 50px;
@@ -56,21 +58,21 @@ body {
 			background-color: darken($topbar-bg , 3%) ;
 			
 			#moreMenu{
-				//display: block;
-				right: 0 - 16px ;
+				display: block;
+				right: 0;//0 - 16px ;
 			}
 		}
 		
 		#moreMenu{
 			
-			//display: none;
+			display: none;
 			position: absolute;
 			z-index: 50;
 			
 			padding: $topbar-height 0 1em 1em;
 			
-			top: -1px - 8px;
-			right: -160px - 16px;
+			top: 0; //-1px - 8px;
+			right: 0;//-160px - 16px;
 			
 			width: 150px;
 			

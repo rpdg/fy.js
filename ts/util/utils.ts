@@ -49,8 +49,10 @@ const is = {
 	Number: $.noop,
 	String: $.noop,
 	Object: $.noop,
-	HTMLDocument: $.noop
+	HTMLDocument: $.noop,
+
 };
+
 let isTypes = ["Array", "RegExp", "Date", "Number", "String", "Object", "HTMLDocument"];
 for (let i = 0, c; c = isTypes[i++];) {
 	is[c] = (function (type) {
@@ -109,8 +111,8 @@ const url = {
 
 		return url;
 	},
-	//ops.url.setParam('http://127.0.0.1:8080/page/home/' , {name:'Bob'}, 'user' );
-	//ops.url.setParam('http://127.0.0.1:8080/page/home/' , {name:'Bob'} );
+	//opg.url.setParam('http://127.0.0.1:8080/page/home/' , {name:'Bob'}, 'user' );
+	//opg.url.setParam('http://127.0.0.1:8080/page/home/' , {name:'Bob'} );
 	setParam: function (url, obj, namespace) {
 		return url.addSearch(url, objectToQueryString(namespace, obj));
 	},
@@ -134,7 +136,7 @@ const string = {
 
 		return collect;
 	},
-	pad: function (input:string, result_full_length:number, pad_string:string='0', pad_type:'STR_PAD_LEFT'|'STR_PAD_BOTH'|'STR_PAD_RIGHT'='STR_PAD_RIGHT') {
+	pad: function (input: string, result_full_length: number, pad_string: string = '0', pad_type: 'STR_PAD_LEFT'|'STR_PAD_BOTH'|'STR_PAD_RIGHT' = 'STR_PAD_RIGHT') {
 		//   example 1: str.pad('Kevin van Zonneveld', 30, '-=', 'STR_PAD_LEFT');
 		//   returns 1: '-=-=-=-=-=-Kevin van Zonneveld'
 		//   example 2: str.pad('Kevin van Zonneveld', 30, '-', 'STR_PAD_BOTH');
@@ -165,28 +167,28 @@ const string = {
 
 		return input;
 	},
-	padLeft: function (oStr, result_full_length, pad_string:string='0') {
-		return string.pad(oStr, result_full_length, pad_string , 'STR_PAD_LEFT');
+	padLeft: function (oStr, result_full_length, pad_string: string = '0') {
+		return string.pad(oStr, result_full_length, pad_string, 'STR_PAD_LEFT');
 	},
-	padRight: function (oStr, result_full_length, pad_string:string = '0') {
+	padRight: function (oStr, result_full_length, pad_string: string = '0') {
 		return string.pad(oStr, result_full_length, pad_string || 0, 'STR_PAD_RIGHT');
 	}
 };
 
 
 const dateTime = {
-	addSeconds: function (d:Date, s:number) {
+	addSeconds: function (d: Date, s: number) {
 		return new Date(d.getTime() + s * 1000);
 	}
 	,
-	addDays: function (d:Date, s:number) {
+	addDays: function (d: Date, s: number) {
 		return new Date(d.getTime() + s * 24 * 3600 * 1000);
 	},
-	daySpan: function (dateFrom:Date , dateTo:Date) {
+	daySpan: function (dateFrom: Date, dateTo: Date) {
 		return Math.round((dateTo.valueOf() - dateFrom.valueOf()) / 86400000);
 	},
-	weekSpan: function (dateFrom:Date , dateTo:Date) {
-		let d = dateTime.daySpan( dateFrom , dateTo );
+	weekSpan: function (dateFrom: Date, dateTo: Date) {
+		let d = dateTime.daySpan(dateFrom, dateTo);
 		return Math.ceil((d + dateFrom.getDay()) / 7);
 	}
 
@@ -194,24 +196,24 @@ const dateTime = {
 
 
 const convert = {
-	hashKeysToArray: function (obj:Object): Array {
-		if(Object.keys){
+	hashKeysToArray: function (obj: Object): Array {
+		if (Object.keys) {
 			return Object.keys(obj);
 		}
-		else{
+		else {
 			let arr = [];
 			for (arr[arr.length] in obj);
 			return arr;
 		}
 	},
-	hashToArray: (obj, convertor?:Function): Array => {
+	hashToArray: (obj, convertor?: Function): Array => {
 		let arr = [];
 		for (let key in obj) {
-			let v = obj[key];
+			let val = obj[key];
 			if (convertor)
-				v = convertor(v);
+				val = convertor(val, key);
 
-			arr.push(v);
+			arr.push(val);
 		}
 		return arr;
 	},
@@ -241,12 +243,31 @@ const convert = {
 	},
 	jsonToDate: function (isoString) {
 		return new Date(Date.parse(isoString));
-	}
+	},
+
+	/**
+	 * Convert seconds to hh:mm:ss format.
+	 * @param {number} totalSeconds - the total seconds to convert to hh- mm-ss
+	 **/
+	secondsToTimecode: function (totalSeconds: number): string {
+		let hours = Math.floor(totalSeconds / 3600);
+		let minutes = Math.floor((totalSeconds - (hours * 3600)) / 60);
+		let seconds = totalSeconds - (hours * 3600) - (minutes * 60);
+
+		// round seconds
+		seconds = Math.round(seconds * 100) / 100;
+
+		let result = (hours < 10 ? "0" + hours : hours);
+		result += ":" + (minutes < 10 ? "0" + minutes : minutes);
+		result += ":" + (seconds < 10 ? "0" + seconds : seconds);
+		return result;
+	},
+
 };
 
 
 const format = {
-	date: function (date:Date, format:string = 'yyyy-MM-dd' ):string {
+	date: function (date: Date, format: string = 'yyyy-MM-dd'): string {
 		let o = {
 			"M+": date.getMonth() + 1, //month
 			"d+": date.getDate(), //date
@@ -357,7 +378,10 @@ const format = {
 				return json[key];
 			});
 		}
-	})()
+	})(),
+	timeLength: function (seconds: number = 0): string {
+		return string.padLeft(Math.floor(seconds / 3600), 2) + ':' + string.padLeft(Math.floor((seconds % 3600) / 60), 2) + ':' + string.padLeft(Math.floor(seconds % 60), 2)
+	}
 };
 
 
@@ -381,7 +405,7 @@ const array = {
 
 		return tmpArr;
 	},
-	combine: (...needles: Array[]) :Array => {
+	combine: (...needles: Array[]): Array => {
 		let arr = [];
 		for (let i = 0, l = needles.length; i < l; i++) {
 			let a = needles[i], len = a.length;

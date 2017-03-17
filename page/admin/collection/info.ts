@@ -1,7 +1,7 @@
-import ops from 'ts/ops';
+import opg from 'ts/opg';
 
-let id = ops.request['id'];
-ops.api({
+let id = opg.request['id'];
+opg.api({
 	amssp: 'system/amssp/findAll',
 	sourcetype: 'base/sourceTypes',
 	'findById!!': 'system/collection/findById/${id}',
@@ -16,29 +16,29 @@ const codes = {
 	'system_amssp_code_existed': '内容生产商代码已被占用',
 };
 
-ops.api.add.set('codes', codes);
-ops.api.update.set('codes', codes);
+opg.api.add.set('codes', codes);
+opg.api.update.set('codes', codes);
 
 
 let form = $('#tbSearch');
 
 
 $.when(
-	ops.api.amssp(data => {
-		ops('#spCode').listBox({
+	opg.api.amssp(data => {
+		opg('#spCode').listBox({
 			data: data,
 			value: 'code'
 		});
 	}),
-	ops.api.sourcetype(data => {
-		ops('#sourceType').listBox({
+	opg.api.sourcetype(data => {
+		opg('#sourceType').listBox({
 			data: data ,
 			value : 'code'
 		});
 	})
 ).done(()=> {
 	if (id) {
-		ops.api.findById({id: id}, function (data) {
+		opg.api.findById({id: id}, function (data) {
 			form.jsonToFields(data);
 		});
 	}
@@ -77,7 +77,7 @@ window['doSave'] = function (popWin, table) {
 		action = 'add';
 	}
 
-	return ops.api[action](param, function () {
+	return opg.api[action](param, function () {
 		popWin.close();
 		table.update();
 	});

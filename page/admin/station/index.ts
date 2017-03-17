@@ -1,20 +1,21 @@
-import ops from 'ts/ops.ts';
+import opg from 'ts/opg.ts';
 import Panel from "ts/ui/Panel";
 
 
-ops.api({
+opg.api({
 	station: 'system/station/findPage',
 	orgTree: 'system/organization/orgsubstree/0',
 	mediaTypes: 'system/movietype/findAll',
 	interfaceVersions: 'base/interfaceVersions',
-	'delete!DELETE!': 'system/amssp/delete/${id}'
+	'delete!DELETE!': 'system/station/delete/${id}' ,
+	'switch!put!': 'system/station/updateStatus/${id}' ,
 });
 
 
 const infoPage = '/page/admin/station/info.html';
 
 
-let panel: Panel = ops.wrapPanel('#tbSearch', {
+let panel: Panel = opg.wrapPanel('#tbSearch', {
 	title: '渠道查询',
 	btnSearchText: '<i class="ico-find"></i> 查询'
 });
@@ -26,8 +27,8 @@ panel.btnSearch.click(function () {
 	tb.update(param);
 });
 
-ops('#mediaFormat').listBox({
-	api: ops.api.mediaTypes ,
+opg('#mediaFormat').listBox({
+	api: opg.api.mediaTypes ,
 	value : 'movieType',
 	onAjaxEnd: data=> {
 		let arr = data ;
@@ -36,8 +37,8 @@ ops('#mediaFormat').listBox({
 		} ;
 	}
 });
-ops('#interfaceVersion').listBox({
-	api: ops.api.interfaceVersions,
+opg('#interfaceVersion').listBox({
+	api: opg.api.interfaceVersions,
 	onAjaxEnd: data=> {
 		let arr = [];
 		for(let key in data){
@@ -50,8 +51,8 @@ ops('#interfaceVersion').listBox({
 	}
 });
 
-let tree2 = ops('<div id="tree2"></div>').tree({
-	api: ops.api.orgTree,
+let tree2 = opg('<div id="tree2"></div>').tree({
+	api: opg.api.orgTree,
 	onAjaxEnd: (data)=> {
 		data.results = data.root.children;
 	},
@@ -69,7 +70,7 @@ let tree2 = ops('<div id="tree2"></div>').tree({
 $('#btnAdd').click(function () {
 
 	//noinspection TypeScriptUnresolvedVariable
-	let pop = top.ops.confirm(`<iframe src="${infoPage}" />`, function (i, ifr, v) {
+	let pop = top.opg.confirm(`<iframe src="${infoPage}" />`, function (i, ifr, v) {
 		//debugger;
 		//console.log(i , ifr , v);
 		return ifr.doSave(pop, tb);
@@ -87,7 +88,7 @@ $('#btnAdd').click(function () {
 	//console.log(pop);
 });
 
-let tb = ops('#tb').table({
+let tb = opg('#tb').table({
 	columns: [
 		{
 			text: '渠道名称', width: 100,
@@ -121,14 +122,16 @@ let tb = ops('#tb').table({
 			src: 'orgName'
 		},
 		{
-			src: 'id', text: '操作', width: 120,
+			src: 'id', text: '操作', width: 180,
 			render: function (val, i, row) {
 				return `<button class="btn-mini btn-info" data-id="${val}" data-title="${row.name}">修改</button> 
-						<button class="btn-mini btn-danger" data-id="${val}" data-title="${row.name}">删除</button>`
+						<button class="btn-mini btn-danger" data-id="${val}" data-title="${row.name}">删除</button>
+						<button class="btn-mini btn-switch btn-${row.status==1?'success':'warning'}" data-id="${val}" data-title="${row.name}">${row.status==1?'恢复分发':'暂停分发'}</button>
+						`
 			}
 		}
 	],
-	api: ops.api.station,
+	api: opg.api.station,
 	//lazy: true,
 	pagination: {
 		pageSize: 10
@@ -141,7 +144,7 @@ tb.tbody.on('click', '.btn-info', function () {
 	let btn = $(this), title = btn.data('title'), id = btn.data('id');
 
 	//noinspection TypeScriptUnresolvedVariable
-	let pop = top.ops.confirm(`<iframe src="${infoPage}?id=${id}" />`, function (i, ifr) {
+	let pop = top.opg.confirm(`<iframe src="${infoPage}?id=${id}" />`, function (i, ifr) {
 		return ifr.doSave(pop, tb);
 	}, {
 		title: `修改渠道: ${title}`,
@@ -160,9 +163,15 @@ tb.tbody.on('click', '.btn-info', function () {
 tb.tbody.on('click', '.btn-danger', function () {
 	let btn = $(this), title = btn.data('title'), id = btn.data('id');
 
-	ops.danger(`要删除“<b>${title}</b>”吗？`, function () {
-		ops.api.delete({id: id}, ()=>tb.update());
+	opg.danger(`要删除“<b>${title}</b>”吗？`, function () {
+		opg.api.delete({id: id}, ()=>tb.update());
 	}, {
 		title: '请确认'
 	});
+});
+
+//pause
+tb.tbody.on('click', '.btn-switch', function () {
+	let btn = $(this), id = btn.data('id');
+	opg.api.switch({id: id}, ()=>tb.update());
 });

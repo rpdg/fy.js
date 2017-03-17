@@ -1,14 +1,26 @@
-import ops from 'ts/ops.ts';
+import opg from 'ts/opg.ts';
+import PopUp from "ts/ui/Popup";
+import {Cache} from 'ts/util/store' ;
+
+
+opg.api({
+	'scalePic!post': 'produce/catalogPic/scalePic',
+	'uploadPic!upload': 'produce/catalogPic/uploadPic',
+});
+
+const assetId: string = opg.request['assetId'];
+let size: string = opg.request['size'];
+let sizeStrArr: string[] = size.split('x');
 
 class Uploader {
 	private _file: File;
 
 	private _fileChooser: HTMLInputElement;
 	private _fileDropper: HTMLElement;
-	private _uploadUrl: string;
 
-	constructor(uploadUrl: string) {
-		this._uploadUrl = uploadUrl;
+	imgSrc: string;
+
+	constructor() {
 		this._fileChooser = document.getElementById('iptFileUpload') as HTMLInputElement;
 
 		this.initEventListeners();
@@ -23,14 +35,14 @@ class Uploader {
 		let self = this, elem = self._fileDropper;
 
 		elem.ondragover = function () {
-			$(this).addClass('drag-hover');
+			$(this).addClass('dragHover');
 			return false;
 		};
 		elem.ondragend = function () {
 			return false;
 		};
 		elem.ondrop = function (e) {
-			$(this).removeClass('drag-hover');
+			$(this).removeClass('dragHover');
 			e.preventDefault();
 			self.file = e.dataTransfer.files[0];
 			self._fileChooser.files[0] = self.file;
@@ -45,7 +57,7 @@ class Uploader {
 				self.file = files[0];
 			}
 		});
-		/*ops.listen('imageChecked' , function (evt:JQueryEventObject , file :File) {
+		/*opg.listen('imageChecked' , function (evt:JQueryEventObject , file :File) {
 		 console.log(file);
 		 self.upload(file);
 		 });*/
@@ -70,63 +82,94 @@ class Uploader {
 		 alert('图片大小不能超过 2KB!');
 		 return false;
 		 }*/
-		ops.dispatch('imageChecked', imgFile);
+		opg.dispatch('imageChecked', imgFile);
+		this.imgSrc = null;
+		this.upload(imgFile);
 		return true;
 	}
 
-	upload(file: File) {
-		if (FormData) {
-			let self = this;
+	upload(imgFile: File) {
+		let self = this;
+		let formData = new FormData();
+		formData.append('file', imgFile);
+		formData.append('assetId', assetId);
+		formData.append('picSize', size);
 
-			let formData = new FormData();
-			formData.append('file', file);
+		opg.api.uploadPic(formData, (data) => {
+			opg.dispatch('uploadSuccess');
+			self.imgSrc = data['picUrl'][size];
+		});
 
-			let xhr = new XMLHttpRequest();
-			xhr.open('POST', this._uploadUrl, true);
-			xhr.onload = () => {
-				self.uploadSuccess(xhr.responseText);
-				ops.dispatch('uploadSuccess');
-			};
-
-			xhr.send(formData);
-		}
-		else {
-			alert('不支持 XMLHttp 上传');
-		}
-	}
-
-	uploadSuccess(src) {
-		//this.viewPort.find('.base64Img').removeClass('base64Img').attr('src', src);
 	}
 
 }
 
 class Editor {
+	hasText: boolean = false;
+
 	private viewPort: JQuery;
 	private infoLog: JQuery;
+	private cropRect: JQuery;
 	private zoomer: ZoomBar;
 
-	private x: number = 0;
-	private y: number = 0;
-	private w: number = 0;
-	private h: number = 0;
+	private img: HTMLImageElement;
+	private crop: CropInfo;
 
-	constructor() {
+	constructor(width: number, height: number) {
 		let self = this;
 		this.viewPort = $('#imgContainer');
+		/*this.viewPort.css({
+		 width: width,
+		 height: height,
+		 });*/
 		this.infoLog = $('#infoLog');
+		this.cropRect = $('#cropView');
+		this.crop = {
+			imgWidth: 0,
+			imgHeight: 0,
+			x: 0,
+			y: 0,
+			width: width,
+			height: height,
+		};
+		if (width === 420 && height === 336) {
+			this.createInput();
+		}
+
+		//noinspection TypeScriptUnresolvedFunction
+		this.cropRect.css({width: width, height: height}).draggable({
+			containment: "parent"
+		});
 
 		this.zoomer = new ZoomBar();
 
-		ops.listen('imageChecked', function (evt: JQueryEventObject, file: File) {
+		opg.listen('imageChecked', function (evt: JQueryEventObject, file: File) {
 			//console.log(file);
 			self.previewImg(file);
 		});
 	}
 
+	setSize(width: number, height: number) {
+		this.crop.x = 0;
+		this.crop.y = 0;
+		this.crop.width = width;
+		this.crop.height = height;
+
+		//noinspection TypeScriptUnresolvedFunction
+		this.cropRect.css({width: width, height: height, left: 0, top: 0});
+
+		this.image = this.img;
+	}
+
+	createInput() {
+		//noinspection TypeScriptUnresolvedFunction
+		$('#divInput').show().draggable();
+		this.hasText = true;
+	}
+
 	previewImg(file: File) {
 		let self = this;
-		let fileSize  = ops.format.fileSize(file.size);
+		let fileSize = opg.format.fileSize(file.size);
 
 		let reader = new FileReader();
 
@@ -136,20 +179,70 @@ class Editor {
 			//noinspection TypeScriptUnresolvedVariable
 			img.src = e.target.result;
 			self.viewPort.show().empty().append(img);
-			//console.log({w: img.width, h: img.height});
+			console.log({w: img.width, h: img.height}, $(img).height());
 
-			self.infoLog.html(`图像原始大小：<br>
+			setTimeout(function () {
+				self.infoLog.html(`图像原始大小：<br>
 								宽：${img.width}<br>
 								高：${img.height}<br>
 								${fileSize}
-							`);
+						`);
+			}, 100);
+
 
 			self.zoomer.reset();
 			self.zoomer.image = img;
+			self.image = img;
 		};
 
 		reader.readAsDataURL(file);
 	}
+
+	set image(image: HTMLImageElement) {
+		this.img = image;
+		this.crop.imgWidth = image.width;
+		this.crop.imgHeight = image.height;
+
+		//let self = this;
+
+		//noinspection TypeScriptUnresolvedFunction
+		$(image).css({top: 0, left: 0}).draggable();
+		/*$(image).on('mousedown', () => {
+		 self.viewPort.on('mousemove' , ()=>{
+
+		 });
+		 });*/
+	}
+
+	get cropInfo(): CropInfo {
+		let posImg = $(this.img).position();
+		let posCrop = this.cropRect.position();
+
+		if ((posCrop.left < posImg.left) ||
+			(posCrop.top < posImg.top) ||
+			(posCrop.left + this.crop.width > posImg.left + this.img.width) ||
+			(posCrop.top + this.crop.height > posImg.top + this.img.height)
+		) {
+			opg.alert('截取错误');
+			return null;
+		}
+
+		this.crop.x = posCrop.left - posImg.left;
+		this.crop.y = posCrop.top - posImg.top;
+		this.crop.imgWidth = this.img.width;
+		this.crop.imgHeight = this.img.height;
+
+		return this.crop;
+	}
+}
+
+interface CropInfo {
+	x: number ;
+	y: number ;
+	width: number ;
+	height: number ;
+	imgWidth: number ;
+	imgHeight: number ;
 }
 
 class ZoomBar {
@@ -158,7 +251,7 @@ class ZoomBar {
 	private _yMax = 133;
 
 	private _ratio: number = 1;
-	private _minRatio :number = 0.1 ;
+	private _minRatio: number = 0.1;
 
 	private _img: HTMLImageElement;
 	private _imgH = 0;
@@ -197,7 +290,7 @@ class ZoomBar {
 				slider.css('top', y);
 
 				self._ratio = Math.max((y - yMin) / sliderHeight, self._minRatio);
-				console.log(y, yMin, sliderHeight, self._ratio);
+				console.warn(y, yMin, sliderHeight, self._ratio);
 				if (self._img) {
 					self.zoomImg();
 				}
@@ -223,19 +316,91 @@ class ZoomBar {
 	}
 
 	set image(imgElem: HTMLImageElement) {
+		let self = this;
+
 		this._img = imgElem;
-		this._imgW = imgElem.width;
-		this._imgH = imgElem.height;
+
+		setTimeout(() => {
+			self._imgW = imgElem.width;
+			self._imgH = imgElem.height;
+		}, 100);
 	}
 
 	zoomImg() {
-		console.log(this._ratio);
+		console.log(this._ratio, this._imgW, this._imgH);
 		this._img.width = this._imgW * this._ratio;
 		this._img.height = this._imgH * this._ratio;
 	}
 }
 
+let uploader = new Uploader();
+let editor = new Editor(parseFloat(sizeStrArr[0]), parseFloat(sizeStrArr[1]));
+$('#h2Size').text('制作 '+size + '图片');
 
-let uploader = new Uploader('');
-let editor = new Editor();
+window['doUpload'] = function (pop) {
+	if (uploader.imgSrc) {
+		let cropInfo = editor.cropInfo;
 
+		let param = {
+			cropx: cropInfo.x,
+			cropy: cropInfo.y,
+			cropWidth: cropInfo.width,
+			cropHeight: cropInfo.height,
+			imageWidth: cropInfo.imgWidth,
+			imageHeight: cropInfo.imgHeight,
+			assetId: assetId,
+			picPath: uploader.imgSrc,
+			picSize: size,
+		};
+		if (editor.hasText) {
+			param['pressTxt1'] = $('#row1').val();
+			param['pressTxt2'] = $('#row2').val();
+		}
+
+		console.log(param);
+		opg.api.scalePic(param, (data) => {
+
+			if (size == '300x444') {
+				$('#iptFileUpload').css('visibility', 'hidden');
+				size = '300x408';
+				sizeStrArr = size.split('x');
+				editor.setSize(parseFloat(sizeStrArr[0]), parseFloat(sizeStrArr[1]));
+				$('#h2Size').text('制作 '+size + '图片');
+				opg.ok('300x444图制作成功，现在继续制作300x408图');
+			}
+			else {
+				showNextPreviewWindow(data, pop);
+			}
+
+		});
+	}
+};
+
+
+function showNextPreviewWindow(data: any, pop: PopUp) {
+	let cache = Cache.getInstance();
+	cache.set('imgUpload', data);
+
+
+	let container = `<iframe src="/page/produce/catalog/viewImage.html"></iframe>`;
+
+	let previewWin = top.opg.confirm(container, function (i, iframe) {
+		iframe.doSave(assetId, previewWin);
+		return true;
+	}, {
+		title: `图片预览`,
+		btnMax: true,
+		width: 600,
+		height: 420,
+		buttons: {
+			ok: `保存图片`,
+			cancel: '取消',
+		},
+		onDestroy: function () {
+			console.warn("cache.remove('imgUpload');");
+			cache.remove('imgUpload');
+		}
+	}).toggle();
+
+	pop.close();
+}

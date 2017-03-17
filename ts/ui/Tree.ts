@@ -78,7 +78,7 @@ class Tree extends AjaxDisplayObject implements ICanPutIntoCombo {
 
 		if (!cfg.template) {
 			if (cfg.cmd === 'checkAll') {
-				cfg.template = '<label><input id="tree' + this.treeName + 'Chk_${id}" type="checkbox" value="${' + cfg.value + '}"> ${' + cfg.text + '}</label>';
+				cfg.template = '<label><input id="' + this.treeName + 'Chk_${id}" type="checkbox" value="${' + cfg.value + '}"> ${' + cfg.text + '}</label>';
 			}
 			else {
 				cfg.template = '${' + cfg.text + '}';
@@ -108,7 +108,7 @@ class Tree extends AjaxDisplayObject implements ICanPutIntoCombo {
 		//this.currentData = null;
 		this.currentLi = null;
 		this.render = cfg.render;
-		this.template = '<li id="tree' + this.treeName + 'Li_${id}" class="${id:=_getLiClass}" data-id="${id}">${id:=_getDiv}<span id="tree' + this.treeName + 'Sp_${id}" data-id="${id}" class="sp ${id:=_getSpClass}">' + cfg.template + '</span>${id:=_getUl}</li>';
+		this.template = '<li id="' + this.treeName + 'Li_${id}" class="${id:=_getLiClass}" data-id="${id}">${id:=_getDiv}<span id="' + this.treeName + 'Sp_${id}" data-id="${id}" class="sp ${id:=_getSpClass}">' + cfg.template + '</span>${id:=_getUl}</li>';
 
 		//this.render = {};
 
@@ -232,7 +232,7 @@ class Tree extends AjaxDisplayObject implements ICanPutIntoCombo {
 			parentUl = this.root;
 		}
 		else {
-			parentUl = $('#tree' + self.treeName + 'Ul_' + parent.id);
+			parentUl = $('#' + self.treeName + 'Ul_' + parent.id);
 		}
 
 		let renders = {
@@ -257,7 +257,7 @@ class Tree extends AjaxDisplayObject implements ICanPutIntoCombo {
 			_getUl: (id, i, row)=> {
 				if (row.children || row.hasChildren) {
 					let style = (id in self._cachedExpandedLeaf) ? '': ' style="display: none;"';
-					return `<ul id="tree` + self.treeName + `Ul_${id}" ${style}></ul>`;
+					return `<ul id="` + self.treeName + `Ul_${id}" ${style}></ul>`;
 				}
 				return '';
 			},

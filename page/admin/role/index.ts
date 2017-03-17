@@ -1,12 +1,12 @@
-import ops from 'ts/ops';
+import opg from 'ts/opg';
 
 
-ops.api({
+opg.api({
 	roles: 'system/role/list',
 	'delete!delete!': 'system/role/delete/${roleId}'
 });
 
-ops.api.delete.set('codes', {
+opg.api.delete.set('codes', {
 	'role_blind_users': '该角色绑定有用户，不能删除',
 	'role_have_child': '该角色有子角色，不能删除',
 });
@@ -16,8 +16,8 @@ let subNodeParentId = 0;
 let nodeParentId = 0;
 let rootAdminId = 0;
 
-let tree = ops('#leftSec').tree({
-	api: ops.api.roles,
+let tree = opg('#leftSec').tree({
+	api: opg.api.roles,
 	root: '角色',
 	name : 'rolesTree' ,
 	onAjaxEnd: (json)=> {
@@ -40,7 +40,7 @@ let tree = ops('#leftSec').tree({
 });
 
 
-let panel = ops.wrapPanel('#tbSearch', {
+let panel = opg.wrapPanel('#tbSearch', {
 	title: '角色信息',
 	btnSearchText: '<i class="ico-edit"></i> 修改'
 });
@@ -59,7 +59,7 @@ let btnAdd = $('#btnAdd');
 btnAdd.click(function () {
 
 	//noinspection TypeScriptUnresolvedVariable
-	let pop = top.ops.confirm(`<iframe src="${infoPage}?parentId=${subNodeParentId}" />`, function (i, ifr, v) {
+	let pop = top.opg.confirm(`<iframe src="${infoPage}?parentId=${subNodeParentId}" />`, function (i, ifr, v) {
 		//debugger;
 		//console.log(i , ifr , v);
 		return ifr.doSave(pop, tree);
@@ -116,7 +116,7 @@ tree.jq.on('click', '.sp', function () {
 	}
 });
 
-let tb = ops('#tb').table({
+let tb = opg('#tb').table({
 	columns: [
 		{
 			text: '角色名称', width: 200,
@@ -146,7 +146,7 @@ function editRole(isParentNode: boolean) {
 	let btn = $(this), title = btn.data('title'), id = btn.data('id');
 
 	//noinspection TypeScriptUnresolvedVariable
-	let pop = top.ops.confirm(`<iframe src="${infoPage}?id=${id}&parentId=${isParentNode ? nodeParentId : subNodeParentId}" />`, function (i, ifr) {
+	let pop = top.opg.confirm(`<iframe src="${infoPage}?id=${id}&parentId=${isParentNode ? nodeParentId : subNodeParentId}" />`, function (i, ifr) {
 		return ifr.doSave(pop, tree);
 	}, {
 		title: `修改角色: ${title}`,
@@ -164,8 +164,8 @@ function editRole(isParentNode: boolean) {
 tb.tbody.on('click', '.btn-danger', function () {
 	let btn = $(this), title = btn.data('title'), roleId = btn.data('id');
 
-	ops.danger(`要删除“<b>${title}</b>”吗？`, function () {
-		ops.api.delete({roleId}, ()=> {
+	opg.danger(`要删除“<b>${title}</b>”吗？`, function () {
+		opg.api.delete({roleId}, ()=> {
 			tree.update();
 		});
 	}, {

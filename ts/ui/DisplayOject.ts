@@ -19,7 +19,7 @@ export abstract class DisplayObject implements UiObject {
 	public onCreate?: Function;
 
 	protected _created: boolean = false;
-	protected _promise: JQueryDeferred ;
+	protected _createdPromise: JQueryDeferred ;
 
 	constructor(jq: JQuery, cfg: any) {
 
@@ -44,8 +44,8 @@ export abstract class DisplayObject implements UiObject {
 	createdHandler(data?: any) {
 		this._created = true;
 
-		if(this._promise){
-			this._promise.resolve();
+		if(this._createdPromise){
+			this._createdPromise.resolve();
 		}
 
 		if (this.onCreate) this.onCreate(data);
@@ -59,8 +59,11 @@ export abstract class DisplayObject implements UiObject {
 		}
 	})();
 
-	promise() {
-		this._promise = $.Deferred();
+	get createdPromise():JQueryDeferred {
+		if(!this._createdPromise)
+			this._createdPromise = $.Deferred();
+
+		return this._createdPromise;
 	}
 }
 
@@ -130,7 +133,9 @@ export abstract class AjaxDisplayObject extends DisplayObject implements IListBa
 			}
 
 		}
-
+		else{
+			this.bindData([]);
+		}
 
 		return this;
 	}

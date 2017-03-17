@@ -1,8 +1,8 @@
-import ops from 'ts/ops.ts';
+import opg from 'ts/opg.ts';
 
-const id = ~~ops.request['id'];
+const id = ~~opg.request['id'];
 
-ops.api({
+opg.api({
 	'findById!!': 'transcode/business/findById/${id}',
 	'update!post': 'transcode/business/update',
 	'add!post': 'transcode/business/add'
@@ -13,7 +13,7 @@ ops.api({
 let form = $('#tbProfile');
 
 if (id) {
-	ops.api.findById({id: ops.request['id']}, function (data) {
+	opg.api.findById({id: opg.request['id']}, function (data) {
 		form.jsonToFields(data);
 	});
 }
@@ -47,7 +47,7 @@ window['doSave'] = function (popWin, table) {
 		action = 'add';
 	}
 
-	return ops.api[action](param, function () {
+	return opg.api[action](param, function () {
 		popWin.close();
 		table.update();
 	});

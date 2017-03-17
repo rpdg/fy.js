@@ -36,11 +36,10 @@ class Combo extends DisplayObject {
 
 	private _state: 'closed'|'opened';
 	//private _wrapper?: JQuery;
-	private _evtName: string = 'mousedown.ComboEvent';
+	private _evtName: string ;
 
 
 	constructor(jq: JQuery, cfg: any) {
-
 		cfg = $.extend({}, cfg);
 
 		super(jq, cfg);
@@ -48,6 +47,7 @@ class Combo extends DisplayObject {
 	}
 
 	init(jq: JQuery, cfg: any) {
+		this._evtName = 'mousedown.ComboEvent';
 
 		if (jq[0].tagName === 'INPUT') jq.addClass('combo-input').val(cfg.text);
 		else jq.text(cfg.text);
@@ -75,23 +75,32 @@ class Combo extends DisplayObject {
 	}
 
 	public static makeClearableInput(ipt :JQuery , valueIpt:JQuery) :void{
-		let wrapper = ipt.css({
-			float: 'left',
-			margin: 0
-		}).wrap('<span class="sp-eraserWrap"></span>').parents('span:first');
+		let isIE = $.detectIE();
+		if(isIE && (isIE>10) && !ipt.prop('readonly')){
+			//do nothing
+		}
+		else{
+			let wrapper = ipt.css({
+				float: 'left',
+				margin: 0
+			}).wrap('<span class="sp-eraserWrap"></span>').parents('span:first');
 
-		let eraser = $('<div class="ipt-eraser">&times;</div>')
-			.appendTo(wrapper)
-			.click(function () {
-				if (!ipt.prop('disabled')) {
-					ipt.val('');
-					valueIpt.val('');
+			let eraser = $('<div class="ipt-eraser">&times;</div>')
+				.appendTo(wrapper)
+				.click(function () {
+					if (!ipt.prop('disabled')) {
+						ipt.val('');
+						valueIpt.val('');
+						eraser.hide();
+					}
+				});
+
+			wrapper.hover(function () {
+				if(!ipt.prop('disabled') && ipt.val()){
+					eraser.toggle();
 				}
 			});
-
-		wrapper.hover(function () {
-			eraser.toggle();
-		});
+		}
 
 	}
 

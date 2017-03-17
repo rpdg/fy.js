@@ -1,7 +1,7 @@
-import ops from 'ts/ops.ts';
+import opg from 'ts/opg.ts';
 
-let id = ops.request['id'] ;
-ops.api({
+let id = opg.request['id'] ;
+opg.api({
 	'findById!!': 'system/organization/findById/${id}',
 	'update!post' : 'system/organization/update' ,
 	'add!post' : 'system/organization/add'
@@ -14,14 +14,14 @@ const codes = {
 	'system_amsorganization_code_existed' : '组织代码已被占用',
 };
 
-ops.api.add.set('codes', codes);
-ops.api.update.set('codes', codes);
+opg.api.add.set('codes', codes);
+opg.api.update.set('codes', codes);
 
 
 
 let form = $('#tbSearch');
 if(id){
-	ops.api.findById({id : ops.request['id']} , function (data) {
+	opg.api.findById({id : opg.request['id']} , function (data) {
 		form.jsonToFields(data);
 	});
 }
@@ -48,7 +48,7 @@ window['doSave'] = function (popWin , table) {
 	if (!param)
 		return true;
 
-	param.parentId = ops.request['parentId'];
+	param.parentId = opg.request['parentId'];
 	param.orgStatus = 0;
 
 	if (id) {
@@ -59,7 +59,7 @@ window['doSave'] = function (popWin , table) {
 		action = 'add';
 	}
 
-	return ops.api[action](param, function () {
+	return opg.api[action](param, function () {
 		popWin.close();
 		table.update();
 	});

@@ -1,6 +1,6 @@
-import ops from 'ts/ops.ts';
+import opg from 'ts/opg.ts';
 
-ops.api({
+opg.api({
 	amssp: 'content/contentType/findPage',
 	'delete!DELETE!': 'content/contentType/delete/${id}'
 });
@@ -9,7 +9,7 @@ ops.api({
 const infoPage = '/page/content/contentType/info.html';
 
 //wrap as search panel
-let panel = ops.wrapPanel('#tbSearch', {
+let panel = opg.wrapPanel('#tbSearch', {
 	title: '节目类型查询',
 	btnSearchText: '<i class="ico-find"></i> 查询'
 });
@@ -23,8 +23,8 @@ panel.btnSearch.click(function () {
 });
 
 //create a data table
-let tb = ops('#tb').table({
-	api: ops.api.amssp,
+let tb = opg('#tb').table({
+	api: opg.api.amssp,
 	columns: [
 		{
 			text: '节目类型名称',
@@ -46,7 +46,7 @@ let tb = ops('#tb').table({
 //Add new
 $('#btnAdd').click(function () {
 
-	let pop = top.ops.confirm(`<iframe src="${infoPage}" />`, function (i, ifr) {
+	let pop = top.opg.confirm(`<iframe src="${infoPage}" />`, function (i, ifr) {
 		//debugger;
 		//console.log(i , ifr , v);
 		return ifr.doSave(pop, tb);
@@ -67,7 +67,7 @@ $('#btnAdd').click(function () {
 tb.tbody.on('click', '.btn-info', function () {
 	let btn = $(this), title = btn.data('title'), id = btn.data('id');
 
-	let pop = top.ops.confirm(`<iframe src="${infoPage}?id=${id}" />`, function (i, ifr) {
+	let pop = top.opg.confirm(`<iframe src="${infoPage}?id=${id}" />`, function (i, ifr) {
 		return ifr.doSave(pop, tb);
 	}, {
 		title: `修改节目类型: ${title}`,
@@ -86,8 +86,8 @@ tb.tbody.on('click', '.btn-info', function () {
 tb.tbody.on('click', '.btn-danger', function () {
 	let btn = $(this), title = btn.data('title'), id = btn.data('id');
 
-	ops.danger(`要删除“<b>${title}</b>”吗？`, function () {
-		ops.api.delete({id: id}, ()=>tb.update());
+	opg.danger(`要删除“<b>${title}</b>”吗？`, function () {
+		opg.api.delete({id: id}, ()=>tb.update());
 	}, {
 		title: '请确认'
 	});

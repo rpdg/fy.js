@@ -229,3 +229,21 @@ $btnColorClass: (primary #3498db #fff) (warning #f0ad4e #fff) (danger #e74c3c #f
 	vertical-align: middle;
 	width: 100%;
 }
+
+.fcGroupWrap{
+	display: inline-block;
+	width: 100%;
+	font-style: normal;
+	vertical-align: bottom;
+}
+.fcGroup {
+	display: table;
+	width: 100%;
+	
+	.fcItem {
+		display: table-cell;
+		vertical-align: middle;
+		text-align: center;
+		font-weight: 100;
+	}
+}

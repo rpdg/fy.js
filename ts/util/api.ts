@@ -35,7 +35,7 @@ let onServerError = cfg.onServerError || function (msg) {
 	};
 
 let loading = {
-	dom: $('#opsAjaxLoading'),
+	dom: $('#opgAjaxLoading'),
 	handlers: 0,
 	timer: 0,
 	show: function () {
@@ -73,6 +73,7 @@ class ServerFn {
 
 	unlimited: boolean;
 	accessible: boolean;
+	timeOut: number ;
 
 	onError?: Function;
 
@@ -82,6 +83,7 @@ class ServerFn {
 		this.name = name;
 		this.method = method;
 		this.restful = restful;
+		this.timeOut = cfg.ajaxTimeOut ;
 
 		if (url.indexOf('http://') === 0 || url.indexOf('https://') === 0) this.url = url;
 		else this.url = cfg.apiServer + url.replace(/^\//, '');
@@ -110,28 +112,39 @@ class ServerFn {
 				data = null;
 			}
 
-			let url = this.url;
+			let url = this.url , method = this.method;
+			let contentType: string|boolean = 'application/json';
+			let processData: boolean = true;
 
-			if (data) {
-				if (!this.restful && this.method != 'GET') {
-					data = JSON.stringify(data);
-				}
-				else if (this.restful) {
-					url = format.json(url, data);
-					data = null;
+			if(method === 'UPLOAD'){
+				contentType = false;
+				processData = false ;
+				method = 'POST' ;
+			}
+			else{
+				if (data) {
+					if (!this.restful && this.method != 'GET') {
+						data = JSON.stringify(data);
+					}
+					else if (this.restful) {
+						url = format.json(url, data);
+						data = null;
+					}
 				}
 			}
 
 
+
 			return $.ajax({
 				headers: xToken,
+				contentType: contentType,
+				processData : processData ,
+				dataType: 'json' ,
 				url: url,
 				data: data,
-				method: this.method,
-				dataType: "json",
-				contentType: "application/json",
+				method: method,
 				cache: false,
-				timeout: cfg.ajaxTimeOut,
+				timeout: that.timeOut,
 				beforeSend: function (jqXHR: JQueryXHR, settings: JQueryAjaxSettings) {
 					loading.handlers++;
 
@@ -223,7 +236,8 @@ let api: IApiConfig = function (apiSet: Map<string>) {
 			})(new ServerFn(apiSet[key], pName, pMethod, restful));
 		}
 		else {
-			throw new Error('api [' + pName + '] duplicate definition');
+			//throw new Error('api [' + pName + '] duplicate definition');
+			console.error(`api [${pName}] duplicate definition`);
 		}
 	}
 

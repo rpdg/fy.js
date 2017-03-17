@@ -1,14 +1,14 @@
-import ops from 'ts/ops.ts';
+import opg from 'ts/opg.ts';
 
-let id = ops.request['id'];
+let id = opg.request['id'];
 
-ops.api({
+opg.api({
 	'findById!!': 'transcode/bizProfile/findById/${id}',
 });
 
 const form = $('#tbProfile');
 if (id) {
-	ops.api.findById({id: ops.request['id']}, function (data) {
+	opg.api.findById({id: opg.request['id']}, function (data) {
 		form.jsonToFields(data);
 	});
 }

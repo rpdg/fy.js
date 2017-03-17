@@ -25,6 +25,7 @@
 		return /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/i.test(string);
 	};
 	validate.date = function (string, preutc) {
+		string = string.replace(/-/g,'/'); //for IE
 		var date = Date.parse(string);
 		if (isFinite(date)) {
 			return true;
@@ -40,6 +41,12 @@
 	validate.time = function (string) {
 		var checkValue = new RegExp("^/[0-2]{1}/[0-6]{1}:/[0-5]{1}/[0-9]{1}:/[0-5]{1}/[0-9]{1}");
 		return checkValue.test(string);
+	};
+	validate.time12 = function (str) {
+		return /^(1[0-2]|0?[1-9]):([0-5]?[0-9]):([0-5]?[0-9])$/.test(str);
+	};
+	validate.time24 = function (str) {
+		return /^(2[0-3]|[01]?[0-9]):([0-5]?[0-9]):([0-5]?[0-9])$/.test(str);
 	};
 	validate.zip = function (string, plus4) {
 		var pattern = plus4 ? /^\d{5}-\d{4}$/ : /^\d{5}$/;
@@ -131,7 +138,7 @@
 
 		if (typeof sets === 'string') {
 			fn = function (ipt) {
-				ops.warn(sets, function () {
+				opg.warn(sets, function () {
 					ipt.focus()
 				});
 			}
@@ -215,6 +222,15 @@
 							return;
 						}
 					}
+					else if (rule.type === 'int') {
+						if (objResult[ruleName]) {
+							if (!validate.integer(objResult[ruleName])) {
+								$('[name=' + ruleName + ']', this).iptError(rule.name + '应该是整数');
+								return;
+							}
+							objResult[ruleName] = +objResult[ruleName];
+						}
+					}
 					else if (rule.type === 'number') {
 						if (objResult[ruleName]) {
 							if (!validate.numeric(objResult[ruleName])) {
@@ -229,6 +245,22 @@
 							var nArr = objResult[ruleName], l = nArr.length;
 							while (l--) {
 								nArr[l] = +nArr[l];
+							}
+						}
+					}
+					else if (rule.type === 'date') {
+						if (objResult[ruleName]) {
+							if(!validate.date(objResult[ruleName])){
+								$('[name=' + ruleName + ']', this).iptError(rule.name + '不是合法的日期格式');
+								return;
+							}
+						}
+					}
+					else if (rule.type === 'time') {
+						if (objResult[ruleName]) {
+							if(!validate.time24(objResult[ruleName])){
+								$('[name=' + ruleName + ']', this).iptError(rule.name + '不是合法的时间格式');
+								return;
 							}
 						}
 					}
@@ -306,7 +338,7 @@
 				}
 			}
 			else if (elem.type.indexOf("select-") != -1) {
-				$(elem).recheckElement(val);
+				$(elem).recheckElement(val+'');
 			}
 			else if (elem.tagName.toLowerCase() == "textarea") {
 				$(elem).val(val);
@@ -374,7 +406,8 @@
 	$.fn.decimalMask = function (mask) {
 
 		if (!mask || !mask.match) {
-			throw 'decimalMask: you must set the mask string.';
+			//throw 'decimalMask: you must set the mask string.';
+			mask = '9999999999';
 		}
 
 		var

@@ -11,7 +11,7 @@
 	}
 }
 
-$color-class: (red #e74c3c) (greed #81b53e) (blue #3498db) (gray #888);
+$color-class: (red #e74c3c) (greed #81b53e) (blue #3498db) (gray #888) (light-gray #aaa);
 @each $t-class in $color-class {
 	
 	$class: nth($t-class, 1);

@@ -1,6 +1,6 @@
-import ops from 'ts/ops.ts';
+import opg from 'ts/opg.ts';
 
-ops.api({
+opg.api({
 	bizProfile: 'transcode/bizProfile/findPage',
 
 	business: 'transcode/business/findAll',
@@ -14,7 +14,7 @@ ops.api({
 const moduleName = '转码配置';
 const infoPage = '/page/transcode/config/info.html';
 
-let panel = ops.wrapPanel('#tbSearch', {
+let panel = opg.wrapPanel('#tbSearch', {
 	title: `${moduleName}信息`,
 	btnSearchText: '<i class="ico-find"></i> 查询'
 });
@@ -29,37 +29,37 @@ panel.btnSearch.click(function () {
 
 
 //业务名称
-ops('#businessId').listBox({
-	api: ops.api.business,
+opg('#businessId').listBox({
+	api: opg.api.business,
 
 });
 
 
 //输入类别
-ops('#inputSourceType').listBox({
-	api: ops.api.sourceTypes,
+opg('#inputSourceType').listBox({
+	api: opg.api.sourceTypes,
 	value: 'code'
 });
 
 //输出类别
-ops('#outputDefinitionType').listBox({
-	api: ops.api.outTypes,
+opg('#outputDefinitionType').listBox({
+	api: opg.api.outTypes,
 	value: 'code'
 });
 
 //
-ops.api.movietype(data=> {
+opg.api.movietype(data=> {
 	const cfg = {
 		data: data,
 		value: 'movieType'
 	};
 
-	ops('#inputFileMovieType').listBox(cfg);
-	ops('#outputFileMovieType').listBox(cfg);
+	opg('#inputFileMovieType').listBox(cfg);
+	opg('#outputFileMovieType').listBox(cfg);
 });
 
 
-let tb = ops('#tb').table({
+let tb = opg('#tb').table({
 	titleBar: {
 		title: `${moduleName}列表`,
 		buttons: [
@@ -95,7 +95,7 @@ let tb = ops('#tb').table({
 			}
 		}
 	],
-	api: ops.api.bizProfile,
+	api: opg.api.bizProfile,
 	//lazy: true,
 	pagination: {
 		pageSize: 10
@@ -106,7 +106,7 @@ let tb = ops('#tb').table({
 tb.tbody.on('click', '.btn-info', function () {
 	let btn = $(this), title = btn.data('title'), id = btn.data('id');
 
-	top.ops.popTop(`<iframe src="/page/transcode/config/view.html?id=${id}" />`, {
+	top.opg.popTop(`<iframe src="/page/transcode/config/view.html?id=${id}" />`, {
 		title: `查看业务: ${title}`,
 		btnMax: true,
 		width: 700,
@@ -114,10 +114,10 @@ tb.tbody.on('click', '.btn-info', function () {
 	});
 });
 
-//Add new
+//Add
 $('#btnAdd').click(function () {
 
-	let pop = top.ops.confirm(`<iframe src="${infoPage}" />`, function (i, ifr) {
+	let pop = top.opg.confirm(`<iframe src="${infoPage}" />`, function (i, ifr) {
 		return ifr.doSave(pop, tb);
 	}, {
 		title: `新增${moduleName}`,
@@ -135,8 +135,8 @@ $('#btnAdd').click(function () {
 tb.tbody.on('click', '.btn-danger', function () {
 	let btn = $(this), title = btn.data('title'), id = btn.data('id');
 
-	ops.danger(`要删除“<b>${title}</b>”吗？`, function () {
-		ops.api.delete({id}, ()=>tb.update());
+	opg.danger(`要删除“<b>${title}</b>”吗？`, function () {
+		opg.api.delete({id}, ()=>tb.update());
 	}, {
 		title: '请确认'
 	});

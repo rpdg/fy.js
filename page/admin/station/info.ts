@@ -1,6 +1,6 @@
-import ops from 'ts/ops.ts';
+import opg from 'ts/opg.ts';
 
-ops.api({
+opg.api({
 	'findById!!': 'system/station/findById/${id}',
 	'update!post': 'system/station/update',
 	'add!post': 'system/station/add',
@@ -13,33 +13,33 @@ ops.api({
 });
 
 
-const id: number = ~~ops.request['id'];
+const id: number = ~~opg.request['id'];
 
 const form: JQuery = $('#tbInfo');
 
 $.when(
-	ops.api.businessList((data)=> {
-		ops('#tdBusiness').checkBox({
+	opg.api.businessList((data)=> {
+		opg('#tdBusiness').checkBox({
 			name: 'busiCodes[]',
 			data: data
 		});
 	}),
-	ops.api.movietype((data)=> {
-		ops('#tdMediaType').checkBox({
+	opg.api.movietype((data)=> {
+		opg('#tdMediaType').checkBox({
 			name: 'mediaFormat[]',
 			text: 'name',
 			value: 'movieType',
 			data: data
 		});
 	}),
-	ops.api.picturetype((data)=> {
-		ops('#tdPictureType').checkBox({
+	opg.api.picturetype((data)=> {
+		opg('#tdPictureType').checkBox({
 			name: 'pictureFormat[]',
 			text: 'picSize',
 			data: data
 		});
 	}),
-	ops.api.interfaceVersions((data)=> {
+	opg.api.interfaceVersions((data)=> {
 		let arr = [];
 		for (let key in data) {
 			arr.push({
@@ -48,15 +48,15 @@ $.when(
 			});
 		}
 		data.results = arr;
-		ops('#tdInterfaceVersions').radioBox({
+		opg('#tdInterfaceVersions').radioBox({
 			name: 'interfaceVersion',
 			data: data,
 		});
 	}),
-	ops.api.orgTree((data)=> {
+	opg.api.orgTree((data)=> {
 		data.results = data.root.children;
 
-		ops('<div id="tree2"></div>').tree({
+		opg('<div id="tree2"></div>').tree({
 			data: data,
 			text: 'name',
 			value: 'id',
@@ -70,7 +70,7 @@ $.when(
 	})
 ).done(()=> {
 	if (id) {
-		ops.api.findById({id: id}, function (data) {
+		opg.api.findById({id: id}, function (data) {
 			form.jsonToFields(data);
 		});
 	}
@@ -143,7 +143,7 @@ window['doSave'] = function (popWin, table) {
 		action = 'add';
 	}
 
-	return ops.api[action](param, function () {
+	return opg.api[action](param, function () {
 		popWin.close();
 		table.update();
 	});

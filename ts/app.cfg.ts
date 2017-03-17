@@ -1,25 +1,23 @@
-import ops from "./ops";
+import opg from "./opg";
 import {store} from 'ts/util/store';
 
 store.use('sessionStorage');
 
-let cfg: {
-	apiServer : string ;
+interface IConfig {
+	apiServer: string ;
 	ajaxTimeOut: number;
-	loginPage : string;
-	version : string;
-	onServerError: Function;
-	onUnauthorizedError: Function;
-} = {};
+	loginPage: string;
+	version: string;
+	onServerError?: Function;
+	onUnauthorizedError?:Function;
+}
 
-cfg.apiServer = store.get('apiServer') || (window.CONFIG ? window.CONFIG.apiServer : null);
-
-cfg.ajaxTimeOut = 20000;
-
-cfg.loginPage = '/page/index.html';
-
-cfg.version = 'beta version';
-
+let cfg: IConfig = {
+	apiServer: store.get('apiServer') || (window.CONFIG ? window.CONFIG.apiServer : null),
+	ajaxTimeOut: 20000,
+	loginPage: '/page/index.html',
+	version: '6.2.3_20170320',
+};
 
 cfg.onUnauthorizedError = function () {
 	let param = '', url = cfg.loginPage;
@@ -42,10 +40,10 @@ const globalErrorCodes = {
 };
 
 
-cfg.onServerError = function (errorMsg :string = 'unknown error') {
+cfg.onServerError = function (errorMsg: string = 'unknown error') {
 	//console.log(this);
 
-	if (errorMsg === 'token_exception' && location.pathname != cfg.loginPage) {
+	if ((errorMsg === 'token_exception' || errorMsg === 'Token验证失败') && location.pathname != cfg.loginPage) {
 		cfg.onUnauthorizedError();
 	}
 
@@ -56,10 +54,10 @@ cfg.onServerError = function (errorMsg :string = 'unknown error') {
 		errorMsg = globalErrorCodes[errorMsg];
 	}
 	/*else {
-		errorMsg = '服务端发生错误';
-	}*/
+	 errorMsg = '服务端发生错误';
+	 }*/
 
-	ops.err(errorMsg);
+	opg.err(errorMsg);
 };
 
 

@@ -1,13 +1,13 @@
-import ops from 'ts/ops.ts';
+import opg from 'ts/opg.ts';
 import Panel from "ts/ui/Panel.ts";
 import Table from "ts/ui/Table.ts";
 import {Combo} from 'ts/ui/Combo' ;
+import {Cache} from 'ts/util/store'
 
-
-ops.api({
+opg.api({
 	contentType: 'content/contentType/findAll',
-	sourceTypes: 'base/sourceTypes',
-	catalog: 'admin/catalog/getOrderstWithNoCatlog',
+	sourceTypes: 'system/collection/collectSourceEnum',
+	catalog: 'admin/catalog/findPage',
 	'delete!DELETE!': 'transcode/business/delete/${id}'
 });
 
@@ -15,7 +15,7 @@ ops.api({
 const infoPage = '/page/produce/catalog/metaData.html';
 
 
-let panel: Panel = ops.wrapPanel('#tbSearch', {
+let panel: Panel = opg.wrapPanel('#tbSearch', {
 	title: '编目工单查询',
 	btnSearchText: '<i class="ico-find"></i> 查询'
 });
@@ -44,17 +44,18 @@ Combo.makeClearableInput($('#createEnd').datetimepicker({
 	format: 'Y-m-d'
 }) , $({}));
 
-ops('#contentType').listBox({
-	api : ops.api.contentType
+opg('#contentType').listBox({
+	api : opg.api.contentType ,
+	value : 'name'
 });
 
-ops('#sourceCode').listBox({
-	api : ops.api.sourceTypes ,
+opg('#sourceCode').listBox({
+	api : opg.api.sourceTypes ,
 	value : 'code'
 });
 
 
-let tb: Table = ops('#tb').table({
+let tb: Table = opg('#tb').table({
 	titleBar: {
 		title: '待编目列表',
 		buttons: [
@@ -89,11 +90,11 @@ let tb: Table = ops('#tb').table({
 		{
 			text: '操作', src: 'assetId', width: 70,
 			render: function (assetId, i, row) {
-				return `<button class="btn-mini btn-info" data-id="${assetId}" data-title="${row.assetName}">编目</button>`
+				return `<button class="btn-mini btn-info" data-id="${assetId}" data-orid="${row.orderId}" data-title="${row.assetName}">编目</button>`
 			}
 		}
 	],
-	api: ops.api.catalog,
+	api: opg.api.catalog,
 	//lazy: true,
 	pagination: {
 		pageSize: 10
@@ -101,12 +102,16 @@ let tb: Table = ops('#tb').table({
 });
 
 
+let cache = Cache.getInstance();
+
 //edit
 tb.tbody.on('click', '.btn-info', function () {
-	let btn = $(this), title = btn.data('title'), id = btn.data('id');
+	let btn = $(this), title = btn.data('title'), assetId = btn.data('id'), orderId = btn.data('orid');
+	cache.remove('checkedBatchCategory');
 
-	let pop = parent.ops.confirm(`<iframe src="${infoPage}?id=${id}" />`, function (i, ifr) {
-		return ifr.doSave(pop, tb);
+	let pop = parent.opg.confirm(`<iframe src="${infoPage}?assetId=${assetId}&orderId=${orderId}" />`, function (i, ifr) {
+		ifr.doSave(true , pop , tb);
+		return true;
 	}, {
 		title: `编目: ${title}`,
 		btnMax: true,
@@ -114,24 +119,45 @@ tb.tbody.on('click', '.btn-info', function () {
 		height: 500,
 		buttons: {
 			ok: {
-				className : 'btn-success' ,
+				className : 'btn-warning' ,
 				text : '完成编目'
 			},
 			cancel: '返回'
 		}
-	}).max();
+	}).toggle();
 
-	//to fix firefox bug
-	if(navigator.userAgent.indexOf('Firefox')>-1){
-		pop.restore();
-	}
-	/*setTimeout(function () {
-		pop.restore().max();
-	}, 20);*/
 });
 
 
 //批量编目
 $('#btnBatchCataloger').click(function () {
-	console.log(tb.getCheckData());
+	let checked = tb.getCheckData() ;
+	if(checked && checked.length){
+		console.log(checked);
+		cache.set('checkedBatchCategory' , checked);
+
+		let prog = checked[checked.length-1];
+		let assetName = prog['assetName'], assetId = prog['assetId'], orderId = prog['orderId'] ;
+
+		let pop = parent.opg.confirm(`<iframe src="${infoPage}?isBat=1&assetId=${assetId}&orderId=${orderId}" />`, function (i, ifr) {
+			ifr.doSave(true , pop, tb);
+			return true;
+		}, {
+			title: `编目: ${assetName}`,
+			btnMax: true,
+			width: 900,
+			height: 500,
+			buttons: {
+				ok: {
+					className : 'btn-success' ,
+					text : '完成编目'
+				},
+				cancel: '返回'
+			}
+		}).toggle();
+	}
+	else{
+		opg.warn('请选择批量编目工单');
+	}
+
 });

@@ -1,0 +1,49 @@
+<% include ('/comm/header.html') %>
+<link rel="stylesheet" href="/css/jquery.datetimepicker.css">
+<style>
+	.width150 {
+		width: 150px !important;
+	}
+
+	.widthAuto {
+		width: auto !important;
+	}
+
+	label.lbAutoWidth {
+		width: 150px !important;
+	}
+</style>
+<table id="tbForm" class="search-table">
+	<tbody>
+	<tr>
+		<td class="lead"><label for="managerName">内容名称</label></td>
+		<td id="managerName" style="width: 35%;"></td>
+		<td class="lead"><label for="showName">展示名称</label></td>
+		<td id="showName"></td>
+	</tr>
+	<tr>
+		<td class="lead"><label for="contentType">内容类型</label></td>
+		<td colspan="3" id="contentType"></td>
+	</tr>
+	<tr>
+		<td class="lead">已生产业务</td>
+		<td id="tdBusiness" colspan="3">
+			<!-- 业务 checkboxes -->
+		</td>
+	</tr>
+	<tr>
+		<td class="lead"><label for="onlineTime"><b class="text-red">*</b>上线时间</label></td>
+		<td><input type="text" name="onlineTime" id="onlineTime" class="width150"></td>
+		<td class="lead"><label for="profile">视频风格</label></td>
+		<td id="profile"></td>
+	</tr>
+	<tr>
+		<td class="lead"><label for="movieType">标清/高清</label></td>
+		<td id="movieType" colspan="3"></td>
+	</tr>
+	</tbody>
+</table>
+
+
+<% include ('/comm/footer.html') %>
+<script src="/lib/jquery.datetimepicker.js"></script>

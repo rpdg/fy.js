@@ -1,0 +1,49 @@
+<% include ('/comm/header.html') %>
+<link rel="stylesheet" href="/css/jquery.datetimepicker.css">
+
+<style>
+
+	.sp-eraserWrap{
+		width: auto;
+	}
+</style>
+
+<table id="tbSearch" class="search-table">
+	<tr>
+		<td class="lead"><label for="managerName">内容名称</label></td>
+		<td><input id="managerName" name="managerName" type="text" /></td>
+		<td class="lead"><label for="contentType">内容类型</label></td>
+		<td><select id="contentType" name="contentType"></select></td>
+	</tr>
+	<tr>
+		<td class="lead"><label for="status">状态</label></td>
+		<td><select id="status" name="status">
+			<option value="">请选择</option>
+			<option value="0">生产中</option>
+			<option value="1">已生产</option>
+			<option value="2">生产失败</option>
+		</select></td>
+		<td class="lead"><label for="source">来源</label></td>
+		<td><select id="source" name="source"></select></td>
+	</tr>
+	<tr>
+		<td class="lead"><label for="b1">已生产业务</label></td>
+		<td><select id="b1" name="busiCodes"></select></td>
+		<td class="lead"><label for="b2">生产中业务</label></td>
+		<td><select id="b2" name="produceBusiCodes"></select></td>
+	</tr>
+	<tr>
+		<td class="lead"><label for="createTimeBegin">入库时间</label></td>
+		<td colspan="3">
+			<input id="createTimeBegin" name="createTimeBegin" type="datetime" />
+			至 <input id="createTimeEnd" name="createTimeEnd" type="datetime">
+		</td>
+	</tr>
+</table>
+
+
+<table id="tb"></table>
+
+
+<% include ('/comm/footer.html') %>
+<script src="/lib/jquery.datetimepicker.js"></script>

@@ -1,0 +1,114 @@
+<% include ('/comm/header.html') %>
+
+<style>
+	.fileChooserWrap{
+		overflow: hidden;
+		position: relative;
+		display: inline-block;
+		width: 100%;
+		top: 2px;
+	}
+	.fileChooserWrap input[type="file"]{
+		position: absolute;
+		left: 0;
+		top: 0;
+		font-size: 90px;
+		margin: -20px 0 0 -1100px;
+		opacity: 0;
+	}
+
+	#tdDetails .lead{
+		width: 180px !important;
+	}
+</style>
+<table id="tbProfile" class="search-table" style="margin-bottom: 20px;">
+	<tr>
+		<td class="lead">视频文件选择</td>
+		<td colspan="3">
+			<i class="fcGroupWrap">
+				<b class="fcGroup fileChooser">
+					<b class="fcItem">
+						<input id="iptVideoFile" type="text" placeholder="请选择">
+					</b>
+					<b class="fcItem" style="width: 50px; padding-left: 5px; font-weight: 100;">
+						<i class="fileChooserWrap">
+							<input type="file" name="fileField" id="fileVideoFile" data-field="iptVideoFile">
+							<button class="btn-mini" style="width: 100%;">...</button>
+						</i>
+					</b>
+				</b>
+			</i>
+		</td>
+	</tr>
+	<tr>
+		<td class="lead" style="vertical-align: top;">详情 <a id="aExpand" class="text-blue" href="#">(展开)</a></td>
+		<td colspan="3" id="tdDetails">
+			<!-- 详情 -->
+			<span class="text-light-gray">详情已折叠，点击展开 ...</span>
+		</td>
+	</tr>
+	<tr>
+		<td class="lead">视频轨</td>
+		<td colspan="3"><select name="" id="videoTrack"></select></td>
+	</tr>
+	<tr>
+		<td class="lead">音频轨</td>
+		<td colspan="3">
+			<select name="audioTrack" id="audioTrack"></select>
+
+			<i class="fcGroupWrap" style="width: 420px;">
+				<b class="fcGroup fileChooser">
+					<b class="fcItem">或：</b>
+					<b class="fcItem">
+						<input id="iptAudioFile" type="text" placeholder="请选择">
+					</b>
+					<b class="fcItem" style="width: 50px; padding-left: 5px; font-weight: 100;">
+						<i class="fileChooserWrap">
+							<input type="file" name="fileField" id="fileAudioFile" data-field="iptAudioFile">
+							<button class="btn-mini" style="width: 100%;">...</button>
+						</i>
+					</b>
+				</b>
+			</i>
+		</td>
+	</tr>
+	<tr>
+		<td class="lead">字幕轨</td>
+		<td colspan="3">
+			<select name="captions" id="captions"></select>
+
+			<i class="fcGroupWrap" style="width: 420px;">
+				<b class="fcGroup fileChooser">
+					<b class="fcItem">或：</b>
+					<b class="fcItem">
+						<input id="iptCaptionsFile" type="text" placeholder="请选择">
+					</b>
+					<b class="fcItem" style="width: 50px; padding-left: 5px; font-weight: 100;">
+						<i class="fileChooserWrap">
+							<input type="file" name="fileField" id="captionsFile" data-field="iptCaptionsFile">
+							<button class="btn-mini" style="width: 100%;">...</button>
+						</i>
+					</b>
+				</b>
+			</i>
+		</td>
+	</tr>
+	<tr>
+		<td class="lead">入点时间</td>
+		<td><input type="text"></td>
+		<td class="lead">出点时间</td>
+		<td><input type="text"></td>
+	</tr>
+	<tr>
+		<td class="lead"><label for="template">模板</label></td>
+		<td colspan="3"><select name="template" id="template"></select></td>
+	</tr>
+	<tr>
+		<td class="lead">采集意见</td>
+		<td colspan="3"><textarea name="" id="remark" cols="30" rows="5"></textarea></td>
+	</tr>
+</table>
+
+
+
+<% include ('/comm/footer.html') %>

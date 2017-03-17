@@ -1,0 +1,71 @@
+<% include ('/comm/header.html') %>
+<link rel="stylesheet" href="/css/jquery.datetimepicker.css">
+<style>
+	.width150 {
+		width: 150px !important;
+	}
+
+	.widthAuto {
+		width: auto !important;
+	}
+
+	#tdEpisode label.lbAutoWidth {
+		width: 60px !important;
+	}
+	#tdBusiness label.lbAutoWidth {
+		width: 150px !important;
+	}
+	#trEpisode{
+		display: none;
+	}
+</style>
+<table id="tbForm" class="search-table">
+	<tbody>
+	<tr>
+		<td class="lead"><label for="managerName">内容名称</label></td>
+		<td style="width: 40%;"><span id="managerName"></span></td>
+		<td class="lead"><label for="showName">展示名称</label></td>
+		<td><span id="showName"></span></td>
+	</tr>
+	<tr>
+		<td class="lead"><label for="contentType">内容类型</label></td>
+		<td><span id="contentType"></span></td>
+		<td class="lead"><label for="category">栏目</label></td>
+		<td><span id="category"></span></td>
+	</tr>
+	<tr id="trEpisode">
+		<td class="lead"><b class="text-red">*</b>已生产剧集</td>
+		<td colspan="3" id="tdEpisode"></td>
+	</tr>
+	<tr>
+		<td class="lead"><label for="onlineTime"><b class="text-red">*</b>上线时间</label></td>
+		<td><input type="text" name="onlineTime" id="onlineTime" class="width150"></td>
+		<td class="lead"><label for="programLength">预估单集时长</label></td>
+		<td><span id="programLength"></span></td>
+	</tr>
+	<tr>
+		<td class="lead"><b class="text-red">*</b>请选择业务</td>
+		<td id="tdBusiness" colspan="3">
+			<!-- 业务 checkboxes -->
+		</td>
+	</tr>
+	<tr>
+		<td class="lead"><label for="movieType">标清/高清</label></td>
+		<td><span id="movieType"></span></td>
+		<td class="lead"><label for="profile">视频风格</label></td>
+		<td><span id="profile"></span></td>
+	</tr>
+	<tr>
+		<td class="lead">是否技审</td>
+		<td colspan="3">
+			<label class="widthAuto" style="margin-right: 1em;"><input type="radio" name="checkFlag" value="1" checked>是
+			</label>
+			<label class="widthAuto"><input type="radio" name="checkFlag" value="0">否 </label>
+		</td>
+	</tr>
+	</tbody>
+</table>
+
+
+<% include ('/comm/footer.html') %>
+<script src="/lib/jquery.datetimepicker.js"></script>

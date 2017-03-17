@@ -1,0 +1,116 @@
+<% include ('/comm/header.html') %>
+
+
+<table id="tbProfile" class="search-table">
+	<colgroup>
+		<col style="width: 100px;">
+		<col style="width: 80px;">
+	</colgroup>
+	<tbody>
+	<tr>
+		<td class="lead"><label for="name"><b class="text-red">*</b>模板名称</label></td>
+		<td colspan="2"><input id="name" name="name" type="text" maxlength="50"/></td>
+	</tr>
+	<tr>
+		<td class="lead"><label for="description">描述</label></td>
+		<td colspan="2"><input id="description" name="description" type="text" maxlength="50"/></td>
+	</tr>
+	</tbody>
+	<tbody id="tbd_video">
+	<tr>
+		<td class="lead" rowspan="15" style="vertical-align: top;"><b class="text-red">*</b>视频配置</td>
+		<td>编码格式</td>
+		<td><select name="videoFormat"></select></td>
+	</tr>
+	<tr>
+		<td>编码档次</td>
+		<td><select name="videoGrade"></select></td>
+	</tr>
+	<tr>
+		<td>编码级别</td>
+		<td><select name="videoLevel"></select></td>
+	</tr>
+	<tr>
+		<td>帧场模式</td>
+		<td><select name="videoModel"></select></td>
+	</tr>
+	<tr>
+		<td>分辨率</td>
+		<td><select name="videoSolution"></select></td>
+	</tr>
+	<tr>
+		<td>宽高比</td>
+		<td><select name="videoAspectRate"></select></td>
+	</tr>
+	<tr>
+		<td>帧率</td>
+		<td><select name="videoFrameRate"></select></td>
+	</tr>
+	<tr>
+		<td>码率控制</td>
+		<td><select name="videoCodeRate"></select></td>
+	</tr>
+	<tr>
+		<td>平均码率</td>
+		<td><input name="videoAvgCodeRate" type="text" maxlength="20"></td>
+	</tr>
+	<tr>
+		<td>最高码率</td>
+		<td><input name="videoMaxCodeRate" type="text" maxlength="20"></td>
+	</tr>
+	<tr>
+		<td>GOP模式</td>
+		<td><select name="videoGopModel"></select></td>
+	</tr>
+	<tr>
+		<td>GOP大小</td>
+		<td><input name="videoGopSize" type="text" maxlength="20"></td>
+	</tr>
+	<tr>
+		<td>B帧数量</td>
+		<td><input name="videoBCount" type="text" maxlength="20"></td>
+	</tr>
+	<tr>
+		<td>参考帧</td>
+		<td><input name="videoReferFrame" type="text" maxlength="20"></td>
+	</tr>
+	<tr>
+		<td>去交错</td>
+		<td><select name="videoRemoveInterlace"></select></td>
+	</tr>
+	</tbody>
+	<tbody id="tbd_audio">
+	<tr>
+		<td class="lead" rowspan="4" style="vertical-align: top;"><label for="description"><b class="text-red">*</b>音频配置</label>
+		</td>
+		<td>编码格式</td>
+		<td><select name="audioFormat"></select></td>
+	</tr>
+	<tr>
+		<td>声道</td>
+		<td><select name="audioChannel"></select></td>
+	</tr>
+	<tr>
+		<td>采样率</td>
+		<td><select name="audioSampleRate" id="inputFileMovieType"></select></td>
+	</tr>
+	<tr>
+		<td>码率</td>
+		<td><input name="audioCodeRate" type="text" maxlength="20"></td>
+	</tr>
+	</tbody>
+	<!--<tbody>
+	<tr>
+		<td class="lead" rowspan="2" style="vertical-align: top;"><label for="description"><b class="text-red">*</b>输出配置</label>
+		</td>
+		<td>输出路径</td>
+		<td><input name="outputPath" type="text" maxlength="200"></td>
+	</tr>
+	<tr>
+		<td>封装格式</td>
+		<td><select name="sealFormat"></select></td>
+	</tr>
+	</tbody>-->
+</table>
+<p>&nbsp;</p>
+<% include ('/comm/footer.html') %>

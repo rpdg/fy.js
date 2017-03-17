@@ -1,0 +1,76 @@
+<% include ('/comm/header.html') %>
+
+<table id="tbProfile" class="search-table">
+	<tr>
+		<td class="lead">转码状态</td>
+		<td colspan="3"></td>
+	</tr>
+	<tr>
+		<td class="lead">输入类别</td>
+		<td></td>
+		<td class="lead">输入源文件类型</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td class="lead">输出类别</td>
+		<td></td>
+		<td class="lead">输出文件类型</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td class="lead">进度百分比</td>
+		<td></td>
+		<td class="lead">最后一次修改时间</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td class="lead">任务名</td>
+		<td></td>
+		<td class="lead">输出文件名</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td class="lead">备注</td>
+		<td colspan="3"></td>
+	</tr>
+</table>
+
+<style>
+	#divTask{
+		margin: 20px 0;
+	}
+</style>
+<div id="divTask">
+	<div class="grid-title-bar">
+		任务分配信息
+	</div>
+	<table id="tbTask" class="search-table">
+		<tr>
+			<td class="lead">分配时间</td>
+			<td></td>
+			<td class="lead">分配主机</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td class="lead">组名</td>
+			<td></td>
+			<td class="lead">是否提交</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td class="lead">重试次数 </td>
+			<td></td>
+			<td class="lead">分配类型</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td class="lead">是否移动文件</td>
+			<td></td>
+			<td class="lead">占用的能力数 </td>
+			<td></td>
+		</tr>
+	</table>
+</div>
+
+
+<% include ('/comm/footer.html') %>

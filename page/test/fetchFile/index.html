@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Title</title>
+</head>
+<body>
+<script src="pcmdata.min.js"></script>
+<!-- Development -->
+<script src="libamr-nb.js"></script>
+<script src="util.js"></script>
+<script src="amr.js"></script>
+<script src="decoder.js"></script>
+<script src="encoder.js"></script>
+<script>
+
+	var xhr = new XMLHttpRequest();
+	xhr.open('GET', 'http://localhost/page/test/fetchFile/se_t630.amr', true);
+	xhr.responseType = 'blob';
+
+	xhr.onload = function(e) {
+
+		var blob = new Blob([xhr.response], {type: 'audio/amr'});
+		var reader  = new FileReader();
+		reader.addEventListener("load", function (e) {
+			console.log(reader.result , e.target.result);
+			var samples = new AMR({
+				benchmark: true
+			}).decode(e.target.result);
+
+			AMR.util.play(samples);
+		}, false);
+		reader.readAsBinaryString(blob);
+
+	};
+
+	xhr.send();
+
+
+	var xhr2 = new XMLHttpRequest();
+	xhr2.open('GET', 'http://localhost/page/produce/audit4/info.json', true);
+	xhr2.responseType = 'json';
+	//xhr2.withCredentials = true;
+	xhr2.onload = function(e) {
+		console.log(e);
+	};
+	xhr2.send();
+</script>
+</body>
+</html>

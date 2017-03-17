@@ -1,0 +1,17 @@
+<% include ('/comm/header.html') %>
+
+<style>
+	.search-table .lead.text-center {
+		text-align: center;
+		font-weight: bold;
+	}
+</style>
+
+
+<div class="grid-title-bar" style="margin-top: 1em;">
+	<label>名称：<input type="text" id="assetName" name="assetName" placeholder=""></label>
+	<button id="btnSearch" class="btn-primary btn-mini"><i class="ico-find"></i> 查询</button>
+</div>
+<table id="groupTb"></table>
+
+<% include ('/comm/footer.html') %>

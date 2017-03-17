@@ -1,0 +1,26 @@
+<% include ('/comm/header.html') %>
+
+<style>
+	.search-table .lead.text-center {
+		text-align: center;
+		font-weight: bold;
+	}
+	.thumb{
+		max-width: 100px;
+		max-height: 100px;
+	}
+</style>
+
+
+<div class="grid-title-bar" style="margin-top: 1em;">
+	<label>内容名称：<input type="text" id="assetName" name="assetName" placeholder=""></label>
+	<button id="btnSearch" class="btn-primary btn-mini"><i class="ico-find"></i> 查询</button>
+</div>
+<table id="tb"></table>
+
+
+<div class="grid-title-bar" style="margin-top: 1em;border-bottom-width: 1px !important;">
+	<label>采集内容网址：<input type="text" id="doubanUrl" name="doubanUrl" placeholder="豆瓣内容网址" style="width: 420px;"></label>
+	<button id="btnCollect" class="btn-primary btn-mini">　采集　</button>
+</div>
+<% include ('/comm/footer.html') %>

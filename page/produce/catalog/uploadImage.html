@@ -1,0 +1,26 @@
+<% include ('/comm/header.html') %>
+<link rel="stylesheet" href="./asset/jquery-ui.min.css">
+
+<style>
+	#info{
+		margin-top: 1em;
+	}
+
+	#thumbImg{
+		float: right;
+		max-width: 100px;
+		max-height: 100px;
+		/*border: 1px solid #ccc;*/
+	}
+
+</style>
+<div id="wrapper">
+	<img src="/css/img/blank.gif" id="thumbImg">
+	<input id="iptFileUpload" type="file" accept="image/*"/>
+	<ul id="info">
+	</ul>
+</div>
+
+
+<% include ('/comm/footer.html') %>
+<script src="./asset/jquery-ui.min.js"></script>

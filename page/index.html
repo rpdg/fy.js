@@ -102,3 +102,40 @@
 
 
 <% include ('/comm/footer.html') %>
+
+
+
+<!--[if lt IE 10]>
+<style type="text/css">
+	#ie6wraning {
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		z-index: 99999999;
+		background-color: #911f0c;
+		color: #fff;
+		line-height: 30px;
+		height: 30px;
+		width: 100%;
+		text-align: center;
+	}
+	#ie6wraning a{
+		color: #ff0;
+	}
+	#ie6wraning a:hover{
+		color: #fff;
+	}
+	* html #ie6wraning {
+		position: absolute;
+	}
+</style>
+
+<div id="ie6wraning">
+	您使用的浏览器是旧版IE，无法正常使用本系统，请升级您的浏览器至新版本。
+	推荐您使用：
+	<a target="_blank" href="https://support.microsoft.com/zh-cn/help/17621/internet-explorer-downloads">新版IE</a>、
+	<a target="_blank" href="https://www.google.com/chrome/browser/desktop/index.html">谷歌浏览器</a>、
+	<a target="_blank" href="http://se.360.cn/">360浏览器</a>、
+	<a target="_blank" href="http://www.maxthon.cn/">遨游浏览器</a>
+</div>
+<![endif]-->

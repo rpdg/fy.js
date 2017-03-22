@@ -43,6 +43,7 @@ $('#onlineTime').datetimepicker({
 opg('#tdBusiness').checkBox({
 	name: 'busiCodes[]',
 	api: opg.api.business,
+	labelClass : 'lbWidth150',
 });
 
 //内容类型

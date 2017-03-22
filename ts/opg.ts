@@ -14,7 +14,7 @@ class OpgUi {
 
 	jq: JQuery;
 
-	constructor(se: JQuery|any[]|Element|DocumentFragment|Text|string) {
+	constructor(se: JQuery | any[] | Element | DocumentFragment | Text | string) {
 		this.jq = $(se);
 		if (this.jq.length === 0) {
 			throw new Error('There is no dom object to be processed.');
@@ -57,7 +57,7 @@ class OpgUi {
 }
 
 
-let opg : any = (se: JQuery|any[]|Element|DocumentFragment|Text|string) => new OpgUi(se);
+let opg: any = (se: JQuery | any[] | Element | DocumentFragment | Text | string) => new OpgUi(se);
 
 
 opg.api = api;
@@ -98,12 +98,85 @@ let ps_obj = $({});
 opg.listen = function (events: string, handler: (eventObject: JQueryEventObject, ...args: any[]) => any) {
 	ps_obj.on.apply(ps_obj, arguments);
 };
-opg.dispatch = function (eventType: string, extraParameters?: any[]|Object) {
+opg.dispatch = function (eventType: string, extraParameters?: any[] | Object) {
 	ps_obj.trigger.apply(ps_obj, arguments);
 };
 opg.unListen = function () {
 	ps_obj.off.apply(ps_obj, arguments);
 };
+
+
+/*
+ //https://github.com/daniellmb/MinPubSub/
+ // the topic/subscription hash
+ let cache = {};
+ opg.dispatch = function (topic: string, args ?: Array) {
+ // summary:
+ //    Publish some data on a named topic.
+ // topic: String
+ //    The channel to publish on
+ // args: Array?
+ //    The data to publish. Each array item is converted into an ordered
+ //    arguments on the subscribed functions.
+ //
+ // example:
+ //    Publish stuff on '/some/topic'. Anything subscribed will be called
+ //    with a function signature like: function(a,b,c){ ... }
+ //
+ //    publish('/some/topic', ['a','b','c']);
+
+ let subs = cache[topic],
+ len = subs ? subs.length : 0;
+
+ //can change loop or reverse array if the order matters
+ while (len--) {
+ subs[len].apply(null, args || []);
+ }
+ };
+
+ opg.listen = function (topic: string, callback: Function) {
+ // summary:
+ //    Register a callback on a named topic.
+ // topic: String
+ //    The channel to subscribe to
+ // callback: Function
+ //    The handler event. Anytime something is publish'ed on a
+ //    subscribed channel, the callback will be called with the
+ //    published array as ordered arguments.
+ //
+ // returns: Array
+ //    A handle which can be used to unsubscribe this particular subscription.
+ //
+ // example:
+ //    subscribe('/some/topic', function(a, b, c){ handle data  });
+
+ if (!cache[topic]) {
+ cache[topic] = [];
+ }
+ cache[topic].push(callback);
+ return [topic, callback]; // Array
+ };
+
+ opg.unListen = function ( handle,  callback) {
+ // summary:
+ //    Disconnect a subscribed function for a topic.
+ // handle: Array
+ //    The return value from a subscribe call.
+ // example:
+ //    var handle = subscribe('/some/topic', function(){});
+ //    unsubscribe(handle);
+
+ let subs = cache[callback ? handle : handle[0]],
+ callback = callback || handle[1],
+ len = subs ? subs.length : 0;
+
+ while (len--) {
+ if (subs[len] === callback) {
+ subs.splice(len, 1);
+ }
+ }
+ };
+ */
 
 
 //

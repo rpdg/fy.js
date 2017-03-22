@@ -20,26 +20,36 @@
 	#tdDetails .lead{
 		width: 180px !important;
 	}
+
+	#tbdProfile{
+		display: none;
+	}
 </style>
 <table id="tbProfile" class="search-table" style="margin-bottom: 20px;">
+	<thead>
 	<tr>
 		<td class="lead">视频文件选择</td>
 		<td colspan="3">
 			<i class="fcGroupWrap">
 				<b class="fcGroup fileChooser">
 					<b class="fcItem">
-						<input id="iptVideoFile" type="text" placeholder="请选择">
+						<input id="iptVideoFile" name="mediaPath" type="text" placeholder="请选择">
 					</b>
-					<b class="fcItem" style="width: 50px; padding-left: 5px; font-weight: 100;">
+					<b class="fcItem fileChooserB" style="width: 50px; padding-left: 5px; font-weight: 100;">
 						<i class="fileChooserWrap">
 							<input type="file" name="fileField" id="fileVideoFile" data-field="iptVideoFile">
 							<button class="btn-mini" style="width: 100%;">...</button>
 						</i>
 					</b>
+					<b class="fcItem" style="width: 90px;">
+						<button id="btnUpFilePath" class="btn-mini btn-success">获取信息</button>
+					</b>
 				</b>
 			</i>
 		</td>
 	</tr>
+	</thead>
+	<tbody id="tbdProfile">
 	<tr>
 		<td class="lead" style="vertical-align: top;">详情 <a id="aExpand" class="text-blue" href="#">(展开)</a></td>
 		<td colspan="3" id="tdDetails">
@@ -56,13 +66,13 @@
 		<td colspan="3">
 			<select name="audioTrack" id="audioTrack"></select>
 
-			<i class="fcGroupWrap" style="width: 420px;">
+			<i class="fcGroupWrap" style="width: 500px;">
 				<b class="fcGroup fileChooser">
 					<b class="fcItem">或：</b>
 					<b class="fcItem">
-						<input id="iptAudioFile" type="text" placeholder="请选择">
+						<input id="iptAudioFile" name="audioTrack2" type="text" placeholder="请选择">
 					</b>
-					<b class="fcItem" style="width: 50px; padding-left: 5px; font-weight: 100;">
+					<b class="fcItem fileChooserB" style="width: 50px; padding-left: 5px; font-weight: 100;">
 						<i class="fileChooserWrap">
 							<input type="file" name="fileField" id="fileAudioFile" data-field="iptAudioFile">
 							<button class="btn-mini" style="width: 100%;">...</button>
@@ -75,15 +85,15 @@
 	<tr>
 		<td class="lead">字幕轨</td>
 		<td colspan="3">
-			<select name="captions" id="captions"></select>
+			<select name="subtitleTrack" id="subtitleTrack"></select>
 
-			<i class="fcGroupWrap" style="width: 420px;">
+			<i class="fcGroupWrap" style="width: 500px;">
 				<b class="fcGroup fileChooser">
 					<b class="fcItem">或：</b>
 					<b class="fcItem">
-						<input id="iptCaptionsFile" type="text" placeholder="请选择">
+						<input id="iptCaptionsFile" name="subtitleTrack2" type="text" placeholder="请选择">
 					</b>
-					<b class="fcItem" style="width: 50px; padding-left: 5px; font-weight: 100;">
+					<b class="fcItem fileChooserB" style="width: 50px; padding-left: 5px; font-weight: 100;">
 						<i class="fileChooserWrap">
 							<input type="file" name="fileField" id="captionsFile" data-field="iptCaptionsFile">
 							<button class="btn-mini" style="width: 100%;">...</button>
@@ -94,19 +104,28 @@
 		</td>
 	</tr>
 	<tr>
-		<td class="lead">入点时间</td>
-		<td><input type="text"></td>
-		<td class="lead">出点时间</td>
-		<td><input type="text"></td>
+		<td class="lead"><label for="entryTime">入点时间</label></td>
+		<td><input type="text" name="entryTime" id="entryTime" value="" placeholder="时分秒 00:00:00 形式"></td>
+		<td class="lead"><label for="outTime">出点时间</label></td>
+		<td><input type="text" name="outTime" id="outTime" value="" placeholder="时分秒 00:00:00 形式"></td>
 	</tr>
 	<tr>
 		<td class="lead"><label for="template">模板</label></td>
 		<td colspan="3"><select name="template" id="template"></select></td>
 	</tr>
 	<tr>
-		<td class="lead">采集意见</td>
-		<td colspan="3"><textarea name="" id="remark" cols="30" rows="5"></textarea></td>
+		<td class="lead"><label for="suggestion">采集意见</label></td>
+		<td colspan="3"><textarea name="suggestion" id="suggestion" cols="30" rows="5" maxlength="500"></textarea></td>
 	</tr>
+	<tr>
+		<td class="lead">生产流程</td>
+		<td colspan="3">
+			<label class="lbAutoWidth"><input type="checkbox" checked />二审</label>、
+			<label class="lbAutoWidth"><input type="checkbox" checked />非编</label>、
+			<label class="lbAutoWidth"><input type="checkbox" checked />三审</label>
+		</td>
+	</tr>
+	</tbody>
 </table>
 
 

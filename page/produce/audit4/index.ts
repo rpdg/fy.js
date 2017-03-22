@@ -201,5 +201,5 @@ function openInfoWindow(assetId: number|string, index: number, sets: any = {}) {
 
 	console.log(sets);
 
-	top.opg(`<iframe src="/page/produce/audit4/info.html?assetId=${assetId}" allowfullscreen />`).popup(sets).toggle();
+	return top.opg(`<iframe src="/page/produce/audit4/info.html?assetId=${assetId}" allowfullscreen />`).popup(sets).toggle();
 }

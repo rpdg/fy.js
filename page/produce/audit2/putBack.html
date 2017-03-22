@@ -1,0 +1,28 @@
+<% include ('/comm/header.html') %>
+<style>
+	.search-table .lead + td {
+		width: auto;
+	}
+</style>
+
+<table class="search-table">
+	<tr>
+		<td class="lead">节目名称</td>
+		<td><span id="managerName"></span></td>
+	</tr>
+	<tr>
+		<td class="lead"><label for="selStation"><b class="text-red">*</b>打回到工位</label></td>
+		<td><select name="" id="selStation">
+			<option value="">采集</option>
+		</select></td>
+	</tr>
+	<tr>
+		<td class="lead"><label for="reason">打回原因</label></td>
+		<td>
+			<textarea name="reason" id="reason" cols="30" rows="5" maxlength="500"></textarea>
+		</td>
+	</tr>
+</table>
+
+
+<% include ('/comm/footer.html') %>

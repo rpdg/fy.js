@@ -76,7 +76,7 @@ class ListBox extends AjaxDisplayObject implements IFormControls {
 
 	}
 
-	getValue(): string|number {
+	getValue(): string | number {
 		return this.jq.val();
 	}
 
@@ -95,14 +95,15 @@ class ListBox extends AjaxDisplayObject implements IFormControls {
 class CheckBox extends AjaxDisplayObject implements IFormControls {
 	elementName: string;
 
-
 	constructor(jq: JQuery, cfg: any) {
 
-		cfg.name = cfg.name || ( 'opgElem_' + DisplayObject.guid() );
+		if (!cfg.labelClass) cfg.labelClass = 'lbAutoWidth';
+
+		if (!cfg.name) cfg.name = 'opgElem_' + DisplayObject.guid();
 
 		cfg = $.extend({
 			bindOptions: {
-				template: '<label class="lbAutoWidth"><input name="' + cfg.name
+				template: '<label class="' + cfg.labelClass + '"><input name="' + cfg.name
 				+ '" type="checkbox" value="${' + (cfg.value || 'id') + '}">${' + (cfg.text || 'name') + '}</label>'
 				+ (cfg.joiner === undefined ? ' ' : cfg.joiner)
 			}

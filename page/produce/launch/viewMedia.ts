@@ -23,6 +23,23 @@ class ViewMedia {
 			this.createTable(row);
 		}
 
+
+		//delete
+		this.tbMedia.tbody.on('click', '.btnDelete', function () {
+			let btn = $(this),
+				title = btn.data('title'),
+				id = btn.data('id');
+
+			opg.confirm(`要删除“<b>${title}</b>”吗？`, () => {
+				opg.api.delete({id: id}, () => {
+					opg.ok(`删除节目 <b>${title}</b> 成功`, () => {
+						PopUp.closeLast();
+					});
+				});
+			});
+		});
+
+		
 		//delete media file
 		this.tbMedia.tbody.on('click', '.btnDeleteFile', function () {
 			let btn = $(this),
@@ -156,20 +173,6 @@ class ViewMedia {
 		});
 
 
-		//delete
-		this.tbMedia.tbody.on('click', '.btnDelete', function () {
-			let btn = $(this),
-				title = btn.data('title'),
-				id = btn.data('id');
-
-			opg.confirm(`要删除“<b>${title}</b>”吗？`, () => {
-				opg.api.delete({id: id}, () => {
-					opg.ok(`删除节目 <b>${title}</b> 成功`, () => {
-						PopUp.closeLast();
-					});
-				});
-			});
-		});
 
 	}
 

@@ -22,7 +22,6 @@ class ViewAudit{
 				{
 					text: '已生产业务', width: 120,
 					src: 'name',
-					//width: 120,
 				},
 				{
 					text: '生产中业务', width: 120,
@@ -31,22 +30,18 @@ class ViewAudit{
 				{
 					text: '创建时间', width: 120,
 					src: 'managerName',
-					width: 120,
 				},
 				{
 					text: '时长', width: 120,
 					src: 'managerName',
-					//width: 150,
 				},
 				{
 					text: '创建人',  width: 90,
 					src: 'source',
-					width: 70,
 				},
 				{
-					text: '操作',  width: 120,
+					text: '操作',  width: 90,
 					src: 'source',
-					width: 70,
 				},
 			]
 		});

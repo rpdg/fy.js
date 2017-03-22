@@ -97,7 +97,10 @@ class Combo extends DisplayObject {
 
 			wrapper.hover(function () {
 				if(!ipt.prop('disabled') && ipt.val()){
-					eraser.toggle();
+					if(eraser.is(':visible'))
+						eraser.hide();
+					else
+						eraser.show();
 				}
 			});
 		}

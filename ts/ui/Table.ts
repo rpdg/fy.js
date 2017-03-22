@@ -25,7 +25,7 @@ function makeTemplate(sets) {
 			}
 
 			if (!this.cmd) {
-				this.cmd = col.cmd ;
+				this.cmd = col.cmd;
 				this.cmdColumnIndex = i;
 			}
 		}
@@ -41,7 +41,7 @@ function makeTemplate(sets) {
 	let trSrc;
 	if (sets.rows && sets.rows.render) {
 		trSrc = sets.rows.src || '___';
-		sets.bindOptions.itemRender['__renderTr'] = (val, i, row, attr)=> {
+		sets.bindOptions.itemRender['__renderTr'] = (val, i, row, attr) => {
 			let cn = sets.rows.render(val, i, row, attr);
 			let sn = ( i % 2 ? 'odd' : 'even');
 			return sn + ' ' + cn;
@@ -49,7 +49,7 @@ function makeTemplate(sets) {
 	}
 	else {
 		trSrc = '___';
-		sets.bindOptions.itemRender['__renderTr'] = (val, i)=> ( i % 2 ? 'odd' : 'even');
+		sets.bindOptions.itemRender['__renderTr'] = (val, i) => ( i % 2 ? 'odd' : 'even');
 	}
 
 	return '<tr class="${' + trSrc + ':=__renderTr}">' + tdTmp.join('') + '</tr>';
@@ -84,8 +84,8 @@ function setupTitleBar(tb, sets) {
 	</div>`, bar = $(html);
 
 	let btns = ``;
-	if(sets.buttons && sets.buttons.length){
-		for(let i=0,l=sets.buttons.length;i<l;i++){
+	if (sets.buttons && sets.buttons.length) {
+		for (let i = 0, l = sets.buttons.length; i < l; i++) {
 			let btn = sets.buttons[i];
 			btns += `<button id="${btn.id}" class="${btn.className}">${btn.html}</button>`;
 		}
@@ -105,12 +105,13 @@ class Table extends AjaxDisplayObject {
 	tfoot?: JQuery;
 	tPager?: JQuery;
 	pageCounter?: JQuery;
+	iptPageGo?: JQuery;
 
 	cols: number;
 
 	resizable?: boolean;
 
-	cmd?: 'checkOne'|'checkAll';
+	cmd?: 'checkOne' | 'checkAll';
 	cmdColumnIndex?: number;
 	cmdCheckAll?: JQuery;
 	cmdCheckOne?: JQuery;
@@ -118,7 +119,7 @@ class Table extends AjaxDisplayObject {
 	pageTemplate?: string;
 	pagination?: Pagination;
 
-	private pageCount: number ;
+	private pageCount: number;
 
 	constructor(jq: JQuery, cfg: any) {
 
@@ -184,6 +185,7 @@ class Table extends AjaxDisplayObject {
 
 			let that = this;
 			const pageDefaults = {
+				append_number_input : true ,
 				link_to: "javascript:void(0)",
 				num_edge_entries: 1,
 				num_display_entries: 5,
@@ -191,14 +193,15 @@ class Table extends AjaxDisplayObject {
 				prev_text: "上页",
 				next_text: "下页",
 				load_first_page: false,
-				callback: (pageIndex, paginationContainer)=> {
+				callback: (pageIndex, paginationContainer) => {
 					that._param.pageNo = pageIndex + 1;
 					that.update(this._param);
+					//that.iptPageGo.val(that._param.pageNo);
 					return false;
 				},
 				pageSize: 10,
 				showCount: true,
-				customizable: true
+				customizable: true,
 			};
 
 
@@ -220,18 +223,17 @@ class Table extends AjaxDisplayObject {
 
 	createdHandler(data: any) {
 		if (this.cmd === 'checkAll') {
-			this.cmdCheckAll = this.thead.find('th:eq('+this.cmdColumnIndex+')').find('input');
-			this.cmdCheckAll.syncCheckBoxGroup('td:eq('+this.cmdColumnIndex+')>:checkbox:enabled', this.tbody.find('tr'));
+			this.cmdCheckAll = this.thead.find('th:eq(' + this.cmdColumnIndex + ')').find('input');
+			this.cmdCheckAll.syncCheckBoxGroup('td:eq(' + this.cmdColumnIndex + ')>:checkbox:enabled', this.tbody.find('tr'));
 		}
 		else if (this.cmd === 'checkOne') {
-			this.cmdCheckOne = this.thead.find('th:eq('+this.cmdColumnIndex+')').find('input:hidden');
+			this.cmdCheckOne = this.thead.find('th:eq(' + this.cmdColumnIndex + ')').find('input:hidden');
 		}
-
 
 
 		this._created = true;
 
-		if(this._createdPromise){
+		if (this._createdPromise) {
 			this._createdPromise.resolve();
 		}
 		if (this.onCreate) this.onCreate(data);
@@ -247,7 +249,7 @@ class Table extends AjaxDisplayObject {
 	updateHandler(json) {
 		if (this.cmdCheckAll) {
 			this.cmdCheckAll.prop("checked", false);
-			this.cmdCheckAll.syncCheckBoxGroup('td:eq('+this.cmdColumnIndex+')>:checkbox:enabled', this.tbody.find('tr'));
+			this.cmdCheckAll.syncCheckBoxGroup('td:eq(' + this.cmdColumnIndex + ')>:checkbox:enabled', this.tbody.find('tr'));
 		}
 
 
@@ -264,11 +266,11 @@ class Table extends AjaxDisplayObject {
 		let that = this;
 
 		let pageCount = Math.ceil(rowCount / this._param.pageSize);
-		if(pageCount===0) pageCount=1;
+		if (pageCount === 0) pageCount = 1;
 
 		if (this._param.pageNo > 1 && pageCount < this.pageCount) {
 			this._param.pageNo -= (this.pageCount - pageCount);
-			return setTimeout(()=>this.update(), 10);
+			return setTimeout(() => this.update(), 10);
 		}
 
 		this.pageCount = pageCount;
@@ -279,7 +281,11 @@ class Table extends AjaxDisplayObject {
 			this.tPager.pagination(rowCount, this.pagination);
 
 			if (this.pagination.showCount) {
-				this.pageCounter.html(format.json(this.pageTemplate, {rowCount, pageNum, pageCount}));
+				//this.pageCounter.html(format.json(this.pageTemplate, {rowCount, pageNum, pageCount}));
+
+				this.pageCounter.find('.bt').text(rowCount);
+				//this.iptPageGo.val(pageNum).data('total' , pageCount);
+				this.pageCounter.find('.bc').text(pageCount);
 			}
 		}
 		else {
@@ -287,6 +293,10 @@ class Table extends AjaxDisplayObject {
 			this.tfoot = this.table.find("tfoot td:eq(0)");
 			this.tPager = $('<div class="pagination_container"></div>').appendTo(this.tfoot);
 			this.tPager.pagination(rowCount, this.pagination);
+
+
+			this.iptPageGo = this.tfoot.find('.iptPageGo');
+			this.pagination.append_number_input = this.iptPageGo ;
 
 			this.pageCounter = $('<span></span>');
 			this.tPager.after(this.pageCounter);
@@ -296,10 +306,13 @@ class Table extends AjaxDisplayObject {
 				if (typeof this.pagination.showCount === "string")
 					this.pageTemplate = this.pagination.showCount as string;
 				else
-					this.pageTemplate = '共${rowCount}条记录 , 第${pageNum} / ${pageCount}页';
+					this.pageTemplate = '共<span class="bt">${rowCount}</span>条记录 , 第<span class="bf">${pageNum}</span> / <span class="bc">${pageCount}</span>页';
 
 				this.pageCounter.html(format.json(this.pageTemplate, {rowCount, pageNum, pageCount}));
 
+				let bf = this.pageCounter.find('.bf');
+				this.iptPageGo.val(pageNum);//.data('total' , pageCount);
+				bf.replaceWith(this.iptPageGo);
 			}
 
 			if (this.pagination.customizable) {
@@ -354,20 +367,20 @@ class Table extends AjaxDisplayObject {
 	}
 
 	//@return string value array
-	getCheckedValue(){
+	getCheckedValue() {
 		if (this.cmd) {
 			let key = (this.cmdCheckAll || this.cmdCheckOne).val(),
-				chkBoxes = this.tbody.find("input[name='" + key + "']:checked") ;
-			let rev ;
+				chkBoxes = this.tbody.find("input[name='" + key + "']:checked");
+			let rev;
 
-			if(this.cmdCheckAll){
+			if (this.cmdCheckAll) {
 				rev = [];
-				chkBoxes.each((i, elem:HTMLInputElement)=>{
+				chkBoxes.each((i, elem: HTMLInputElement) => {
 					rev.push(elem.value);
 				});
 			}
-			else{
-				rev = chkBoxes.length? chkBoxes.val():null;
+			else {
+				rev = chkBoxes.length ? chkBoxes.val() : null;
 			}
 
 			return rev;

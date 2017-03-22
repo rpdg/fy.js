@@ -39,7 +39,7 @@ $('#btnProgramMediaName').click(function () {
 	} , {
 		title: '选择版权介质',
 		btnMax : true ,
-		width: 800,
+		width: 990,
 		height: 600,
 	});
 });

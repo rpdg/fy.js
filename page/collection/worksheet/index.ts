@@ -5,7 +5,7 @@ import Panel from "ts/ui/Panel.ts";
 
 
 opg.api({
-	'collect': 'admin/collect/findPage',
+	'collect': 'admin/collect/findPageWithProgress',
 	'delete!DELETE!': 'content/contentType/delete/${id}',
 	'finishCollect': 'admin/collect/finishCollect', //完成采集
 	'retryCollect': 'admin/collect/retryCollect', //重转码
@@ -78,7 +78,7 @@ let tb: Table = opg('#tb').table({
 		{
 			text: '优先级',
 			width: 60,
-			src: 'description'
+			src: 'priority'
 		},
 		{
 			text: '状态',
@@ -88,7 +88,7 @@ let tb: Table = opg('#tb').table({
 		{
 			text: '百分比',
 			width: 60,
-			src: 'description'
+			src: 'progress'
 		},
 		{
 			text: '任务详情',
@@ -121,6 +121,7 @@ tb.tbody.on('click', '.btn-danger', function () {
 		tb.update();
 	});
 });
+
 //finish
 tb.tbody.on('click', '.btn-success', function () {
 	let btn = $(this), title = btn.data('title'), taskId = btn.data('id');

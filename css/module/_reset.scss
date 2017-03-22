@@ -89,3 +89,15 @@ p{
 .no-scroll{
 	overflow: hidden;
 }
+
+
+
+/*
+::-webkit-scrollbar{height:5px;width:10px;}
+::-webkit-scrollbar-button:vertical{display:none;}
+::-webkit-scrollbar-corner:vertical{background-color:#535353;}
+::-webkit-scrollbar-thumb:vertical{background-color:#8E8E8E;}
+::-webkit-scrollbar-thumb:vertical:hover{background-color:#bbb;}
+::-webkit-scrollbar-track-piece{background:#ccc;}
+::-webkit-scrollbar-track:vertical{background-color:black;}
+*/

@@ -9,6 +9,7 @@ interface BindOption {
 }
 
 interface Pagination {
+	append_number_input : JQuery|boolean;
 	pageNo: number;
 	pageSize: number;
 	current_page: number;

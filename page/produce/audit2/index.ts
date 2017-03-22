@@ -139,7 +139,7 @@ let cache = Cache.getInstance(), list = [];
 tb.tbody.on('click', '.btn-warning', function () {
 	let btn = $(this), title = btn.data('title'), assetId = btn.data('id'), idx = btn.data('idx');
 
-	openInfoWindow(assetId, idx, {
+	let popWin = openInfoWindow(assetId, idx, {
 		title: title,
 		btnMax: true,
 		width: 900,
@@ -148,29 +148,75 @@ tb.tbody.on('click', '.btn-warning', function () {
 			btnNoPlay: {
 				className: 'btn-danger',
 				text: '不可播',
+				onClick : function (i, ifrWin, btn) {
+					console.log(this, i, ifrWin, btn);
+					return true;
+				}
 			},
 			btnPutBack: {
 				className: 'btn-warning',
 				text: '打回',
+				onClick : function (i, ifrWin, btn) {
+					opg.popTop(`<iframe src="/page/produce/audit2/putBack.html?assetId=${assetId}" />` , {
+						title : '打回',
+						width: 500,
+						height: 300,
+						buttons: {
+							ok: {
+								className: 'btn-warning',
+								text: '确定',
+								onClick : function () {
+									alert(assetId);
+									return true;
+								}
+							},
+							cancel : {
+								text : '返回'
+							}
+						}
+					});
+					return true;
+				}
 			},
 			ok: {
 				className: 'btn-success',
-				text: '通过'
+				text: '通过' ,
+				onClick : function () {
+					top.opg(`<div style="padding: 10px;"><table class="search-table">
+							<tr>
+								<td class="lead">节目名称</td>
+								<td style="width: auto;">${title}</td>
+							</tr>
+							<tr>
+								<td class="lead">生产流程</td>
+								<td style="width: auto;"><label class="lbAutoWidth"><input type="checkbox" checked />非编</label>、 <label class="lbAutoWidth"><input type="checkbox" checked />三审</label></td>
+							</tr>
+						</table></div>`).popup({
+						title : '确定通过',
+						width: 420,
+						height: 200,
+						buttons: {
+							ok: {
+								text : '确定',
+								className: 'btn-success',
+								onClick : function () {
+									alert('OK');
+									this.close();
+									popWin.close();
+								}
+							},
+							cancel : '返回',
+						}
+					});
+
+					return true ;
+				}
 			},
 			cancel: {
 				className: 'btn',
 				text: '取消'
 			},
 			returnBtn: '返回',
-		},
-		callback: function (i, ifr) {
-			if (i === 0) {
-				ifr.doSave();
-				return true;
-			}
-			else {
-
-			}
 		}
 	});
 });
@@ -201,5 +247,5 @@ function openInfoWindow(assetId: number|string, index: number, sets: any = {}) {
 
 	console.log(sets);
 
-	top.opg(`<iframe src="/page/produce/audit2/info.html?assetId=${assetId}" allowfullscreen />`).popup(sets).toggle();
+	return opg.popTop(`<iframe src="/page/produce/audit2/info.html?assetId=${assetId}" allowfullscreen />` , sets).toggle();
 }

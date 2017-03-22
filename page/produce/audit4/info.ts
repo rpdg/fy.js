@@ -202,7 +202,9 @@ opg('#tbMeta').table({
 //图片
 opg.api.pics({assetId}, function (data) {
 	for (let key in data) {
-		(document.getElementById(`img_${key}`) as HTMLImageElement).src = `${data[key]['path']}?${Math.random()}`;
+		let img = document.getElementById(`img_${key}`) as HTMLImageElement ;
+		if(img)
+			img.src = `${data[key]['path']}?${Math.random()}`;
 	}
 });
 

@@ -151,9 +151,16 @@ function setFooter(cfg) {
 		else {
 			cls = v.className || '';
 			txt = v.text || '';
+
+			if(typeof v.onClick === 'function'){
+				if(!cfg.callback){
+					cfg.callback = function () {};
+				}
+				cfg.callback[key] = v.onClick;
+			}
 		}
 
-		htmlArr.push('<button class="' + cls + '" name="' + x + '">' + txt + '</button>');
+		htmlArr.push(`<button class="${cls}" name="${x}" data-key="${key}">${txt}</button>`);
 	}
 
 	footer.html(htmlArr.join(' '));
@@ -161,8 +168,11 @@ function setFooter(cfg) {
 
 	let self = this;
 	footer.on('click', 'button', function (evt) {
+		let keepOpen = false;
+
 		if (cfg.callback) {
 			let clicked = this;
+			let btnKey = $(this).data('key');
 			let ifrWin = null;
 			if (self.iframe) {
 				ifrWin = self.iframe.contentWindow ? self.iframe.contentWindow : self.iframe.contentDocument.defaultView;
@@ -170,12 +180,18 @@ function setFooter(cfg) {
 
 			let i = parseInt(clicked.name, 10);
 
-			let wontClose = cfg.callback.call(self, i, ifrWin, clicked);
 
-			if (!wontClose) self.close();
+			if(btnKey && (typeof cfg.callback[btnKey] === 'function')){
+				keepOpen = cfg.callback[btnKey].call(self, i, ifrWin, clicked);
+			}
+			else{
+				keepOpen = cfg.callback.call(self, i, ifrWin, clicked);
+			}
+
 
 		}
-		else self.close();
+
+		if (!keepOpen) self.close();
 	});
 
 	$('<div class="row tf-row" />').appendTo(this.boxy).append(footer);

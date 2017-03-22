@@ -178,8 +178,11 @@ $.when(
 let hasImages = 0;
 window['loadImages'] = function (data: any, msg?: string) {
 	for (let key in data) {
-		hasImages++;
-		(document.getElementById(`img_${key}`) as HTMLImageElement).src = (data[key]['path'] || data[key]) + '?' + Math.random();
+		let img = document.getElementById(`img_${key}`) as HTMLImageElement ;
+		if(img){
+			img.src = (data[key]['path'] || data[key]) + '?' + Math.random();
+			hasImages++;
+		}
 	}
 
 	$('#msgH3').text(msg || '');

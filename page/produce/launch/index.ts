@@ -347,7 +347,8 @@ $('#btnAdd').click(function () {
 	let pop = top.opg.confirm(`<iframe src="/page/produce/launch/createNew.html" />`, function (i, ifr) {
 		//debugger;
 		//console.log(i , ifr , v);
-		return ifr.doSave(pop, tb);
+		ifr.doSave(pop, tb);
+		return true;
 	}, {
 		title: '新内容生产需求',
 		btnMax: true,

@@ -3,7 +3,6 @@ import Table from "ts/ui/Table.ts";
 import {Combo} from 'ts/ui/Combo' ;
 import Panel from "ts/ui/Panel.ts";
 
-
 opg.api({
 	'collect': 'admin/collect/findPageWithProgress',
 	'delete!DELETE!': 'content/contentType/delete/${id}',
@@ -13,6 +12,12 @@ opg.api({
 
 const moduleName = '采集工单监控';
 
+const workStatus = [{id:0 , name:'待采集'} , {id:1 , name:'采集中'} , {id:2 , name:'采集完成'} , {id:3 , name:'采集失败'} , ];
+const workStatusHash = opg.convert.arrayToHash(workStatus , 'id');
+
+opg('#status').listBox({
+	data : workStatus,
+});
 let panel: Panel = opg.wrapPanel('#tbSearch', {
 	title: `${moduleName}`,
 	btnSearchText: '<i class="ico-find"></i> 查询'
@@ -21,11 +26,11 @@ let panel: Panel = opg.wrapPanel('#tbSearch', {
 panel.btnSearch.click(function () {
 	let param = $('#tbSearch').fieldsToJson();
 
-	if (param.createTimeBegin && param.createTimeBegin.indexOf(' ') < 0) {
-		param.createTimeBegin += ' 00:00:00';
+	if (param.showStart && param.showStart.indexOf(' ') < 0) {
+		param.showStart += ' 00:00:00';
 	}
-	if (param.createTimeEnd && param.createTimeEnd.indexOf(' ') < 0) {
-		param.createTimeEnd += ' 23:59:59';
+	if (param.showEnd && param.showEnd.indexOf(' ') < 0) {
+		param.showEnd += ' 23:59:59';
 	}
 
 	//debugger;
@@ -34,12 +39,12 @@ panel.btnSearch.click(function () {
 	tb.update(param);
 });
 
-Combo.makeClearableInput($('#createTimeBegin').datetimepicker({
+Combo.makeClearableInput($('#showStart').datetimepicker({
 	timepicker: false,
 	closeOnDateSelect: true,
 	format: 'Y-m-d'
 }), $({}));
-Combo.makeClearableInput($('#createTimeEnd').datetimepicker({
+Combo.makeClearableInput($('#showEnd').datetimepicker({
 	timepicker: false,
 	closeOnDateSelect: true,
 	format: 'Y-m-d'
@@ -61,19 +66,19 @@ let tb: Table = opg('#tb').table({
 		{
 			text: '文件类型',
 			width: 80,
-			src: 'description'
+			src: 'contentType'
 		},
 		{
 			text: '上线日期',
-			src: 'showStart'
+			src: 'showTime'
 		},
 		{
 			text: '开始时间',
-			src: 'showStart'
+			src: 'beginTime'
 		},
 		{
 			text: '结束时间',
-			src: 'showEnd'
+			src: 'endTime'
 		},
 		{
 			text: '优先级',
@@ -83,7 +88,11 @@ let tb: Table = opg('#tb').table({
 		{
 			text: '状态',
 			width: 100,
-			src: 'description'
+			src: 'status',
+			render : (v)=>{
+				//console.log(v , workStatusHash)
+				return workStatusHash[v]?workStatusHash[v].name:v ;
+			}
 		},
 		{
 			text: '百分比',

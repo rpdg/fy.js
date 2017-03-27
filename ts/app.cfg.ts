@@ -14,7 +14,7 @@ interface IConfig {
 
 let cfg: IConfig = {
 	apiServer: store.get('apiServer') || (window.CONFIG ? window.CONFIG.apiServer : null),
-	ajaxTimeOut: 20000,
+	ajaxTimeOut: 30000,
 	loginPage: '/page/index.html',
 	version: '6.2.5_20170327',
 };

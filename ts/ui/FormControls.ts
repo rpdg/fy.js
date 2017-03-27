@@ -9,14 +9,14 @@ interface IFormControls {
 class ListBox extends AjaxDisplayObject implements IFormControls {
 
 	elementName: string;
-
+	private autoPrependBlank:boolean|string;
 
 	constructor(jq: JQuery, cfg: any) {
 
 		cfg = $.extend({
 			autoPrependBlank: true,
 			bindOptions: {
-				mode: 'append',
+				//mode: 'append',
 				template: '<option value="${' + (cfg.value || 'id') + '}">${' + (cfg.text || 'name') + '}</option>'
 			}
 		}, cfg);
@@ -28,13 +28,10 @@ class ListBox extends AjaxDisplayObject implements IFormControls {
 			jq = $('<select name="' + cfg.name + '"></select>').appendTo(jq);
 		}
 
-
-		if (cfg.autoPrependBlank) {
-			let txt = (typeof cfg.autoPrependBlank === 'string') ? cfg.autoPrependBlank : '请选择';
-			jq.prepend(`<option value="">${txt}</option>`);
-		}
-
 		super(jq, cfg);
+
+		this.autoPrependBlank = cfg.autoPrependBlank||false;
+
 
 	}
 
@@ -52,6 +49,12 @@ class ListBox extends AjaxDisplayObject implements IFormControls {
 	}
 
 	bindHandler(json) {
+
+		if (this.autoPrependBlank) {
+			let txt = (typeof this.autoPrependBlank === 'string') ? this.autoPrependBlank : '请选择';
+			this.jq.prepend(`<option value="">${txt}</option>`);
+		}
+
 		this._items = this.jq.find("option");
 
 		let i = (this._items.length > this._initSelectedIndex) ? this._initSelectedIndex : (this._items.length ? 0 : -1);

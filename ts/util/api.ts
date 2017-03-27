@@ -73,7 +73,7 @@ class ServerFn {
 
 	unlimited: boolean;
 	accessible: boolean;
-	timeOut: number ;
+	timeOut: number ; //in milliseconds
 
 	onError?: Function;
 

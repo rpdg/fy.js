@@ -28,7 +28,7 @@ else {
 
 let iptVideoFile = $('#iptVideoFile');
 $('#btnUpFilePath').click(function () {
-	let mediaPath= iptVideoFile.val();
+	let mediaPath= iptVideoFile.val();//.replace(/\\/g , '/');
 	if (mediaPath) {
 		opg.api.findVideoMeta({mediaPath}, (data) => {
 			streams = data.streams;
@@ -36,7 +36,7 @@ $('#btnUpFilePath').click(function () {
 
 
 			//todo:remove before deplore
-			let mediaData = {
+			/*let mediaData = {
 				"ResultCode": 0,
 				"ResultMsg": "OK",
 				"MediaInfo": {
@@ -133,7 +133,7 @@ $('#btnUpFilePath').click(function () {
 					}
 				}
 			};
-			streams = mediaData.MediaInfo.streams;
+			streams = mediaData.MediaInfo.streams;*/
 
 			//
 			let streamsHash = {}, streamHtml: string = '';

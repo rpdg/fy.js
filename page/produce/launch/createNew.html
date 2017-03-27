@@ -11,7 +11,7 @@
 	}
 </style>
 
-<table class="search-table">
+<table id="tbForm" class="search-table">
 	<tbody>
 	<tr>
 		<td class="lead"><label for="managerName"><b class="text-red">*</b>内容名称</label></td>
@@ -27,12 +27,12 @@
 			<label style="width: 3em; vertical-align: inherit; margin-right: 1em;">
 				<input type="text" name="episodeNum" id="episodeNum" maxlength="2" value="1" readonly>
 			</label>
-			<label style="display: inline;"><input type="checkbox" id="seriesFlag">剧集请勾选 </label>
+			<label style="display: inline;"><input type="checkbox" id="seriesFlag" name="seriesFlag" value="1">剧集请勾选 </label>
 		</td>
 	</tr>
 	<tr>
 		<td class="lead"><label for="category">栏目</label></td>
-		<td><select name="categorys" id="category"></select></td>
+		<td><select name="category" id="category"></select></td>
 		<td class="lead">集数区间</td>
 		<td>
 				第<input type="number" name="episodeStart" id="episodeStart" maxlength="4" value="" step="1" min="1" disabled style="width: 4em;" />集
@@ -61,9 +61,9 @@
 	<tr>
 		<td class="lead">生产流程</td>
 		<td colspan="3">
-			<label class="lbAutoWidth"><input type="checkbox" checked />二审</label>、
-			<label class="lbAutoWidth"><input type="checkbox" checked />非编</label>、
-			<label class="lbAutoWidth"><input type="checkbox" checked />三审</label>
+			<label class="lbAutoWidth"><input type="checkbox" name="collectAudit" value="1" checked />二审</label>、
+			<label class="lbAutoWidth"><input type="checkbox" name="collectCatalog" value="1" checked />非编</label>、
+			<label class="lbAutoWidth"><input type="checkbox" name="collectAudit3" value="1" checked />三审</label>
 		</td>
 	</tr>
 	<tr>
@@ -79,7 +79,7 @@
 		<td>
 			<b class="fcGroup">
 				<b class="fcItem">
-					<input type="text" name="copyrightProgram" id="copyrightProgram" placeholder="请选择" readonly>
+					<input type="text" name="copyrightProgramName" id="copyrightProgram" placeholder="请选择" readonly>
 					<input type="hidden" name="copyrightProgramId" id="copyrightProgramId">
 				</b>
 				<b class="fcItem" style="width: 30px; padding-left: 5px; font-weight: 100;">
@@ -101,7 +101,10 @@
 	</tr>
 	<tr>
 		<td class="lead">技审/四审</td>
-		<td></td>
+		<td>
+			<label class="lbAutoWidth"><input type="radio" name="selectAudit" value="技审">技审 </label>
+			<label class="lbAutoWidth"><input type="radio" name="selectAudit" value="四审">四审 </label>
+		</td>
 		<td class="lead"><label for="audit2">二审人员</label></td>
 		<td><input type="text" id="audit2" name="audit2"></td>
 	</tr>

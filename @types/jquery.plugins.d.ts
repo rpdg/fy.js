@@ -85,6 +85,7 @@ interface OpgStatic {
 		hashToArray(obj:Object, converter?:Function):Array ,
 		hashKeysToArray(obj:Object): Array,
 		stringToDate(dateStr :string , formater?:string): Date,
+		secondsToTimecode(totalSeconds: number):string,
 	};
 	format: {
 		date(date:Date, format:string):string ,

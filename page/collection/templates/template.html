@@ -99,18 +99,28 @@
 		<td><input name="audioCodeRate" type="text" maxlength="20"></td>
 	</tr>
 	</tbody>
-	<!--<tbody>
+	<tbody id="tbd_system">
 	<tr>
-		<td class="lead" rowspan="2" style="vertical-align: top;"><label for="description"><b class="text-red">*</b>输出配置</label>
-		</td>
-		<td>输出路径</td>
-		<td><input name="outputPath" type="text" maxlength="200"></td>
-	</tr>
-	<tr>
+		<td class="lead" rowspan="2" style="vertical-align: top;"><label for="description"><b class="text-red">*</b>系统配置</label></td>
 		<td>封装格式</td>
-		<td><select name="sealFormat"></select></td>
+		<td><select name="systemType"></select></td>
 	</tr>
-	</tbody>-->
+	<tr>
+		<td>封装码率</td>
+		<td><input name="systemCodeRate" type="text" maxlength="20"></td>
+	</tr>
+	</tbody>
+	<tbody>
+	<tr>
+		<td class="lead" rowspan="2" style="vertical-align: top;"><label for="description"><b class="text-red">*</b>输出配置</label></td>
+		<td>目标格式</td>
+		<td><input name="outputFormat" type="text" maxlength="200" ></td>
+	</tr>
+	<!--<tr>
+		<td>封装格式</td>
+		<td><input type="text" name="outputFormat" maxlength="200"></td>
+	</tr>-->
+	</tbody>
 </table>
 <p>&nbsp;</p>
 <% include ('/comm/footer.html') %>

@@ -2,6 +2,7 @@ import opg from 'ts/opg.ts';
 import ValidTimeModifier from './module/modifyValidTime';
 import Table from "ts/ui/Table";
 import PopUp from "ts/ui/Popup";
+import {store, Cache} from 'ts/util/store';
 
 
 opg.api({
@@ -24,6 +25,8 @@ class ViewMedia {
 		}
 
 
+		let cache = Cache.getInstance();
+
 		//delete
 		this.tbMedia.tbody.on('click', '.btnDelete', function () {
 			let btn = $(this),
@@ -32,9 +35,16 @@ class ViewMedia {
 
 			opg.confirm(`要删除“<b>${title}</b>”吗？`, () => {
 				opg.api.delete({id: id}, () => {
-					opg.ok(`删除节目 <b>${title}</b> 成功`, () => {
-						PopUp.closeLast();
-					});
+					if (row.type == 3000){
+						btn.parent().parent().remove();
+						//opg.ok(`删除节目 <b>${title}</b> 成功`);
+					}
+					else{
+						cache.remove('currentRow');
+
+						let pop:PopUp = cache.get('currentViewWindow');
+						pop.close();
+					}
 				});
 			});
 		});
@@ -48,9 +58,10 @@ class ViewMedia {
 
 			opg.confirm(`要删除此文件吗？`, () => {
 				opg.api.deleteFile({id: id}, () => {
-					opg.ok(`删除文件成功`, () => {
-						PopUp.closeLast();
-					});
+					btn.parent().parent().remove();
+					/*opg.ok(`删除文件成功`, () => {
+						//PopUp.closeLast();
+					});*/
 				});
 			});
 		});

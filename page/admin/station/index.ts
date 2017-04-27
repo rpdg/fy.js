@@ -12,7 +12,6 @@ opg.api({
 });
 
 
-const infoPage = '/page/admin/station/info.html';
 
 
 let panel: Panel = opg.wrapPanel('#tbSearch', {
@@ -27,16 +26,14 @@ panel.btnSearch.click(function () {
 	tb.update(param);
 });
 
+
+//媒体类型
 opg('#mediaFormat').listBox({
 	api: opg.api.mediaTypes ,
 	value : 'movieType',
-	onAjaxEnd: data=> {
-		let arr = data ;
-		data = {
-			results : arr
-		} ;
-	}
 });
+
+//接口版本
 opg('#interfaceVersion').listBox({
 	api: opg.api.interfaceVersions,
 	onAjaxEnd: data=> {
@@ -51,6 +48,7 @@ opg('#interfaceVersion').listBox({
 	}
 });
 
+//所属组织
 let tree2 = opg('<div id="tree2"></div>').tree({
 	api: opg.api.orgTree,
 	onAjaxEnd: (data)=> {
@@ -66,27 +64,6 @@ let tree2 = opg('<div id="tree2"></div>').tree({
 	}
 });
 
-//Add new
-$('#btnAdd').click(function () {
-
-	//noinspection TypeScriptUnresolvedVariable
-	let pop = top.opg.confirm(`<iframe src="${infoPage}" />`, function (i, ifr, v) {
-		//debugger;
-		//console.log(i , ifr , v);
-		return ifr.doSave(pop, tb);
-	}, {
-		title: '新增渠道',
-		btnMax: true,
-		width: 720,
-		height: 500,
-		buttons: {
-			ok: '保存新增渠道',
-			cancel: '取消'
-		}
-	});
-
-	//console.log(pop);
-});
 
 let tb = opg('#tb').table({
 	columns: [
@@ -127,7 +104,7 @@ let tb = opg('#tb').table({
 				return `<button class="btn-mini btn-info" data-id="${val}" data-title="${row.name}">修改</button> 
 						<button class="btn-mini btn-danger" data-id="${val}" data-title="${row.name}">删除</button>
 						<button class="btn-mini btn-switch btn-${row.status==1?'success':'warning'}" data-id="${val}" data-title="${row.name}">${row.status==1?'恢复分发':'暂停分发'}</button>
-						`
+						`;
 			}
 		}
 	],
@@ -138,6 +115,31 @@ let tb = opg('#tb').table({
 	}
 });
 
+
+const infoPage = '/page/admin/station/info.html';
+
+
+//Add new
+$('#btnAdd').click(function () {
+
+	//noinspection TypeScriptUnresolvedVariable
+	let pop = top.opg.confirm(`<iframe src="${infoPage}" />`, function (i, ifr, v) {
+		//debugger;
+		//console.log(i , ifr , v);
+		return ifr.doSave(pop, tb);
+	}, {
+		title: '新增渠道',
+		btnMax: true,
+		width: 720,
+		height: 500,
+		buttons: {
+			ok: '保存新增渠道',
+			cancel: '取消'
+		}
+	});
+
+	//console.log(pop);
+});
 
 //edit
 tb.tbody.on('click', '.btn-info', function () {

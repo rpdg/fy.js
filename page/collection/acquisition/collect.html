@@ -51,7 +51,7 @@
 	</thead>
 	<tbody id="tbdProfile">
 	<tr>
-		<td class="lead" style="vertical-align: top;">详情 <a id="aExpand" class="text-blue" href="#">(展开)</a></td>
+		<td class="lead" style="vertical-align: top;">详情 <a id="aExpand" class="text-blue" href="javascript:void(0)">(展开)</a></td>
 		<td colspan="3" id="tdDetails">
 			<!-- 详情 -->
 			<span class="text-light-gray">详情已折叠，点击展开 ...</span>
@@ -59,7 +59,7 @@
 	</tr>
 	<tr>
 		<td class="lead">视频轨</td>
-		<td colspan="3"><select name="" id="videoTrack"></select></td>
+		<td colspan="3"><select name="videoTrack" id="videoTrack"></select></td>
 	</tr>
 	<tr>
 		<td class="lead">音频轨</td>
@@ -111,7 +111,7 @@
 	</tr>
 	<tr>
 		<td class="lead"><label for="template">模板</label></td>
-		<td colspan="3"><select name="template" id="template"></select></td>
+		<td colspan="3"><select name="templateId" id="template"></select></td>
 	</tr>
 	<tr>
 		<td class="lead"><label for="suggestion">采集意见</label></td>
@@ -120,9 +120,9 @@
 	<tr>
 		<td class="lead">生产流程</td>
 		<td colspan="3">
-			<label class="lbAutoWidth"><input type="checkbox" checked />二审</label>、
-			<label class="lbAutoWidth"><input type="checkbox" checked />非编</label>、
-			<label class="lbAutoWidth"><input type="checkbox" checked />三审</label>
+			<label class="lbAutoWidth"><input type="checkbox" name="secondAudit" value="1" checked />二审</label>、
+			<label class="lbAutoWidth"><input type="checkbox" name="catalog" value="1" checked />非编</label>、
+			<label class="lbAutoWidth"><input type="checkbox" name="thirdAudit" value="1" checked />三审</label>
 		</td>
 	</tr>
 	</tbody>

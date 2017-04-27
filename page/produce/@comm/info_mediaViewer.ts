@@ -93,8 +93,8 @@ function initMediaAudit(data: MediaInfo) {
 
 	};
 
-	//todo: change the test url into real data before deplore
-	auditPlayer.source = 'https://media.w3.org/2010/05/sintel/trailer.mp4';//data.filePath ;
+	//'https://media.w3.org/2010/05/sintel/trailer.mp4';//
+	auditPlayer.source = data.filePath ;
 
 	$('#playerSection').css('visibility', 'visible');
 

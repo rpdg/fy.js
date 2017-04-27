@@ -213,7 +213,7 @@ tb.tbody.on('click', '.btnView', function () {
 			text: '添加剧集',
 		};
 		fns.push(function (pop, ifr) {
-			new AddEpisode(id);
+			new AddEpisode(row, tb , window);
 		});
 	}
 
@@ -229,6 +229,7 @@ tb.tbody.on('click', '.btnView', function () {
 		width: 900,
 		height: 500,
 		buttons: buttons,
+		popId : 'viewLaunch',
 		callback: function (i, ifr, clicked) {
 			//console.log(i, ifr, clicked);
 			if (fns[i]) {
@@ -239,10 +240,12 @@ tb.tbody.on('click', '.btnView', function () {
 		onDestroy: function () {
 			console.log('--- remove ---');
 			cache.remove('currentRow');
+			cache.remove('currentViewWindow');
+			tb.update();
 		}
 	});
 	pop.toggle();
-	//cache.set('currentViewWindow', pop);
+	cache.set('currentViewWindow', pop);
 });
 
 
@@ -309,9 +312,12 @@ tb.tbody.on('click', '.btnRestore', function () {
 tb.tbody.on('click', '.btnAddEpisode', function () {
 	let btn = $(this),
 		title = btn.data('title'),
-		id = btn.data('id');
+		id = btn.data('id'),
+		idx = btn.data('idx');
 
-	new AddEpisode(id);
+	let row = list[idx];
+
+	new AddEpisode(row, tb , window);
 
 });
 
@@ -347,7 +353,7 @@ $('#btnAdd').click(function () {
 	let pop = top.opg.confirm(`<iframe src="/page/produce/launch/createNew.html" />`, function (i, ifr) {
 		//debugger;
 		//console.log(i , ifr , v);
-		ifr.doSave(pop, tb);
+		ifr.doSave(pop, tb , window);
 		return true;
 	}, {
 		title: '新内容生产需求',
@@ -362,3 +368,23 @@ $('#btnAdd').click(function () {
 	//pop.toggle();
 
 });
+
+
+window['doCatalog'] = function (assetId , orderId , title) {
+	let pop = parent.opg.confirm(`<iframe src="/page/produce/catalog/metaData.html?assetId=${assetId}&orderId=${orderId}" />`, function (i, ifr) {
+		ifr.doSave(true , pop , tb);
+		return true;
+	}, {
+		title: `编目: ${title}`,
+		btnMax: true,
+		width: 900,
+		height: 500,
+		buttons: {
+			ok: {
+				className : 'btn-warning' ,
+				text : '完成编目'
+			},
+			cancel: '返回'
+		}
+	}).toggle();
+};

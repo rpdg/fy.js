@@ -52,7 +52,7 @@ opg('#contentType').listBox({
 
 opg('#source').listBox({
 	api: opg.api.sourceTypes,
-	value: 'code'
+	value: 'code',
 });
 
 
@@ -86,7 +86,7 @@ let tb: Table = opg('#tb').table({
 			width: 85,
 		},
 		{
-			text: '操作', src: 'taskId', width: 60,
+			text: '操作', src: 'orderId', width: 60,
 			render: function (val, i, row) {
 				return `<button class="btn-mini btn-info" data-id="${val}" data-title="${row.assetName}" data-idx="${row[':index']}">采集</button>`;
 			}
@@ -99,7 +99,7 @@ let tb: Table = opg('#tb').table({
 //edit
 tb.tbody.on('click', '.btn-info', function () {
 	let btn = $(this), title = btn.data('title'), id = btn.data('id'), idx = btn.data('idx');
-	let pop = top.opg.confirm(`<iframe src="/page/collection/acquisition/collect.html?taskId=${id}" />`, function (i, ifr) {
+	let pop = top.opg.confirm(`<iframe src="/page/collection/acquisition/collect.html?orderId=${id}" />`, function (i, ifr) {
 		return ifr.doSave(pop, tb);
 	}, {
 		title: `${moduleName}: ${title}`,

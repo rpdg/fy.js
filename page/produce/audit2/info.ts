@@ -93,20 +93,20 @@ $.when(
 					text: '生产库',
 					src: 'workPath'
 				},
-				{
+				/*{
 					text: '审核状态',
 					src: 'auditStatus',
 					width: 150,
 					render: (val) => {
 						return mediaAuditStatus[val];
 					}
-				},
+				},*/
 				{
 					text: '操作',
 					src: 'workStatus',
 					width: 150,
 					render: (workStatus, i, row) => {
-						if (workStatus == 3) {
+						//if (workStatus == 3) {
 							if (!orderRow.executor || (orderRow.executor == currentUser.loginName)) {
 								mediaInfo.writable = true;
 								return `<button class="btnAudit btn-mini btn-warning" data-flid="${row.id}" data-ordid="${orderId}">审片</button>`;
@@ -115,8 +115,8 @@ $.when(
 								mediaInfo.writable = false;
 								return `<button class="btnView btn-mini btn-info" data-flid="${row.id}" data-ordid="${orderId}">查看</button>`;
 							}
-						}
-						return '';
+						//}
+						//return '';
 					}
 				},
 			]
@@ -127,11 +127,11 @@ $.when(
 			opg.dispatch('MediaInfoLoaded', mediaInfo);
 
 			if (mediaInfo.writable) {
-				opg.api.auditFile({fileId: mediaInfo.fileId}, () => {
+				//opg.api.auditFile({fileId: mediaInfo.fileId}, () => {
 					//todo: 状态切换有多种情况，目前就只做 待审核 & 审核中 切换
 					mediaRow.auditStatus = 1;
 					tbMedia.update();
-				});
+				//});
 			}
 		});
 

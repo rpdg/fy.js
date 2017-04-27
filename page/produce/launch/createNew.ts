@@ -9,9 +9,9 @@ opg.api({
 	region: 'admin/content/region/queryAll', //地域
 	movieTypes: 'base/requireMovieTypes', //介质类型
 	movieProfiles: 'base/requireMovieProfiles', //视频风格
-	risk: 'base/requireRisk', //视频风格
+	risk: 'base/requireRisk', //危险系数
 	'contentCategory!GET!': 'admin/content/category/contentCategory/${id}', //根据内容类型获取栏目
-	'newAsset!POST': 'produce/asset/newAsset', //根据内容类型获取栏目
+	'newAsset!POST': 'produce/asset/newAsset', //新增内容
 });
 
 opg.api.newAsset.set('timeOut' , 600000);//10分钟
@@ -42,6 +42,13 @@ $('#seriesFlag').on('change', function () {
 	}
 });
 
+$('#showName').on('focus' , function () {
+	let v = this.value , n = $('#managerName').val() ;
+	if(!v && n){
+		this.value = n;
+	}
+});
+
 //上线时间
 $('#onlineTime').datetimepicker({
 	closeOnDateSelect: true,
@@ -49,11 +56,44 @@ $('#onlineTime').datetimepicker({
 });
 
 //业务
-opg('#tdBusiness').checkBox({
-	name: 'busiCodesList[]',
+let busiCodesList = opg('#tdBusiness').checkBox({
 	api: opg.api.business,
+	name: 'busiCodesList[]',
+	value : 'bizCode',
 	labelClass: 'lbWidth150',
+	onCreate : ()=>{
+		let busiChksAll, busiChksLocal , busiChksCloud ;
+
+		busiChksAll = busiCodesList.jq.find(':checkbox');
+
+		busiChksAll.each((i , elem)=>{
+			if(elem.value.indexOf('cloud')>-1){
+				elem.className = 'chkCloud';
+			}
+			else{
+				elem.className = 'chkLocal';
+			}
+		});
+
+		busiChksLocal = busiCodesList.jq.find('.chkLocal');
+		busiChksCloud = busiCodesList.jq.find('.chkCloud');
+
+		busiChksLocal.on('change' , function () {
+			let localChked = busiCodesList.jq.find('.chkLocal:checked');
+			console.log(localChked);
+			busiChksCloud.prop('disabled' , !!localChked.length);
+		});
+
+		busiChksCloud.on('change' , function () {
+			let cloudChked = busiCodesList.jq.find('.chkCloud:checked');
+			console.log(cloudChked);
+			busiChksLocal.prop('disabled' , !!cloudChked.length);
+		});
+
+		//console.log(busiChksAll, busiChksLocal , busiChksCloud);
+	}
 });
+
 
 //内容类型
 let contentTypeHash = {};
@@ -122,7 +162,7 @@ opg('#region').listBox({
 
 
 //关联版权
-let copyrightProgram = $('#copyrightProgram');
+let copyrightProgramName = $('#copyrightProgramName');
 let copyrightProgramId = $('#copyrightProgramId');
 $('#btnCopyrightProgram').click(function () {
 	top.opg.confirm(`<iframe src="/page/produce/launch/copyright.html" />`, function (i, ifr) {
@@ -131,7 +171,7 @@ $('#btnCopyrightProgram').click(function () {
 		console.warn(row);
 
 		if (row) {
-			copyrightProgram.val(row.name);
+			copyrightProgramName.val(row.name);
 			copyrightProgramId.val(row.id);
 		}
 		return !row;
@@ -142,12 +182,12 @@ $('#btnCopyrightProgram').click(function () {
 		height: 600,
 	});
 });
-Combo.makeClearableInput(copyrightProgram, copyrightProgramId);
+Combo.makeClearableInput(copyrightProgramName, copyrightProgramId);
 
 $('#programLength').decimalMask('99999999');
 
 //
-window['doSave'] = function (pop: Popup, tb: Table) {
+window['doSave'] = function (pop: Popup, tb: Table , parentWin:Window) {
 	let param = $('#tbForm').fieldsToJson({
 		managerName :{
 			require :true ,
@@ -163,6 +203,7 @@ window['doSave'] = function (pop: Popup, tb: Table) {
 		},
 		onlineTime :{
 			require :true ,
+			type: 'date',
 			name : '上线时间' ,
 		},
 		programLength :{
@@ -186,7 +227,6 @@ window['doSave'] = function (pop: Popup, tb: Table) {
 	if (param) {
 		param.processType = 'NewAsset'; // 新增内容
 
-		delete param.copyrightProgramName;
 
 		if (param.seriesFlag != '1') param.seriesFlag = '0';
 		param.collectAudit = (param.collectAudit == '1');
@@ -195,12 +235,16 @@ window['doSave'] = function (pop: Popup, tb: Table) {
 
 		param.contentType = contentTypeHash[param.contentType].name;
 
+		if(param.onlineTime.indexOf(' ')==-1)
+			param.onlineTime += ' 00:00:00';
+
 		console.log(param);
 
 
 		opg.api.newAsset(param , (data)=>{
 			pop.close();
 			tb.update();
+			parentWin['doCatalog'](data.assetId , data.id , param.managerName);
 		});
 	}
 };

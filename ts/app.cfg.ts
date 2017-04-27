@@ -16,7 +16,7 @@ let cfg: IConfig = {
 	apiServer: store.get('apiServer') || (window.CONFIG ? window.CONFIG.apiServer : null),
 	ajaxTimeOut: 30000,
 	loginPage: '/page/index.html',
-	version: '6.2.5_20170327',
+	version: '6.3.3_20170427',
 };
 
 cfg.onUnauthorizedError = function () {

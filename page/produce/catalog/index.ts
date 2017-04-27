@@ -88,9 +88,11 @@ let tb: Table = opg('#tb').table({
 			src: 'creator'
 		},
 		{
-			text: '操作', src: 'assetId', width: 70,
+			text: '操作', src: 'assetId', width: 90,
 			render: function (assetId, i, row) {
-				return `<button class="btn-mini btn-info" data-id="${assetId}" data-orid="${row.orderId}" data-title="${row.assetName}">编目</button>`
+				if(row.status == 2)
+					return `<button class="btn-mini btn-info" data-id="${assetId}" data-orid="${row.orderId}" data-title="${row.assetName}">重新编目</button>`;
+				return `<button class="btn-mini btn-info" data-id="${assetId}" data-orid="${row.orderId}" data-title="${row.assetName}">编目</button>`;
 			}
 		}
 	],

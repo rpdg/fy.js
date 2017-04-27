@@ -1,4 +1,3 @@
-///<reference path="../@types/jquery.d.ts"/>
 import opg from 'ts/opg.ts';
 import {store, Cache} from 'ts/util/store';
 import cfg from 'ts/app.cfg.ts';
@@ -7,6 +6,9 @@ import PopUp from "ts/ui/Popup";
 opg.api({
 	backendVersion: 'base/version'
 });
+
+
+
 
 //opg.api.menu(function (json) {
 
@@ -22,6 +24,7 @@ for (let i = 0, l = permissions.length; i < l; i++) {
 
 let mainMenu = $('#mainMenu'),
 	subMenu = $('#subMenu'),
+	divTd = $('#td') ,
 	mainFrame: JQuery = $('#mainFrame') ,
 	mainFrameWindow :Window = (mainFrame[0] as HTMLIFrameElement).contentWindow as Window;
 
@@ -29,6 +32,19 @@ let mainMenu = $('#mainMenu'),
  mainMenu.addClass('small-menu');
  }*/
 
+$('#divPn1').click(function () {
+	let that = $(this);
+	if(that.hasClass('ellipse')){
+		that.removeClass('ellipse');
+		subMenu.css('width' , 180);
+		divTd.css('left' , 180);
+	}
+	else{
+		that.addClass('ellipse');
+		subMenu.css('width' , 0);
+		divTd.css('left' , 0);
+	}
+});
 
 let mainMenuSelector = 'a:eq(0)', subMenuSelector = 'a:eq(0)';
 if (location.hash.length > 1) {

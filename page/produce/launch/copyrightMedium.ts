@@ -5,7 +5,7 @@ import {Combo} from 'ts/ui/Combo' ;
 import {Cache} from 'ts/util/store'
 
 opg.api({
-	programs: 'admin/catalog/findPage' ,
+	programs: 'copyright/programMediaFile/findPage' ,
 	contracts : 'transcode/business/findAll'
 });
 
@@ -29,63 +29,66 @@ let tb: Table = opg('#tbResult').table({
 	columns: [
 		{
 			text: ' ',
-			src: 'name', cmd: 'checkOne'
+			src: 'id', cmd: 'checkOne'
 		},
 		{
 			text: '介质名称',
-			src: 'assetName',
+			src: 'name',
 		},
 		{
 			text: '节目名称',
-			src: 'assetName',
+			src: 'program',
+			render : program=>program.name,
 		},
 		{
 			text: '节目主类',
-			src: 'name',
+			src: 'program',
+			render : program=>program.mainCategoryDesc,
 		},
 		{
 			text: '出品年代',
-			src: 'name',
+			src: 'program',
+			render : program=>program.produceYear,
 		},
 		{
 			text: '介质类型',
-			src: 'name',
+			src: 'mediaTypeDesc',
 		},
 		{
 			text: '分辨率',
-			src: 'name',
+			src: 'resolutionDesc',
 		},
 		{
 			text: '码率',
-			src: 'name',
+			src: 'bitRate',
 		},
 		{
 			text: '语言',
-			src: 'name',
+			src: 'language',
 		},
 		{
 			text: '字幕',
-			src: 'name',
+			src: 'subtitle',
 		},
 		{
 			text: '介质编码',
-			src: 'name',
+			src: 'code',
 		},
 		{
 			text: '集数开始',
-			src: 'name',
+			src: 'episodeStart',
 		},
 		{
 			text: '集数结束',
-			src: 'name',
+			src: 'episodeEnd',
 		},
 		{
 			text: '视频格式',
-			src: 'name',
+			src: 'videoFormatDesc',
 		},
 	],
 	pagination: {
-		pageSize: 10
+		pageSize: 20
 	},
 });
 

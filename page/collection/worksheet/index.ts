@@ -12,8 +12,16 @@ opg.api({
 
 const moduleName = '采集工单监控';
 
-const workStatus = [{id:0 , name:'待采集'} , {id:1 , name:'采集中'} , {id:2 , name:'采集完成'} , {id:3 , name:'采集失败'} , ];
-const workStatusHash = opg.convert.arrayToHash(workStatus , 'id');
+const workStatusHash = {
+	'0' : '待采集' ,
+	'1' : '采集中' ,
+	'2' : '采集完成' ,
+	'3' : '采集取消' ,
+	'-1' : '采集失败' ,
+};
+const workStatus = opg.convert.hashToArray(workStatusHash , (val , key)=>{
+	return {id : key , name : val};
+});
 
 opg('#status').listBox({
 	data : workStatus,
@@ -64,7 +72,7 @@ let tb: Table = opg('#tb').table({
 			src: 'assetName'
 		},
 		{
-			text: '文件类型',
+			text: '内容类型',
 			width: 80,
 			src: 'contentType'
 		},
@@ -89,9 +97,13 @@ let tb: Table = opg('#tb').table({
 			text: '状态',
 			width: 100,
 			src: 'status',
-			render : (v)=>{
+			render : (v, i, row)=>{
 				//console.log(v , workStatusHash)
-				return workStatusHash[v]?workStatusHash[v].name:v ;
+				let str = workStatusHash[v]||v ;
+				if(row.status == -1){
+					str = `<span class="text-red">${str}</span>`;
+				}
+				return str;
 			}
 		},
 		{
@@ -99,20 +111,24 @@ let tb: Table = opg('#tb').table({
 			width: 60,
 			src: 'progress'
 		},
-		{
+		/*{
 			text: '任务详情',
 			src: 'description'
-		},
+		},*/
 		{
 			text: '操作',
 			src: 'taskId',
-			width: 180,
+			width: 120,
+			align: 'left',
 			render: (taskId, i, row) => {
-				return `
-					<button class="btn-mini btn-info" data-id="${taskId}" data-title="${row.name}">查看</button>
-					<button class="btn-mini btn-success" data-id="${taskId}" data-title="${row.name}">完成采集</button> 
-					<button class="btn-mini btn-danger" data-id="${taskId}" data-title="${row.name}">重转码</button> 
+				let html =  `
+					<button class="btn-mini btn-info" data-id="${taskId}" data-title="${row.assetName}">查看</button>
+					<!--<button class="btn-mini btn-success" data-id="${taskId}" data-title="${row.assetName}">完成采集</button>--> 
 				`;
+				if(row.status == -1){
+					html += `<button class="btn-mini btn-danger" data-id="${taskId}" data-title="${row.assetName}">重转码</button>`;
+				}
+				return html;
 			}
 		}
 	],
@@ -126,7 +142,7 @@ tb.tbody.on('click', '.btn-danger', function () {
 	let btn = $(this), title = btn.data('title'), taskId = btn.data('id');
 
 	opg.api.retryCollect({taskId}, () => {
-		opg.ok('重转码');
+		opg.ok('已提交重转码');
 		tb.update();
 	});
 });
@@ -145,11 +161,11 @@ tb.tbody.on('click', '.btn-success', function () {
 tb.tbody.on('click', '.btn-info', function () {
 	let btn = $(this), title = btn.data('title'), id = btn.data('id');
 
-	opg.popTop(`<iframe src="/page/collection/worksheet/worksheet.html?id=${id}" />`, {
+	opg.popTop(`<iframe src="/page/collection/worksheet/task.html?id=${id}&title=${title}" />`, {
 		title: `查看采集工单: ${title}`,
 		btnMax: true,
-		width: 980,
-		height: 520,
+		width: 640,
+		height: 280,
 	});
 });
 

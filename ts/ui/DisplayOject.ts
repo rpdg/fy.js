@@ -2,10 +2,10 @@ import {AjaxMessage} from '../util/api'
 
 
 interface UiObject {
-	guid: JQuery,
+	guid: number,
 	jq: JQuery,
 	create: Function,
-	created: boolean ,
+	_created: boolean ,
 	init: Function,
 }
 
@@ -67,8 +67,10 @@ export abstract class DisplayObject implements UiObject {
 	}
 }
 
+
 interface IListBase {
-	selectedIndex: number
+	selectedIndex: number ;
+	data : any;
 }
 
 export abstract class AjaxDisplayObject extends DisplayObject implements IListBase {

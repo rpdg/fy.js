@@ -28,9 +28,8 @@ class ListBox extends AjaxDisplayObject implements IFormControls {
 			jq = $('<select name="' + cfg.name + '"></select>').appendTo(jq);
 		}
 
-		super(jq, cfg);
 
-		this.autoPrependBlank = cfg.autoPrependBlank||false;
+		super(jq, cfg);
 
 
 	}
@@ -41,6 +40,7 @@ class ListBox extends AjaxDisplayObject implements IFormControls {
 
 		this._initSelectedIndex = cfg.selectedIndex || 0;
 		this.elementName = cfg.name;
+		this.autoPrependBlank = cfg.autoPrependBlank||false;
 
 		//add event listener
 		jq.on("change.opg", (evt) => {

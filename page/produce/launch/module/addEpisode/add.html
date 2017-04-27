@@ -2,11 +2,17 @@
 <link rel="stylesheet" href="/css/jquery.datetimepicker.css">
 
 <style>
+	#tbForm{
+		table-layout: fixed;
+	}
+	#tbForm td{
+		word-wrap: break-word;
+	}
 	input:disabled, #episodeNum{
 		background-color: #eee;
 	}
 
-	label.lbAutoWidth {
+	label.lbWidth150 {
 		width: 150px !important;
 	}
 </style>
@@ -27,12 +33,12 @@
 		<td class="lead"><label for="category">栏目</label></td>
 		<td><span id="category"></span></td>
 		<td>已生产的剧集</td>
-		<td><span id="produced"></span></td>
+		<td><span id="producedEpisodes"></span></td>
 	</tr>
 	<tr>
 		<td class="lead"><label for="onlineTime"><b class="text-red">*</b>上线时间</label></td>
 		<td><input type="text" name="onlineTime" id="onlineTime" maxlength="50"></td>
-		<td class="lead">集数区间</td>
+		<td class="lead"><b class="text-red">*</b>集数区间</td>
 		<td>
 			第<input type="number" name="episodeStart" id="episodeStart" maxlength="4" value="" step="1" min="1" style="width: 4em;" />集
 			到 第<input type="number" name="episodeEnd" id="episodeEnd" maxlength="4" value="" step="1" min="1" style="width: 4em;" />集
@@ -44,13 +50,21 @@
 			<!-- 业务 checkboxes -->
 		</td>
 		<td class="lead"><label for="programLength">预估单集时长</label></td>
-		<td><span id="programLength"></span></td>
+		<td><span id="programLength"></span> (分钟) </td>
 	</tr>
 	<tr>
-		<td class="lead"><label for="movieType">标清/高清</label></td>
-		<td><span id="movieType"></span></td>
-		<td class="lead"><label for="profile">视频风格</label></td>
-		<td><span id="profile"></span></td>
+		<td class="lead">生产流程</td>
+		<td colspan="3">
+			<label class="lbAutoWidth"><input type="checkbox" name="collectAudit" value="1" checked />二审</label>、
+			<label class="lbAutoWidth"><input type="checkbox" name="collectCatalog" value="1" checked />非编</label>、
+			<label class="lbAutoWidth"><input type="checkbox" name="collectAudit3" value="1" checked />三审</label>
+		</td>
+	</tr>
+	<tr>
+		<td class="lead"><label for="movieTypeDesc">标清/高清</label></td>
+		<td><span id="movieTypeDesc"></span></td>
+		<td class="lead"><label for="profileDesc">视频风格</label></td>
+		<td><span id="profileDesc"></span></td>
 	</tr>
 	<tr>
 		<td class="lead"><label for="risk">危险系数</label></td>
@@ -59,8 +73,8 @@
 		<td>
 			<b class="fcGroup">
 				<b class="fcItem">
-					<input type="text" name="programMediaName" id="programMediaName" placeholder="请选择" readonly>
-					<input type="hidden" name="programMediaId" id="programMediaId">
+					<input type="text" name="" id="programMediaFileName" placeholder="请选择" readonly>
+					<input type="hidden" name="programMediaFileId" id="programMediaFileId">
 				</b>
 				<b class="fcItem" style="width: 30px; padding-left: 5px; font-weight: 100;">
 					<button id="btnProgramMediaName" class="btn-mini" style="width: 100%;">...</button>
@@ -79,14 +93,15 @@
 		<td colspan="3"><textarea id="memo" name="memo" maxlength="500" rows="3"></textarea></td>
 	</tr>
 	<tr>
-		<td class="lead">技审/四审</td>
-		<td></td>
+		<!--<td class="lead">技审/四审</td>
+		<td>
+			<label class="lbAutoWidth"><input type="radio" name="selectAudit" value="技审">技审 </label>
+			<label class="lbAutoWidth"><input type="radio" name="selectAudit" value="四审">四审 </label>
+		</td>-->
 		<td class="lead"><label for="audit2">二审人员</label></td>
 		<td><input type="text" id="audit2" name="audit2"></td>
-	</tr>
-	<tr>
 		<td class="lead"><label for="audit4">四审人员</label></td>
-		<td colspan="3"><input type="text" id="audit4" name="audit4"></td>
+		<td><input type="text" id="audit4" name="audit4"></td>
 	</tr>
 	</tbody>
 </table>

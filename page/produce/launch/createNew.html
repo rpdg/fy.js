@@ -2,11 +2,14 @@
 <link rel="stylesheet" href="/css/jquery.datetimepicker.css">
 
 <style>
-	input:disabled, #episodeNum{
-		background-color: #eee;
+	input:disabled,
+	#episodeNum
+	{
+		background-color: #eeeeee;
 	}
 
-	label.lbWidth150 {
+	label.lbWidth150
+	{
 		width: 150px !important;
 	}
 </style>
@@ -79,7 +82,7 @@
 		<td>
 			<b class="fcGroup">
 				<b class="fcItem">
-					<input type="text" name="copyrightProgramName" id="copyrightProgram" placeholder="请选择" readonly>
+					<input type="text" name="copyrightProgramName" id="copyrightProgramName" placeholder="请选择" readonly>
 					<input type="hidden" name="copyrightProgramId" id="copyrightProgramId">
 				</b>
 				<b class="fcItem" style="width: 30px; padding-left: 5px; font-weight: 100;">
@@ -100,19 +103,19 @@
 		<td colspan="3"><textarea id="memo" name="memo" maxlength="500" rows="3"></textarea></td>
 	</tr>
 	<tr>
-		<td class="lead">技审/四审</td>
+		<!--<td class="lead">技审/四审</td>
 		<td>
 			<label class="lbAutoWidth"><input type="radio" name="selectAudit" value="技审">技审 </label>
 			<label class="lbAutoWidth"><input type="radio" name="selectAudit" value="四审">四审 </label>
-		</td>
+		</td>-->
 		<td class="lead"><label for="audit2">二审人员</label></td>
 		<td><input type="text" id="audit2" name="audit2"></td>
-	</tr>
-	<tr>
 		<td class="lead"><label for="audit4">四审人员</label></td>
 		<td><input type="text" id="audit4" name="audit4"></td>
+	</tr>
+	<tr>
 		<td class="lead"><label for="region">地域</label></td>
-		<td><select name="region" id="region"></select></td>
+		<td colspan="3"><select name="region" id="region"></select></td>
 	</tr>
 	</tbody>
 </table>

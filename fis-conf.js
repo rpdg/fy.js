@@ -25,11 +25,13 @@ switch (currentMedia) {
 		break;
 	}
 	case 'alpha' : {
-		apiServer = 'http://54.223.126.249:8080/api/';
+		//apiServer = 'http://54.223.126.249:8080/api/';
+		apiServer = 'http://10.0.135.90:8080/ams_api/';
 		break;
 	}
 	default: { //dev
-		apiServer = 'http://54.223.126.249:8080/api/';
+		//apiServer = 'http://54.223.126.249:8080/api/';
+		apiServer = 'http://10.0.135.90:8080/ams_api/';
 		jScripts = ['/lib/jquery.mockjax.js', '/js/mockData.js'];
 		isUnderLocal = true;
 	}

@@ -44,6 +44,7 @@
 
 .search-table {
 	width: 100%;
+	//table-layout: fixed;
 	//display: none;
 	
 	td {
@@ -51,6 +52,7 @@
 		padding: 0.3em 0.8em;
 		vertical-align: middle;
 		//min-height: 37px;
+		word-wrap: break-word;
 		
 		label {
 			line-height: 1em;

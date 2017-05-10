@@ -141,10 +141,13 @@ let tb: Table = opg('#tb').table({
 tb.tbody.on('click', '.btn-danger', function () {
 	let btn = $(this), title = btn.data('title'), taskId = btn.data('id');
 
-	opg.api.retryCollect({taskId}, () => {
-		opg.ok('已提交重转码');
-		tb.update();
+	opg.danger(`您确定要重转码“${title}”？` , function () {
+		opg.api.retryCollect({taskId}, () => {
+			opg.ok('已提交重转码');
+			tb.update();
+		});
 	});
+
 });
 
 //finish

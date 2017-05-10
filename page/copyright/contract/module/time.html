@@ -1,0 +1,27 @@
+<% include ('/comm/header.html') %>
+<link rel="stylesheet" href="/css/jquery.datetimepicker.css">
+<style>
+
+</style>
+<table id="tbForm" class="search-table">
+	<tr>
+		<td class="lead">版权节目名称</td>
+		<td></td>
+		<td class="lead">合同号</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td class="lead">版权类型</td>
+		<td colspan="3"></td>
+	</tr>
+	<tr>
+		<td class="lead"><label for="copyrightRealBeginDate">版权实际开始时间</label></td>
+		<td><input type="text" name="copyrightRealBeginDate" id="copyrightRealBeginDate" maxlength="10" /></td>
+		<td class="lead"><label for="copyrightRealEndDate">版权实际结束时间</label></td>
+		<td><input type="text" name="copyrightRealEndDate" id="copyrightRealEndDate" maxlength="10" /></td>
+	</tr>
+</table>
+
+
+<% include ('/comm/footer.html') %>
+<script src="/lib/jquery.datetimepicker.js"></script>

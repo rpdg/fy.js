@@ -1,0 +1,19 @@
+<% include ('/comm/header.html') %>
+<link rel="stylesheet" href="/css/jquery.datetimepicker.css">
+
+<table id="tbForm" class="search-table">
+	<tr>
+		<td class="lead"><label for="contractNumber"><b class="text-red">*</b> 合同号</label></td>
+		<td><input type="text" name="contractNumber" id="contractNumber" maxlength="32"/></td>
+		<td class="lead"><label for="contractDate">合同签订日期</label></td>
+		<td><input type="text" name="contractDate" id="contractDate" maxlength="10" /></td>
+	</tr>
+</table>
+
+<!--<p class="text-right">
+	<button id="btnSave" class="btn-success">保存</button>
+	<button id="btnCancel" class="">返回</button>
+</p>-->
+
+<% include ('/comm/footer.html') %>
+<script src="/lib/jquery.datetimepicker.js"></script>

@@ -76,6 +76,7 @@ interface OpgStatic {
 		String(obj:Object):boolean ,
 		Object(obj:Object):boolean ,
 		HTMLDocument(obj:Object):boolean ,
+		UsingIE : number , /// not ie => 0 , ie => 6~11 , edge => 12+
 	};
 
 	url: any;

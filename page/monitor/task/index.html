@@ -1,0 +1,50 @@
+<% include ('/comm/header.html') %>
+<link rel="stylesheet" href="/css/jquery.datetimepicker.css">
+
+<style>
+	.sp-eraserWrap{
+		width: auto;
+	}
+
+	#tb tr.yellow{
+		background-color: gold;
+	}
+	#tb tr.red{
+		background-color: tomato ;
+	}
+</style>
+
+<table id="tbSearch" class="search-table">
+	<tr>
+		<td class="lead"><label for="assetName">内容名称</label></td>
+		<td><input id="assetName" name="assetName" type="text" /></td>
+		<td class="lead"><label for="contentType">内容类型</label></td>
+		<td><select id="contentType" name="contentType"></select></td>
+	</tr>
+	<tr>
+		<td class="lead"><label for="createTimeBegin">上线时间</label></td>
+		<td colspan="3">
+			<input id="createTimeBegin" name="createStart" type="datetime" />
+			至 <input id="createTimeEnd" name="createEnd" type="datetime">
+		</td>
+	</tr>
+	<tr>
+		<td class="lead"><label for="status">状态</label></td>
+		<td><select name="status" id="status"></select></td>
+		<td class="lead"><label for="busiCodes">生产业务</label></td>
+		<td><select id="busiCodes" name="busiCodes"></select></td>
+	</tr>
+	<tr>
+		<td class="lead"><label for="error">是否出错</label></td>
+		<td><select name="error" id="error"></select></td>
+		<td class="lead"><label for="delay">是否超时</label></td>
+		<td><select id="delay" name="delay"></select></td>
+	</tr>
+</table>
+
+
+<table id="tb"></table>
+
+
+<% include ('/comm/footer.html') %>
+<script src="/lib/jquery.datetimepicker.js"></script>

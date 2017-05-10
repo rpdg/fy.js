@@ -1,0 +1,72 @@
+<% include ('/comm/header.html') %>
+
+<link rel="stylesheet" href="/css/jquery.datetimepicker.css">
+<style>
+	.lead + td{
+		width: 36% !important;
+	}
+</style>
+
+<table id="tbProfile" class="search-table">
+	<tr>
+		<td class="lead"><label for="name"><b class="text-red">*</b> 介质名称</label></td>
+		<td><input type="text" name="name" id="name" maxlength="22"/></td>
+		<td class="lead"><label for="copyrightOwner">版权方</label></td>
+		<td><input type="text" name="copyrightOwner" id="copyrightOwner" maxlength="22"/></td>
+	</tr>
+	<tr>
+		<td class="lead"><label for="mediaType"><b class="text-red">*</b> 介质类型</label></td>
+		<td><select name="mediaType" id="mediaType"></select></td>
+		<td class="lead"><label for="code">介质编码</label></td>
+		<td><input type="text" name="code" id="code" maxlength="22"/></td>
+	</tr>
+	<tr>
+		<td class="lead"><label for="language">语言</label></td>
+		<td><input type="text" name="language" id="language" maxlength="10"/></td>
+		<td class="lead"><label for="subtitle">字幕</label></td>
+		<td><input type="text" name="subtitle" id="subtitle" maxlength="10"/></td>
+	</tr>
+	<tr>
+		<td class="lead"><label for="videoFormat">视频格式</label></td>
+		<td><select id="videoFormat" name="videoFormat"></select></td>
+		<td class="lead"><label for="putInTime">入库时间</label></td>
+		<td><input type="text" name="putInTime" id="putInTime" maxlength="10"></td>
+	</tr>
+	<tr>
+		<td class="lead"><label for="episodes">集数</label></td>
+		<td><input type="number" name="episodes" id="episodes" step="1" min="1" value="1" maxlength="4" /></td>
+		<td class="lead"><label for="episodeStart">集数区间</label></td>
+		<td>
+			<input type="number" step="1" min="1" name="episodeStart" id="episodeStart"  maxlength="4" style="width: 6em;"/>
+			<label style="display: inline;">至: <input type="number" step="1" min="1" name="episodeEnd" id="episodeEnd"  maxlength="4" style="width: 6em;"/></label>
+		</td>
+	</tr>
+	<tr>
+		<td class="lead"><label for="resolution">分辨率</label></td>
+		<td><select name="resolution" id="resolution"></select></td>
+		<td class="lead"><label for="scanMode">扫描方式</label></td>
+		<td><select name="scanMode" id="scanMode"></select></td>
+	</tr>
+	<tr>
+		<td class="lead"><label for="bitRate">码率 </label></td>
+		<td><input type="text" name="bitRate" id="bitRate"  maxlength="11"/></td>
+		<td class="lead"><label for="frameRate">帧率</label></td>
+		<td><select name="frameRate" id="frameRate"></select></td>
+	</tr>
+	<tr>
+		<td class="lead"><label for="mediaArrivingSituation">介质到位情况</label></td>
+		<td><input type="text" name="mediaArrivingSituation" id="mediaArrivingSituation" maxlength="10"/></td>
+		<td class="lead"><label for="copyrightInfo">版权信息</label></td>
+		<td><input type="text" name="copyrightInfo" id="copyrightInfo" maxlength="50"/></td>
+	</tr>
+	<tr>
+		<td class="lead"><label for="remark">备注</label></td>
+		<td colspan="3">
+			<textarea name="remark" id="remark" cols="30" rows="4" maxlength="100" placeholder="最多可输入100字"></textarea>
+		</td>
+	</tr>
+</table>
+
+<% include ('/comm/footer.html') %>
+
+<script src="/lib/jquery.datetimepicker.js"></script>

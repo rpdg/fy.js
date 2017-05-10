@@ -8,7 +8,7 @@ import ValidTimeModifier from './module/modifyValidTime';
 import AddEpisode from './module/addEpisode';
 import ReTranscode from './module/reTranscode';
 import ReAudit from './module/reAudit';
-
+import StartNewProduce from './module/startNewProduce';
 
 opg.api({
 	contentType: 'content/contentType/findAll',
@@ -350,41 +350,7 @@ tb.tbody.on('click', '.btnDelete', function () {
 
 //Add new
 $('#btnAdd').click(function () {
-	let pop = top.opg.confirm(`<iframe src="/page/produce/launch/createNew.html" />`, function (i, ifr) {
-		//debugger;
-		//console.log(i , ifr , v);
-		ifr.doSave(pop, tb , window);
-		return true;
-	}, {
-		title: '新内容生产需求',
-		btnMax: true,
-		width: 900,
-		height: 500,
-		buttons: {
-			ok: '保存新增',
-			cancel: '取消'
-		}
-	});
-	//pop.toggle();
 
+	StartNewProduce.start(tb);
 });
 
-
-window['doCatalog'] = function (assetId , orderId , title) {
-	let pop = parent.opg.confirm(`<iframe src="/page/produce/catalog/metaData.html?assetId=${assetId}&orderId=${orderId}" />`, function (i, ifr) {
-		ifr.doSave(true , pop , tb);
-		return true;
-	}, {
-		title: `编目: ${title}`,
-		btnMax: true,
-		width: 900,
-		height: 500,
-		buttons: {
-			ok: {
-				className : 'btn-warning' ,
-				text : '完成编目'
-			},
-			cancel: '返回'
-		}
-	}).toggle();
-};

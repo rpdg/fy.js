@@ -1,0 +1,55 @@
+<% include ('/comm/header.html') %>
+
+
+<table id="tbProfile" class="search-table">
+	<tr>
+		<td class="lead"><label for="name"><b class="text-red">*</b> 节目名称</label></td>
+		<td><input type="text" name="name" id="name" maxlength="21"/></td>
+		<td class="lead"><label for="alias">节目别名</label></td>
+		<td><input type="text" name="alias" id="alias" maxlength="21"/></td>
+	</tr>
+	<tr>
+		<td class="lead"><label for="enName">节目英文名</label></td>
+		<td><input type="text" name="enName" id="enName" maxlength="64"/></td>
+		<td class="lead"><label for="nation">国别</label></td>
+		<td><input type="text" name="nation" id="nation" maxlength="10"/></td>
+	</tr>
+	<tr>
+		<td class="lead"><label for="mainCategory"><b class="text-red">*</b> 节目主类</label></td>
+		<td><select id="mainCategory" name="mainCategory"></select></td>
+		<td class="lead"><label for="minorCategory">节目子类</label></td>
+		<td><select name="minorCategory" id="minorCategory"></select></td>
+	</tr>
+	<tr>
+		<td class="lead"><label for="produceYear"><b class="text-red">*</b> 出品年代</label></td>
+		<td><input type="text" name="produceYear" id="produceYear" maxlength="6"/></td>
+		<td class="lead"><label for="producer">节目出品方</label></td>
+		<td><input type="text" name="producer" id="producer" maxlength="10"/></td>
+	</tr>
+	<tr>
+		<td class="lead"><label for="actor">主演</label></td>
+		<td><input type="text" name="actor" id="actor" maxlength="42"/></td>
+		<td class="lead"><label for="director">导演</label></td>
+		<td><input type="text" name="director" id="director" maxlength="42"/></td>
+	</tr>
+	<tr>
+		<td class="lead"><label for="episodes"><b class="text-red">*</b> 集数</label></td>
+		<td><input type="number" name="episodes" id="episodes" step="1" min="1" value="1" maxlength="4" /></td>
+		<td class="lead"><label for="lengthOfEpisode"><b class="text-red">*</b> 时长 (分钟/集)</label></td>
+		<td><input type="number" step="1" min="1" name="lengthOfEpisode" id="lengthOfEpisode" placeholder="单位：分钟/集 " maxlength="3"/></td>
+	</tr>
+	<tr>
+		<td class="lead"><label for="licenseNumber">节目许可证号</label></td>
+		<td><input type="text" name="licenseNumber" id="licenseNumber" maxlength="32"/></td>
+		<td class="lead"><label for="keyword">关键字</label></td>
+		<td><input type="text" name="keyword" id="keyword" maxlength="10"/></td>
+	</tr>
+	<tr>
+		<td class="lead"><label for="summary">内容简介</label></td>
+		<td><textarea name="summary" id="summary" cols="30" rows="5" maxlength="84" placeholder="最多可输入84字"></textarea></td>
+		<td class="lead"><label for="remark">备注</label></td>
+		<td><textarea name="remark" id="remark" cols="30" rows="5" maxlength="100" placeholder="最多可输入100字"></textarea></td>
+	</tr>
+</table>
+
+<% include ('/comm/footer.html') %>

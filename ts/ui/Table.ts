@@ -41,15 +41,15 @@ function makeTemplate(sets) {
 	let trSrc;
 	if (sets.rows && sets.rows.render) {
 		trSrc = sets.rows.src || '___';
-		sets.bindOptions.itemRender['__renderTr'] = (val, i, row, attr) => {
-			let cn = sets.rows.render(val, i, row, attr);
+		sets.bindOptions.itemRender['__renderTr'] = (val , i, row , attr) => {
+			let cn = sets.rows.render(val , i, row, attr) || '' ;
 			let sn = ( i % 2 ? 'odd' : 'even');
 			return sn + ' ' + cn;
 		}
 	}
 	else {
 		trSrc = '___';
-		sets.bindOptions.itemRender['__renderTr'] = (val, i) => ( i % 2 ? 'odd' : 'even');
+		sets.bindOptions.itemRender['__renderTr'] = (val , i) => ( i % 2 ? 'odd' : 'even');
 	}
 
 	return '<tr class="${' + trSrc + ':=__renderTr}">' + tdTmp.join('') + '</tr>';

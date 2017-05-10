@@ -11,6 +11,7 @@ opg.api({
 
 const orderId = parseInt(opg.request['orderId']);
 let streams: Array;
+let duration;
 
 let useIE = $.detectIE();
 if (useIE && useIE < 12) {
@@ -28,6 +29,8 @@ else {
 
 let iptVideoFile = $('#iptVideoFile');
 let cachedMediaPath: string;
+
+
 $('#btnUpFilePath').click(function () {
 	let mediaPath = iptVideoFile.val();//.replace(/\\/g , '/');
 	if (mediaPath) {
@@ -107,6 +110,10 @@ $('#btnUpFilePath').click(function () {
 				aExpand.trigger('click');
 			});
 
+			//duration
+			if(data.format && data.format.duration)
+				duration = data.format.duration ;
+
 
 			$('#tbdProfile').show();
 		});
@@ -137,12 +144,12 @@ window['doSave'] = function (pop: Popup, tb: Table) {
 		entryTime: {
 			name: '入点时间',
 			type: 'time',
-			require: true,
+			//require: true,
 		},
 		outTime: {
 			name: '出点时间',
 			type: 'time',
-			require: true,
+			//require: true,
 		},
 		templateId: {
 			name: '模板',
@@ -159,14 +166,14 @@ window['doSave'] = function (pop: Popup, tb: Table) {
 	if (param) {
 		//param.taskId = taskId;
 		param.orderId = orderId;
-		if (param.audioTrack2) {
+		/*if (param.audioTrack2) {
 			param.audioTrack = param.audioTrack2;
 		}
 		if (param.subtitleTrack2) {
 			param.subtitleTrack = param.subtitleTrack2;
 		}
 		delete param.audioTrack2;
-		delete param.subtitleTrack2;
+		delete param.subtitleTrack2;*/
 
 
 		param.secondAudit = (param.secondAudit == '1');
@@ -178,6 +185,8 @@ window['doSave'] = function (pop: Popup, tb: Table) {
 	console.log(param);
 
 	if (param) {
+
+		param.duration = duration;
 
 		opg.api.submitCollect(param, (data) => {
 			pop.close();

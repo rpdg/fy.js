@@ -1,0 +1,145 @@
+<% include ('/comm/header.html') %>
+<link rel="stylesheet" href="/css/jquery.datetimepicker.css">
+
+<style>
+
+	label.widthAuto
+	{
+		width: auto !important;
+	}
+</style>
+
+<table id="tbForm" class="search-table">
+	<tbody>
+	<tr>
+		<td class="lead"><label for="programName"><b class="text-red">*</b> 节目名称</label></td>
+		<td>
+			<b class="fcGroup">
+				<b class="fcItem">
+					<input type="text" name="programName" id="programName" placeholder="请选择" readonly>
+					<input type="hidden" name="programId" id="programId">
+				</b>
+				<b class="fcItem" style="width: 30px; padding-left: 5px; font-weight: 100;">
+					<button id="btnCopyrightProgram" class="btn-mini" style="width: 100%;">...</button>
+				</b>
+			</b>
+		</td>
+		<td class="lead"><label for="enName">节目英文名</label></td>
+		<td><input type="text" name="enName" id="enName"></td>
+	</tr>
+	<tr>
+		<td class="lead">节目主类</td>
+		<td><input type="text" name="mainCategoryStr" id="mainCategoryStr" placeholder="" readonly></td>
+		<td class="lead">节目子类</td>
+		<td><input type="text" name="minorCategoryStr" id="minorCategoryStr" placeholder="" readonly></td>
+	</tr>
+	<tr>
+		<td class="lead">出品年代</td>
+		<td><input type="text" name="produceYear" id="produceYear" placeholder="" readonly></td>
+		<td class="lead">国别</td>
+		<td><input type="text" name="nation" id="nation" placeholder="" readonly></td>
+	</tr>
+	<tr>
+		<td class="lead">集数</td>
+		<td><input type="text" name="episodes" id="episodes" placeholder="" readonly></td>
+		<td class="lead">时长 (分钟/集)</td>
+		<td><input type="text" name="lengthOfEpisode" id="lengthOfEpisode" placeholder="" readonly></td>
+	</tr>
+	</tbody>
+	<tbody>
+	<tr>
+		<td colspan="4" style="height: 1em;"></td>
+	</tr>
+	<tr>
+		<td class="lead">合同号</td>
+		<td colspan="3"><input type="text" name="contractNumber" id="contractNumber" placeholder="" readonly></td>
+	</tr>
+	<tr>
+		<td class="lead">版权方</td>
+		<td><input type="text" name="copyrightOwner" id="copyrightOwner" placeholder="" ></td>
+		<td class="lead"><label for="copyrightType"><b class="text-red">*</b> 版权类型</label></td>
+		<td><select name="copyrightType" id="copyrightType"></select></td>
+	</tr>
+	<tr>
+		<td class="lead"><label for="copyrightBeginDate"><b class="text-red">*</b> 版权开始日</label></td>
+		<td><input type="text" name="copyrightBeginDate" id="copyrightBeginDate" ></td>
+		<td class="lead"><label for="copyrightEndDate"><b class="text-red">*</b> 版权到期日</label></td>
+		<td><input type="text" name="copyrightEndDate" id="copyrightEndDate" ></td>
+	</tr>
+	<tr>
+		<td class="lead"><label for="lifetime">使用期限 (天)</label></td>
+		<td><input type="text" name="lifetime" id="lifetime" ></td>
+		<td class="lead"><label for="signingSubject">签约主体</label></td>
+		<td><input type="text" name="signingSubject" id="signingSubject" value="百视通网络电视技术发展有限责任公司"></td>
+	</tr>
+	<tr>
+		<td class="lead"><label for="programName"> 授权地域</label></td>
+		<td>
+			<b class="fcGroup">
+				<b class="fcItem">
+					<textarea name="programName" id="authorizedRegionName" cols="2" placeholder="请选择" readonly></textarea>
+					<input type="hidden" name="programId" id="authorizedRegionId">
+				</b>
+				<b class="fcItem" style="width: 30px; padding-left: 5px; font-weight: 100;vertical-align: bottom;">
+					<button id="btnAuthorizedRegion" class="btn-mini" style="width: 100%;">...</button>
+				</b>
+			</b>
+		</td>
+		<td class="lead">播出形式</td>
+		<td id="tdTransmitMode"></td>
+	</tr>
+	<tr>
+		<td class="lead"><label for="copyrightMode">版权形式</label></td>
+		<td><input type="text" name="copyrightMode" id="copyrightMode" ></td>
+		<td class="lead"><label for="signingSubject">是否收费</label></td>
+		<td>
+			<label class="widthAuto" style="margin-right: 1em;"><input type="radio" name="free" value="true" checked>是</label>
+			<label class="widthAuto"><input type="radio" name="free" value="false">否</label>
+		</td>
+	</tr>
+	<tr>
+		<td class="lead"><label for="shareMoneyBeginDate">分账起始日期</label></td>
+		<td><input type="text" name="shareMoneyBeginDate" id="shareMoneyBeginDate" ></td>
+		<td class="lead"><label for="shareMoneyEndDate">分账结束日期 </label></td>
+		<td><input type="text" name="shareMoneyEndDate" id="shareMoneyEndDate" ></td>
+	</tr>
+	<tr>
+		<td class="lead">授权平台</td>
+		<td></td>
+		<td class="lead"><label for="authorizedPlatformDesc">授权平台具体描述</label></td>
+		<td>
+			<textarea name="authorizedPlatformDesc" id="authorizedPlatformDesc" cols="30" rows="4"></textarea>
+		</td>
+	</tr>
+	<tr>
+		<td class="lead">授权企业</td>
+		<td></td>
+		<td class="lead"><label for="authorizedCorpDesc">授权企业具体描述</label></td>
+		<td>
+			<textarea name="authorizedCorpDesc" id="authorizedCorpDesc" cols="30" rows="4"></textarea>
+		</td>
+	</tr>
+	<tr>
+		<td class="lead"><label for="personInCharge">项目负责人</label></td>
+		<td><input type="text" name="personInCharge" id="personInCharge" ></td>
+		<td class="lead">介质类型</td>
+		<td id="tdMediaType">
+
+		</td>
+	</tr>
+	<tr>
+		<td class="lead"><label for="remark">备注</label></td>
+		<td colspan="3">
+			<textarea name="remark" id="remark" cols="30" rows="3"></textarea>
+		</td>
+	</tr>
+	</tbody>
+</table>
+
+
+
+<p>&nbsp;</p>
+
+
+<% include ('/comm/footer.html') %>
+<script src="/lib/jquery.datetimepicker.js"></script>

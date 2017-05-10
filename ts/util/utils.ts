@@ -50,7 +50,7 @@ const is = {
 	String: $.noop,
 	Object: $.noop,
 	HTMLDocument: $.noop,
-
+	UsingIE : $.detectIE() ,
 };
 
 let isTypes = ["Array", "RegExp", "Date", "Number", "String", "Object", "HTMLDocument"];

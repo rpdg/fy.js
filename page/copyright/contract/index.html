@@ -1,0 +1,53 @@
+<% include ('/comm/header.html') %>
+
+<style>
+	.search-table .lead + td{
+		width: auto;
+	}
+
+	.fl-right{
+		float: right;
+		margin-top: -3px;
+		margin-left: 0.5em;
+	}
+</style>
+
+<table id="tbSearch" class="search-table">
+	<tr>
+		<td class="lead"><label for="program_name">节目名称</label></td>
+		<td><input id="program_name" name="program_name" type="text" /></td>
+		<td class="lead"><label for="programEnName">节目英文名</label></td>
+		<td><input id="programEnName" name="programEnName" type="text" /></td>
+	</tr>
+	<tr>
+		<td class="lead">版权方</td>
+		<td><input type="text" name="produceYear" placeholder=""></td>
+		<td class="lead">节目许可证号</td>
+		<td><input type="text" name="licenseNumber" placeholder=""></td>
+	</tr>
+	<tr>
+		<td class="lead">合同号</td>
+		<td><input type="text" name="produceYear" placeholder=""></td>
+		<td class="lead"></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td class="lead"><label for="mainCategory">节目主类</label></td>
+		<td><select id="mainCategory" name="mainCategory"></select></td>
+		<td class="lead"><label for="minorCategory">节目子类</label></td>
+		<td><select name="minorCategory" id="minorCategory"></select></td>
+	</tr>
+</table>
+
+<div class="grid-title-bar">
+	合同列表
+	<button id="btnExportAll" class="btn-small btn-info fl-right">导出全量版权</button>
+	<button id="btnBatchDelete" class="btn-small btn-danger fl-right" disabled>删除合同</button>
+	<button id="btnModifyContractNumber" class="btn-small btn-warning fl-right" disabled><i class="ico-edit"></i> 变更合同号</button>
+	<button id="btnBatchImport" class="btn-success btn-small fl-right">批量导入版权</button>
+	<button id="btnAdd" class="btn-create"><i class="ico-create"></i> 新增版权合同</button>
+</div>
+<table id="tb"></table>
+
+
+<% include ('/comm/footer.html') %>

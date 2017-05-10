@@ -1,5 +1,5 @@
 import {DisplayObject} from './DisplayOject';
-
+import {is} from '../util/utils'
 
 const DEFAULTS = {
 	callback: null,
@@ -431,7 +431,7 @@ class PopUp extends DisplayObject {
 		see:  http://stackoverflow.com/questions/8978235/why-can-i-sometimes-not-type-into-my-input-in-ie
 		& http://stackoverflow.com/questions/19150008/ie-9-and-ie-10-cannot-enter-text-into-input-text-boxes-from-time-to-time
 		*/
-		if($.detectIE()){
+		if(is.UsingIE){
 			let tp = $('<input type="text" style="opacity: 0;" />').appendTo('body').focus();
 			setTimeout(function () {
 				tp.remove();

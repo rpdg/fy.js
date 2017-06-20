@@ -16,7 +16,7 @@ let cfg: IConfig = {
 	apiServer: store.get('apiServer') || (window.CONFIG ? window.CONFIG.apiServer : null),
 	ajaxTimeOut: 30000,
 	loginPage: '/page/index.html',
-	version: '6.4.1_20170515',
+	version: '6.4.5_20170612',
 };
 
 cfg.onUnauthorizedError = function () {
@@ -57,7 +57,7 @@ cfg.onServerError = function (errorMsg: string = 'unknown error') {
 	 errorMsg = '服务端发生错误';
 	 }*/
 
-	opg.err(errorMsg);
+	top.opg.err(errorMsg);
 };
 
 

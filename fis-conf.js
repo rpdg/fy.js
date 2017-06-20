@@ -15,12 +15,12 @@ var jScripts = null;
 
 switch (currentMedia) {
 	case 'prd': {
-		apiServer = 'http://127.0.0.1:8080/data/';
+		apiServer = 'http://10.0.128.154:8081/api/';
 		orgCode = 'bestv';
 		break;
 	}
 	case 'test': {
-		apiServer = 'http://10.50.127.24:8080/api/';
+		apiServer = 'http://10.0.128.154:8081/api/';
 		orgCode = 'bestv';
 		break;
 	}
@@ -120,7 +120,7 @@ fis.match('*.scss', {
 });
 
 
-// 产品发布，进行合并
+// 测试发布，进行合并
 fis.media('test')
 	.match('/ts/**.ts', {
 		packTo: '/js/opg.js'

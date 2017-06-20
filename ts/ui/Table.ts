@@ -17,11 +17,9 @@ function makeTemplate(sets) {
 
 			if (col.cmd === 'checkAll') {
 				tdTmp[i] = '<td class="text-center"><input type="checkbox" name="chk_' + i + '" value="${' + col.src + render + '}"></td>';
-
 			}
 			else {
 				tdTmp[i] = '<td class="text-center"><input type="radio" name="chk_' + i + '" value="${' + col.src + render + '}"></td>';
-
 			}
 
 			if (!this.cmd) {

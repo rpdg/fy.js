@@ -126,11 +126,25 @@ $('#liAbout').click(function () {
 	}
 });
 let showVersionDialog = function () {
-	opg.alert(`<span><span style="display: inline-block;width: 80px;">front-end：</span>${cfg.version}</span><br>
-					<span style="display: inline-block;width: 80px;">back-end：</span>${backendVersion}`, $.noop, {
+	/*opg.alert(`<span>
+					<span style="display: inline-block;width: 80px;">front-end：</span>${cfg.version}
+				</span><br>
+				<span style="display: inline-block;width: 80px;">back-end：</span>${backendVersion}`, $.noop, {
 		title: '关于 IMSP',
 		width: 300
-	});
+	});*/
+
+	let html = `<div style="height: 80px; font-size: 12px; color: #555; padding-top: 12px;">
+					<img src="/css/img/opg-logo1.png" style="width:185px; height: 76px; float: left; margin: 10px 42px 32px 32px;">
+					<h2 style="font-size: 32px; margin-bottom: 3px;">CMS v6</h2>
+					<span style="font-size: 12px;"><span style="display: inline-block;width: 80px;font-size: 12px;">front-end：</span>${cfg.version}</span><br>
+					<span style="display: inline-block;width: 80px;font-size: 12px;">back-end：</span>${backendVersion}
+				</div>` ;
+
+	opg.alert(html , $.noop , {
+		title: '关于 IMSP',
+		width: 500
+	})
 };
 
 

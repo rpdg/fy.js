@@ -1,0 +1,33 @@
+<% include ('/comm/header.html') %>
+<link rel="stylesheet" href="/css/jquery.datetimepicker.css">
+
+<style>
+	.sp-eraserWrap {
+		width: auto;
+	}
+</style>
+
+<table id="tbSearch" class="search-table">
+	<tbody>
+	<tr>
+		<td class="lead"><label for="assetName">内容名称</label></td>
+		<td><input id="assetName" name="assetName" type="text"/></td>
+		<td class="lead"><label for="status">状态</label></td>
+		<td><select name="status" id="status"></select></td>
+	</tr>
+	<tr>
+		<td class="lead"><label for="beginTimeBegin">开始时间</label></td>
+		<td colspan="3">
+			<input id="beginTimeBegin" name="beginTimeBegin" type="datetime"/>
+			　至 <input id="beginTimeEnd" name="beginTimeEnd" type="datetime" placeholder="">
+		</td>
+	</tr>
+	</tbody>
+</table>
+
+
+<table id="tb"></table>
+
+
+<% include ('/comm/footer.html') %>
+<script src="/lib/jquery.datetimepicker.js"></script>

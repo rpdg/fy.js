@@ -70,9 +70,19 @@ class Panel extends DisplayObject {
 			this.btnSearch = $(`<button id="${cfg.btnSearchId}" class="${cfg.btnClass}">${cfg.btnSearchText}</button>`);
 			this.addToFoot(this.btnSearch);
 		}
-		if(this.btnSearch && cfg.btnSearchClick){
-			this.btnSearch.click(cfg.btnSearchClick) ;
+		if(this.btnSearch){
+			if(cfg.btnSearchClick)
+				this.btnSearch.click(cfg.btnSearchClick) ;
+
+			let that = this;
+			that.body.on('keypress' , 'input' , function (e) {
+				if(e.keyCode==13){
+					that.btnSearch.trigger('click');
+				}
+			});
 		}
+
+
 
 		jq.append(this.panel);
 

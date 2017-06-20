@@ -96,7 +96,7 @@ class ViewAudit {
 				subTb.find('tbody:last').bindList({
 					list: subData[i] ,
 					template: '<tr class="subTBody">' +
-					'<td>${text}</td>' +
+					'<td style="white-space: normal;">${text}</td>' +
 					'<td class="text-center">${time}</td>' +
 					'<td class="text-center">${creator}</td>' +
 					'<td class="text-center">${stepCodeDesc}</td>' +

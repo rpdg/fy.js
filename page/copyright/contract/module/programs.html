@@ -1,0 +1,27 @@
+<% include ('/comm/header.html') %>
+
+<table id="tbSearch" class="search-table">
+	<tr>
+		<td class="lead">节目名称</td>
+		<td><input type="text" name="name"></td>
+		<td class="lead">节目别名</td>
+		<td><input type="text" name="alias"></td>
+	</tr>
+	<tr>
+		<td class="lead"><label for="mainCategory">节目主类</label></td>
+		<td><select id="mainCategory" name="mainCategory"></select></td>
+		<td class="lead"><label for="minorCategory">节目子类</label></td>
+		<td><select name="minorCategory" id="minorCategory"></select></td>
+	</tr>
+	<tr>
+		<td class="lead">出品年代</td>
+		<td><input type="text" name="produceYear"></td>
+		<td class="lead">节目许可证号</td>
+		<td><input type="text" name="licenseNumber"></td>
+	</tr>
+</table>
+
+<table id="tbResult"></table>
+
+
+<% include ('/comm/footer.html') %>

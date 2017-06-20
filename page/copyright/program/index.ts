@@ -108,12 +108,6 @@ let tb: Table = opg('#tb').table({
 			render: (val, i, row) => `<button class="btn-mini btn-info btnAlias" data-id="${val}" data-title="${row.name}">增加别名</button>`
 		},
 		{
-			text: '介质管理',
-			src: 'name',
-			width: 90,
-			render: (val, i, row) => `<button class="btn-mini btn-warning btnMedias" data-id="${val}" data-title="${row.name}">介质管理</button>`
-		},
-		{
 			text: '删除',
 			src: 'name',
 			width: 60,
@@ -191,10 +185,10 @@ $('#btnAdd').click(function () {
 });
 
 //medias
-tb.tbody.on('click', '.btnMedias', function () {
+/*tb.tbody.on('click', '.btnMedias', function () {
 	let btn = $(this), title = btn.data('title'), id = btn.data('id');
 	OpenDetail.listMedias(id);
-});
+});*/
 
 //edit
 tb.tbody.on('click', '.btnEdit', function () {

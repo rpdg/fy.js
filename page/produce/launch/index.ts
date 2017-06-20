@@ -22,7 +22,21 @@ let cache = Cache.getInstance();
 
 let panel: Panel = opg.wrapPanel('#tbSearch', {
 	title: '内容检索',
-	btnSearchText: '<i class="ico-find"></i> 查询'
+	btnSearchText: '<i class="ico-find"></i> 查询' ,
+	btnSearchClick : function () {
+		let param = $('#tbSearch').fieldsToJson({});
+
+		if (param.createTimeBegin && param.createTimeBegin.indexOf(' ') < 0) {
+			param.createTimeBegin += ' 00:00:00';
+		}
+		if (param.createTimeEnd && param.createTimeEnd.indexOf(' ') < 0) {
+			param.createTimeEnd += ' 23:59:59';
+		}
+		param.pageNo = 1;
+
+		//console.log(panel.jq, param);
+		tb.update(param);
+	}
 });
 
 
@@ -37,20 +51,6 @@ Combo.makeClearableInput($('#createTimeEnd').datetimepicker({
 	format: 'Y-m-d'
 }), $({}));
 
-panel.btnSearch.click(function () {
-	let param = $('#tbSearch').fieldsToJson({});
-
-	if (param.createTimeBegin && param.createTimeBegin.indexOf(' ') < 0) {
-		param.createTimeBegin += ' 00:00:00';
-	}
-	if (param.createTimeEnd && param.createTimeEnd.indexOf(' ') < 0) {
-		param.createTimeEnd += ' 23:59:59';
-	}
-	param.pageNo = 1;
-
-	//console.log(panel.jq, param);
-	tb.update(param);
-});
 
 
 opg('#contentType').listBox({

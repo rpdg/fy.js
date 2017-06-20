@@ -12,20 +12,26 @@
 	#tb tr.red{
 		background-color: tomato ;
 	}
+	#tb tr.gray{
+		background-color: #C8C8E8 ;
+	}
+	#tb tr.green{
+		background-color: #d2f5b0 ;
+	}
 </style>
 
 <table id="tbSearch" class="search-table">
 	<tr>
-		<td class="lead"><label for="assetName">内容名称</label></td>
-		<td><input id="assetName" name="assetName" type="text" /></td>
+		<td class="lead"><label for="managerName">内容名称</label></td>
+		<td><input id="managerName" name="managerName" type="text" /></td>
 		<td class="lead"><label for="contentType">内容类型</label></td>
 		<td><select id="contentType" name="contentType"></select></td>
 	</tr>
 	<tr>
-		<td class="lead"><label for="createTimeBegin">上线时间</label></td>
+		<td class="lead"><label for="onlineTimeBegin">上线时间</label></td>
 		<td colspan="3">
-			<input id="createTimeBegin" name="createStart" type="datetime" />
-			至 <input id="createTimeEnd" name="createEnd" type="datetime">
+			<input id="onlineTimeBegin" name="onlineTimeBegin" type="datetime" />
+			　至 <input id="onlineTimeEnd" name="onlineTimeEnd" type="datetime">
 		</td>
 	</tr>
 	<tr>
@@ -36,9 +42,19 @@
 	</tr>
 	<tr>
 		<td class="lead"><label for="error">是否出错</label></td>
-		<td><select name="error" id="error"></select></td>
+		<td>
+			<select name="error" id="error">
+				<option value="">请选择</option>
+				<option value="1">是</option>
+				<option value="0">否</option>
+			</select>
+		</td>
 		<td class="lead"><label for="delay">是否超时</label></td>
-		<td><select id="delay" name="delay"></select></td>
+		<td><select id="delay" name="delay">
+			<option value="">请选择</option>
+			<option value="1">是</option>
+			<option value="0">否</option>
+		</select></td>
 	</tr>
 </table>
 

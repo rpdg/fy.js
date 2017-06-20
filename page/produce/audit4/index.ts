@@ -180,19 +180,20 @@ tb.tbody.on('click', '.btn-warning', function () {
 						className: 'btn-success',
 						text: '通过',
 						onClick: function () {
-							let form = $(`<div style="padding: 10px;"><table class="search-table">
-							<tr>
-								<td class="lead">节目名称</td>
-								<td style="width: auto;">${title}</td>
-							</tr>
-							<tr>
-								<td class="lead">生产流程</td>
-								<td style="width: auto;">
-									<label class="lbAutoWidth"><input type="checkbox" name="collectCatalog" value="1" checked />非编</label>、 
-									<label class="lbAutoWidth"><input type="checkbox" name="collectAudit3" value="1" checked />三审</label>
-								</td>
-							</tr>
-						</table></div>`);
+							let form = $(`<div style="padding: 10px;">
+											<table class="search-table">
+												<tr>
+													<td class="lead">节目名称</td>
+													<td style="width: auto;">${title}</td>
+												</tr>
+												<tr>
+													<td class="lead">生产流程</td>
+													<td style="width: auto;">
+														<label class="lbAutoWidth"><input type="checkbox" name="collectCatalog" value="1" checked />非编</label>、 
+														<label class="lbAutoWidth"><input type="checkbox" name="collectAudit3" value="1" checked />三审</label>
+													</td>
+												</tr>
+											</table></div>`);
 							top.opg(form).popup({
 								title: '确定通过',
 								width: 420,
@@ -215,6 +216,8 @@ tb.tbody.on('click', '.btn-warning', function () {
 												p.close();
 												popWin.close();
 											});
+
+											return true;
 										}
 									},
 									cancel: '返回',

@@ -100,6 +100,9 @@ let tb: Table = opg('#tb').table({
 	//lazy: true,
 	pagination: {
 		pageSize: 10
+	},
+	onUpdate : function () {
+		btnBatchCataloger.prop('disabled' , true);
 	}
 });
 
@@ -132,7 +135,15 @@ tb.tbody.on('click', '.btn-info', function () {
 
 
 //批量编目
-$('#btnBatchCataloger').click(function () {
+
+let btnBatchCataloger = $('#btnBatchCataloger').prop('disabled' , true);
+
+tb.table.on('change' , ':checkbox' , function () {
+	let checkedCount: number = $(':checkbox:checked' , tb.tbody).length ;
+	btnBatchCataloger.prop('disabled' , !(checkedCount>0));
+});
+
+btnBatchCataloger.click(function () {
 	let checked = tb.getCheckData() ;
 	if(checked && checked.length){
 		console.log(checked);

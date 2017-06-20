@@ -10,24 +10,27 @@
 		margin-top: -3px;
 		margin-left: 0.5em;
 	}
+	.hilight{
+		background-color: #FFFDB3 !important;
+	}
 </style>
 
 <table id="tbSearch" class="search-table">
 	<tr>
-		<td class="lead"><label for="program_name">节目名称</label></td>
-		<td><input id="program_name" name="program_name" type="text" /></td>
-		<td class="lead"><label for="programEnName">节目英文名</label></td>
-		<td><input id="programEnName" name="programEnName" type="text" /></td>
+		<td class="lead"><label for="programName">节目名称</label></td>
+		<td><input id="programName" name="programName" type="text" /></td>
+		<td class="lead"><label for="enName">节目英文名</label></td>
+		<td><input id="enName" name="enName" type="text" /></td>
 	</tr>
 	<tr>
 		<td class="lead">版权方</td>
-		<td><input type="text" name="produceYear" placeholder=""></td>
+		<td><input type="text" name="copyrightOwner" placeholder=""></td>
 		<td class="lead">节目许可证号</td>
 		<td><input type="text" name="licenseNumber" placeholder=""></td>
 	</tr>
 	<tr>
 		<td class="lead">合同号</td>
-		<td><input type="text" name="produceYear" placeholder=""></td>
+		<td><input type="text" name="contractNumber" placeholder=""></td>
 		<td class="lead"></td>
 		<td></td>
 	</tr>
@@ -43,11 +46,12 @@
 	合同列表
 	<button id="btnExportAll" class="btn-small btn-info fl-right">导出全量版权</button>
 	<button id="btnBatchDelete" class="btn-small btn-danger fl-right" disabled>删除合同</button>
-	<button id="btnModifyContractNumber" class="btn-small btn-warning fl-right" disabled><i class="ico-edit"></i> 变更合同号</button>
+	<button id="btnModifyContractNumber" class="btn-small btn-warning fl-right" disabled>变更合同号</button>
 	<button id="btnBatchImport" class="btn-success btn-small fl-right">批量导入版权</button>
-	<button id="btnAdd" class="btn-create"><i class="ico-create"></i> 新增版权合同</button>
+	<!--<button id="btnAdd" class="btn-create"><i class="ico-create"></i> 新增版权合同</button>-->
 </div>
 <table id="tb"></table>
 
+<form id="formDownload" class="hide" action="" method="post"></form>
 
 <% include ('/comm/footer.html') %>

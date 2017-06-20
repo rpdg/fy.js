@@ -39,7 +39,7 @@ const request = (function (str: string, castBoolean) {
 		setParamsObject(result, split[0], decodeURIComponent(split[1]), castBoolean);
 	}
 	return result;
-})(window.location.href, false);
+})(window.location.search, false);
 
 
 const is = {
@@ -50,15 +50,15 @@ const is = {
 	String: $.noop,
 	Object: $.noop,
 	HTMLDocument: $.noop,
-	UsingIE : $.detectIE() ,
+	UsingIE: $.detectIE(),
 };
 
-let isTypes = ["Array", "RegExp", "Date", "Number", "String", "Object", "HTMLDocument"];
+let isTypes = ['Array', 'RegExp', 'Date', 'Number', 'String', 'Object', 'HTMLDocument'];
 for (let i = 0, c; c = isTypes[i++];) {
 	is[c] = (function (type) {
 		return function (obj) {
-			return Object.prototype.toString.call(obj) == "[object " + type + "]";
-		}
+			return Object.prototype.toString.call(obj) == '[object ' + type + ']';
+		};
 	})(c);
 }
 
@@ -117,11 +117,11 @@ const url = {
 		return url.addSearch(url, objectToQueryString(namespace, obj));
 	},
 	getParam: function (url, name) {
-		name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-		let regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+		name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+		let regex = new RegExp('[\\?&]' + name + '=([^&#]*)'),
 			results = regex.exec(url.substr(url.indexOf('?')));
-		return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
-	}
+		return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+	},
 };
 
 
@@ -136,7 +136,7 @@ const string = {
 
 		return collect;
 	},
-	pad: function (input: string, result_full_length: number, pad_string: string = '0', pad_type: 'STR_PAD_LEFT'|'STR_PAD_BOTH'|'STR_PAD_RIGHT' = 'STR_PAD_RIGHT') {
+	pad: function (input: string, result_full_length: number, pad_string: string = '0', pad_type: 'STR_PAD_LEFT' | 'STR_PAD_BOTH' | 'STR_PAD_RIGHT' = 'STR_PAD_RIGHT') {
 		//   example 1: str.pad('Kevin van Zonneveld', 30, '-=', 'STR_PAD_LEFT');
 		//   returns 1: '-=-=-=-=-=-Kevin van Zonneveld'
 		//   example 2: str.pad('Kevin van Zonneveld', 30, '-', 'STR_PAD_BOTH');
@@ -172,7 +172,7 @@ const string = {
 	},
 	padRight: function (oStr, result_full_length, pad_string: string = '0') {
 		return string.pad(oStr, result_full_length, pad_string || 0, 'STR_PAD_RIGHT');
-	}
+	},
 };
 
 
@@ -190,7 +190,7 @@ const dateTime = {
 	weekSpan: function (dateFrom: Date, dateTo: Date) {
 		let d = dateTime.daySpan(dateFrom, dateTo);
 		return Math.ceil((d + dateFrom.getDay()) / 7);
-	}
+	},
 
 };
 
@@ -202,7 +202,7 @@ const convert = {
 		}
 		else {
 			let arr = [];
-			for (arr[arr.length] in obj);
+			for (arr[arr.length] in obj) ;
 			return arr;
 		}
 	},
@@ -257,9 +257,9 @@ const convert = {
 		// round seconds
 		seconds = Math.round(seconds * 100) / 100;
 
-		let result = (hours < 10 ? "0" + hours : hours);
-		result += ":" + (minutes < 10 ? "0" + minutes : minutes);
-		result += ":" + (seconds < 10 ? "0" + seconds : seconds);
+		let result = (hours < 10 ? '0' + hours : hours);
+		result += ':' + (minutes < 10 ? '0' + minutes : minutes);
+		result += ':' + (seconds < 10 ? '0' + seconds : seconds);
 		return result;
 	},
 
@@ -269,22 +269,22 @@ const convert = {
 const format = {
 	date: function (date: Date, format: string = 'yyyy-MM-dd'): string {
 		let o = {
-			"M+": date.getMonth() + 1, //month
-			"d+": date.getDate(), //date
-			"h+": (date.getHours() > 12 ? date.getHours() - 12 : date.getHours()), //hour 12
-			"H+": date.getHours(), //hour 24
-			"m+": date.getMinutes(), //minute
-			"s+": date.getSeconds(), //second
-			"q+": Math.floor((date.getMonth() + 3) / 3), //quarter
-			"S": date.getMilliseconds() //millisecond
+			'M+': date.getMonth() + 1, //month
+			'd+': date.getDate(), //date
+			'h+': (date.getHours() > 12 ? date.getHours() - 12 : date.getHours()), //hour 12
+			'H+': date.getHours(), //hour 24
+			'm+': date.getMinutes(), //minute
+			's+': date.getSeconds(), //second
+			'q+': Math.floor((date.getMonth() + 3) / 3), //quarter
+			'S': date.getMilliseconds() //millisecond
 		};
 
 		if (/(y+)/.test(format))
-			format = format.replace(RegExp.$1, (date.getFullYear() + "").substr(4 - RegExp.$1.length));
+			format = format.replace(RegExp.$1, (date.getFullYear() + '').substr(4 - RegExp.$1.length));
 
 		for (let k in o)
-			if (new RegExp("(" + k + ")").test(format))
-				format = format.replace(RegExp.$1, RegExp.$1.length == 1 ? o[k] : ("00" + o[k]).substr(("" + o[k]).length));
+			if (new RegExp('(' + k + ')').test(format))
+				format = format.replace(RegExp.$1, RegExp.$1.length == 1 ? o[k] : ('00' + o[k]).substr(('' + o[k]).length));
 
 		return format;
 	},
@@ -338,7 +338,7 @@ const format = {
 			toFixedFix = function (n, prec) {
 				let k = Math.pow(10, prec);
 				return '' + (Math.round(n * k) / k)
-						.toFixed(prec);
+					.toFixed(prec);
 			};
 		// Fix forar IE parseFloat(0.55).toFixed(0) = 0;
 		let s: Array = (prec ? toFixedFix(n, prec) : '' + Math.round(n))
@@ -377,17 +377,17 @@ const format = {
 			return template.replace(pattern, function (match, key, value) {
 				return json[key];
 			});
-		}
+		};
 	})(),
 	timeLength: function (seconds: number = 0): string {
-		return string.padLeft(Math.floor(seconds / 3600), 2) + ':' + string.padLeft(Math.floor((seconds % 3600) / 60), 2) + ':' + string.padLeft(Math.floor(seconds % 60), 2)
-	}
+		return string.padLeft(Math.floor(seconds / 3600), 2) + ':' + string.padLeft(Math.floor((seconds % 3600) / 60), 2) + ':' + string.padLeft(Math.floor(seconds % 60), 2);
+	},
 };
 
 
 const cleanValueObject = function (vo) {
 	for (let key in vo)
-		if (key.indexOf(":") > -1) delete vo[key];
+		if (key.indexOf(':') > -1) delete vo[key];
 
 	return vo;
 };
@@ -439,10 +439,10 @@ const array = {
 					else if (nB) return 1;
 					//a[prop], b[prop]  均是 number
 					return A === B ? 0 : A > B ? 1 : -1;
-				}
+				},
 			);
 		}
-	}
+	},
 
 };
 

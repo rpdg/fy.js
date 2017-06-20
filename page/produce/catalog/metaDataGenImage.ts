@@ -45,7 +45,9 @@ class Uploader {
 			$(this).removeClass('dragHover');
 			e.preventDefault();
 			self.file = e.dataTransfer.files[0];
-			self._fileChooser.files[0] = self.file;
+			//	I like this solution. It doesn't work in IE 11 or Firefox though (input.files is a read-only property)
+			// noinspection JSAnnotator
+			self._fileChooser.files = e.dataTransfer.files;
 		};
 	}
 

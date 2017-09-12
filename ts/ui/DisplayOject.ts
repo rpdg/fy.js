@@ -63,6 +63,9 @@ export abstract class DisplayObject implements UiObject {
 		if(!this._createdPromise)
 			this._createdPromise = $.Deferred();
 
+		if(this._created)
+			this._createdPromise.resolve();
+
 		return this._createdPromise;
 	}
 }
@@ -143,7 +146,7 @@ export abstract class AjaxDisplayObject extends DisplayObject implements IListBa
 	}
 
 	selectHandler(evt: Event) {
-		if (typeof this.onSelect === 'function') this.onSelect(evt);
+		if (typeof this.onSelect === 'function') this.onSelect.call(this , evt);
 	}
 
 	public set selectedIndex(i: number|number[]) {

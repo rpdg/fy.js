@@ -25,7 +25,7 @@
 		return /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/i.test(string);
 	};
 	validate.date = function (string, preutc) {
-		string = string.replace(/-/g,'/'); //for IE
+		string = string.replace(/-/g, '/'); //for IE
 		var date = Date.parse(string);
 		if (isFinite(date)) {
 			return true;
@@ -250,7 +250,7 @@
 					}
 					else if (rule.type === 'date') {
 						if (objResult[ruleName]) {
-							if(!validate.date(objResult[ruleName])){
+							if (!validate.date(objResult[ruleName])) {
 								$('[name=' + ruleName + ']', this).iptError(rule.name + '不是合法的日期格式');
 								return;
 							}
@@ -258,7 +258,7 @@
 					}
 					else if (rule.type === 'time') {
 						if (objResult[ruleName]) {
-							if(!validate.time24(objResult[ruleName])){
+							if (!validate.time24(objResult[ruleName])) {
 								$('[name=' + ruleName + ']', this).iptError(rule.name + '不是合法的时间格式');
 								return;
 							}
@@ -301,7 +301,7 @@
 					for (var j = 0, f = a.length; j < f; j++) {
 						if (val == a[j]) {
 							if (isSingleSelector) {
-								isDroplist ? (elem.setAttribute('selected', 'selected')) : (elem.checked = true);
+								isDroplist ? (elem.selected = true) : (elem.checked = true);
 								break loopElement;
 							}
 							else {
@@ -338,7 +338,7 @@
 				}
 			}
 			else if (elem.type.indexOf("select-") != -1) {
-				$(elem).recheckElement(val+'');
+				$(elem).recheckElement(val + '');
 			}
 			else if (elem.tagName.toLowerCase() == "textarea") {
 				$(elem).val(val);
@@ -514,9 +514,9 @@
 	// set.nullShown : 将值为null的属性作何种显示，默认显示为empty string
 	$.fn.bindList = function (sets) {
 		var _this_ = this[0], cacheId = _this_.id || _this_.uniqueID || (function () {
-				_this_.id = boundCache.newId();
-				return _this_.id;
-			})();
+			_this_.id = boundCache.newId();
+			return _this_.id;
+		})();
 
 		var cache = boundCache[cacheId] || {},
 			template, list, itemRender, itemFilter, mode, storeData, storeArray;

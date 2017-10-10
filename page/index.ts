@@ -42,12 +42,9 @@ let btnLogin = $('#btnLogin').click(function () {
 	});
 
 	if (param) {
+
 		opg.api.login(param, function (data) {
 			if (data.permissons && data.permissons.length) {
-
-				store.set('X-Token', data.token);
-				store.set('userInfo', data.userInfo);
-				store.set('permissons', data.permissons);
 
 				let url = '/page/main.html';
 
@@ -61,8 +58,22 @@ let btnLogin = $('#btnLogin').click(function () {
 						}
 					}
 				}
+				
+				store.set('X-Token', data.token);
+				store.set('userInfo', data.userInfo);
+				store.set('permissons', data.permissons);
 
-				window.location.replace(url);
+
+				$('#cycle').attr('stroke' , '#ffffff').addClass('cycle');
+
+				/*if(opg.is.UsingIE){
+					window.location.replace(url);
+				}
+				else{*/
+					setTimeout(function(){
+						window.location.replace(url);
+					} , 1300);
+				//}
 			}
 			else {
 				opg.err('账户没有权限');

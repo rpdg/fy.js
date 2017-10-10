@@ -12,6 +12,7 @@ opg.api({
 const orderId = parseInt(opg.request['orderId']);
 let streams: Array;
 let duration;
+let videoFrames;
 
 let useIE = $.detectIE();
 if (useIE && useIE < 12) {
@@ -67,6 +68,9 @@ $('#btnUpFilePath').click(function () {
 				text: 'title',
 				value: 'index',
 				autoPrependBlank: false,
+				onSelect : function () {
+					videoFrames = this.selectedData.frames;
+				}
 			});
 
 			//音频
@@ -187,6 +191,7 @@ window['doSave'] = function (pop: Popup, tb: Table) {
 	if (param) {
 
 		param.duration = duration;
+		param.frames = videoFrames;
 
 		opg.api.submitCollect(param, (data) => {
 			pop.close();

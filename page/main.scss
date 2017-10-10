@@ -173,10 +173,12 @@ body {
 		font-size: 14px;
 		text-decoration: none;
 		color: #333;
+		transition: text-indent 200ms ease;
 		
 		&:hover {
 			color: #4b6887;
 			background-color: #c7e4f1;
+			text-indent: 5px;
 		}
 		&.cur {
 			color: darken($sidebar-bg, 55%);

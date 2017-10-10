@@ -1,0 +1,71 @@
+<% include ('/comm/header.html') %>
+<style>
+	#tbSearch > tbody > tr{
+		display: none;
+	}
+</style>
+
+
+
+<table id="tbSearch" class="search-table">
+	<thead>
+	<tr>
+		<td class="lead"><label for="name"><b class="text-red">*</b>规则名称</label></td>
+		<td><input id="name" name="name" type="text" maxlength="20"/></td>
+	</tr>
+	<tr>
+		<td class="lead"><label for="produceRuleTypes">规则类型</label></td>
+		<td><select name="type" id="produceRuleTypes"></select></td>
+	</tr>
+	</thead>
+	<tbody>
+	<tr id="tr_produceType">
+		<td class="lead">生产类型</td>
+		<td id="tbd1_produceType"></td>
+	</tr>
+	<tr id="tr_1">
+		<td class="lead">是否编目</td>
+		<td><select name="needCatalog" id="catalog"></select></td>
+	</tr>
+	<tr id="tr_2-1">
+		<td class="lead">转码模式</td>
+		<td><select name="transcodePolicy" id="transcodePolicys"></select></td>
+	</tr>
+	<tr id="tr_2-2">
+		<td class="lead">转码优先级</td>
+		<td><select name="transcodePriority" id="transcodePrioritys"></select> <span style="display: inline-block;vertical-align: super;">（9最高，0最低）</span></td>
+	</tr>
+	<tr id="tr_3">
+		<td class="lead">是否备份</td>
+		<td><select name="needBackup" id="backup"></select></td>
+	</tr>
+	<tr id="tr_4">
+		<td class="lead">是否技审</td>
+		<td><select name="needAudit" id="audit"></select></td>
+	</tr>
+
+	<tr id="tr_storageTypes">
+		<td class="lead">存储类型</td>
+		<td id="td_storageTypes"><select name="storeId" id="storageTypes"></select></td>
+	</tr>
+
+	<tr id="tr_business">
+		<td class="lead">生产业务</td>
+		<td id="td_busiCodes"></td>
+	</tr>
+
+	<tr id="tr_sourceTypes">
+		<td class="lead">节目来源</td>
+		<td id="td_sourceTypes"></td>
+	</tr>
+	<tr id="tr_6-2">
+		<td class="lead">转码环境</td>
+		<td id="td_transcodeEnvs"></td>
+	</tr>
+	</tbody>
+</table>
+
+<% include ('/comm/footer.html') %>
+
+
+

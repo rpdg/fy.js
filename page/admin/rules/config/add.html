@@ -1,0 +1,50 @@
+<% include ('/comm/header.html') %>
+
+<style>
+
+	.fl-right {
+		float: right;
+		margin-top: -3px;
+		margin-left: 0.5em;
+	}
+
+
+	#divPnl{
+		width: 460px;
+		height: 40px;
+		margin: 20px auto;
+	}
+	#divPnl td{
+		vertical-align: top;
+		text-align: center;
+	}
+	#divPnl select,#divPnl input{
+		width: 100%;
+	}
+	#tdConfig p{
+		padding: 0 !important;
+	}
+</style>
+
+<table id="tbSearch" class="search-table">
+	<tr>
+		<td class="lead">配置类型</td>
+		<td>
+			<select name="configType" id="configType">
+				<option value="0">与关系</option>
+				<option value="1">或关系</option>
+			</select>
+			<button id="btnAddConfig" class="btn-mini btn-success">添加条件</button>
+			<button id="btnClearConfig" class="btn-mini">清除条件</button>
+		</td>
+	</tr>
+	<tr>
+		<td class="lead">配置条件</td>
+		<td id="tdConfig"></td>
+	</tr>
+</table>
+
+
+
+
+<% include ('/comm/footer.html') %>

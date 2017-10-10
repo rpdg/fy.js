@@ -21,7 +21,7 @@ if (auditStep == 2) {
 else {
 	backStepCodes = [
 		{id: 'collect', name: '采集'},
-		{id: 'collect_audit', name: '内审'},
+		{id: 'collect_audit', name: '二审'},
 		{id: 'collect_catalog', name: '非编'},
 	];
 }

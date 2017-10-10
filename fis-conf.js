@@ -20,7 +20,7 @@ switch (currentMedia) {
 		break;
 	}
 	case 'test': {
-		apiServer = 'http://10.0.128.154:8081/api/';
+		apiServer = 'http://10.50.127.24:8080/api/';
 		orgCode = 'bestv';
 		break;
 	}
@@ -47,10 +47,10 @@ fis.match('{**.html,/js/config.js,/js/mockData.js}', {
 			apiServer: apiServer,
 			jScripts: jScripts,
 			'page/': {
-				mainModule: './index' ,
+				mainModule: './index',
 				'index.html': {
 					orgCode: orgCode,
-					currentMedia: currentMedia ,
+					currentMedia: currentMedia,
 					//jScripts : ['/lib/jquery.hover3d.js']
 				},
 				bodyType: ''

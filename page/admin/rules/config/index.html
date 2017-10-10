@@ -1,0 +1,29 @@
+<% include ('/comm/header.html') %>
+
+<style>
+
+	.fl-right{
+		float: right;
+		margin-top: -3px;
+		margin-left: 0.5em;
+	}
+</style>
+
+<table id="tbSearch" class="search-table">
+	<tr>
+		<td class="lead"><label for="type">类别</label></td>
+		<td><input id="type" name="type" type="text" /></td>
+		<td class="lead"><label for="category">栏目</label></td>
+		<td><input id="category" name="category" type="text" /></td>
+	</tr>
+</table>
+
+<div class="grid-title-bar">
+	配置
+	<button id="btnAdd" class="btn-create fl-right"><i class="ico-create"></i> 新增配置</button>
+	<button id="btnBatchDelete" class="btn-small btn-danger fl-right">批量删除</button>
+</div>
+<table id="tb"></table>
+
+
+<% include ('/comm/footer.html') %>

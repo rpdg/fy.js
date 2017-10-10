@@ -11,13 +11,13 @@ let ComboManager = {
 			let target: Combo = this.instances[key] as Combo;
 			if (target.status === 'opened') target.close();
 		}
-	}
+	},
 };
 
-const $BODY = $("body");
+const $BODY = $('body');
 
 function bodyBinder() {
-	$BODY.on("mousedown.dropDownHide", function () {
+	$BODY.on('mousedown.dropDownHide', function () {
 		ComboManager.closeAll();
 	});
 }
@@ -25,7 +25,7 @@ function bodyBinder() {
 
 class Combo extends DisplayObject {
 
-	jqValueField :JQuery; //to put value
+	jqValueField: JQuery; //to put value
 
 	target: JQuery; //drop down
 
@@ -34,9 +34,9 @@ class Combo extends DisplayObject {
 	onOpen?: Function;
 	onClose?: Function;
 
-	private _state: 'closed'|'opened';
+	private _state: 'closed' | 'opened';
 	//private _wrapper?: JQuery;
-	private _evtName: string ;
+	private _evtName: string;
 
 
 	constructor(jq: JQuery, cfg: any) {
@@ -67,22 +67,22 @@ class Combo extends DisplayObject {
 
 		//ereaser
 		if (cfg.allowBlank) {
-			Combo.makeClearableInput(this.jq , this.jqValueField);
+			Combo.makeClearableInput(this.jq, this.jqValueField);
 		}
 
 		ComboManager.instances[this.guid] = this;
 		this.enable = true;
 	}
 
-	public static makeClearableInput(ipt :JQuery , valueIpt:JQuery) :void{
+	public static makeClearableInput(ipt: JQuery, valueIpt: JQuery): void {
 		let isIE = $.detectIE();
-		if(isIE && (isIE>10) && !ipt.prop('readonly')){
+		if (isIE && (isIE > 10) && !ipt.prop('readonly')) {
 			//do nothing
 		}
-		else{
+		else {
 			let wrapper = ipt.css({
 				float: 'left',
-				margin: 0
+				margin: 0,
 			}).wrap('<span class="sp-eraserWrap"></span>').parents('span:first');
 
 			let eraser = $('<div class="ipt-eraser">&times;</div>')
@@ -95,13 +95,12 @@ class Combo extends DisplayObject {
 					}
 				});
 
-			wrapper.hover(function () {
-				if(!ipt.prop('disabled') && ipt.val()){
-					if(eraser.is(':visible'))
-						eraser.hide();
-					else
-						eraser.show();
+			wrapper.mouseenter(function () {
+				if (!ipt.prop('disabled') && ipt.val()) {
+					eraser.show();
 				}
+			}).mouseleave(function () {
+				eraser.hide();
 			});
 		}
 
@@ -115,14 +114,14 @@ class Combo extends DisplayObject {
 			this.jq.on(this._evtName, function () {
 				//event.stopImmediatePropagation();
 				let go = true;
-				that.status === "closed" && that.position();
+				that.status === 'closed' && that.position();
 
 				if (typeof that.onBeforeOpen === 'function') {
 					go = that.onBeforeOpen.apply(that);
 					if (go === false) return that;
 				}
 				$c.stop(true, true).slideToggle(90, function () {
-					if ($c.css("display") === 'block') that.status = 'opened';
+					if ($c.css('display') === 'block') that.status = 'opened';
 					else that.status = 'closed';
 				});
 
@@ -130,7 +129,7 @@ class Combo extends DisplayObject {
 			});
 		}
 		else {
-			this.jq.off(this._evtName).prop("disabled", true);
+			this.jq.off(this._evtName).prop('disabled', true);
 			this.target.hide();
 
 			return this;
@@ -151,7 +150,7 @@ class Combo extends DisplayObject {
 		$c.css({
 			top: top,
 			left: offset.left,
-			zIndex: ComboManager['zIndex']++
+			zIndex: ComboManager['zIndex']++,
 		});
 	}
 
@@ -197,7 +196,7 @@ class Combo extends DisplayObject {
 	}
 
 
-	setValue(txt , val) {
+	setValue(txt, val) {
 		this.jq.val(txt);
 		this.jqValueField.val(val);
 	}

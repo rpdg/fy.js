@@ -1,0 +1,51 @@
+<% include ('/comm/header.html') %>
+<link rel="stylesheet" href="/css/jquery.datetimepicker.css">
+
+<style>
+	.sp-eraserWrap{
+		width: auto;
+	}
+	.fl-right{
+		float: right;
+		margin-top: -3px;
+		margin-left: 0.5em;
+	}
+</style>
+
+<table id="tbSearch" class="search-table">
+	<tr>
+		<td class="lead"><label for="assetName">内容名称</label></td>
+		<td style="width: 40%;"><input id="assetName" name="assetName" type="text" /></td>
+		<td class="lead"><label for="sourceCode">来源</label></td>
+		<td colspan="3"><select id="sourceCode" name="sourceCode"></select></td>
+	</tr>
+	<tr>
+		<td class="lead"><label for="contentType">内容类型</label></td>
+		<td><select id="contentType" name="contentType"></select></td>
+		<td class="lead">状态</td>
+		<td>
+			<select name="status">
+				<option value="">请选择</option>
+				<option value="0">待执行</option>
+				<option value="1">执行中</option>
+				<option value="2">完成</option>
+				<option value="3">失败</option>
+				<option value="4">关闭</option>
+			</select>
+		</td>
+	</tr>
+	<tr>
+		<td class="lead"><label for="beginTimeBegin">开始时间</label></td>
+		<td colspan="3">
+			<input id="beginTimeBegin" name="beginTimeBegin" type="datetime" />
+			至 <input id="beginTimeEnd" name="beginTimeEnd" type="datetime">
+		</td>
+	</tr>
+</table>
+
+
+<table id="tb"></table>
+
+
+<% include ('/comm/footer.html') %>
+<script src="/lib/jquery.datetimepicker.js"></script>

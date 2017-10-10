@@ -108,6 +108,15 @@ let tb: Table = opg('#tb').table({
 			render: (val, i, row) => `<button class="btn-mini btn-info btnAlias" data-id="${val}" data-title="${row.name}">增加别名</button>`
 		},
 		{
+			text: '介质管理',
+			src: 'name',
+			width: 90,
+			render: (val, i, row) => {
+				//`<button class="btn-mini btn-warning btnMedias" data-id="${val}" data-title="${row.name}">介质管理</button>`;
+				return  '';
+			}
+		},
+		{
 			text: '删除',
 			src: 'name',
 			width: 60,

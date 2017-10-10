@@ -1,0 +1,57 @@
+{
+	"meta" : {
+		"success" : true,
+		"message" : "ok"
+	},
+	"data" : {
+		"streams" : [ {
+			"handler_name" : "\fVideoHandler",
+			"index" : 0,
+			"pix_fmt" : "yuv420p",
+			"codec_long_name" : "H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10",
+			"width" : 720,
+			"bits_per_raw_sample" : "8",
+			"codec_name" : "h264",
+			"sample_aspect_ratio" : "1:1",
+			"codec_type" : "video",
+			"duration" : "27.960000",
+			"height" : 540,
+			"level" : "3",
+			"refs" : 1,
+			"frames" : 699,
+			"creation_time" : "2016-04-20T08:12:59.000000Z",
+			"display_aspect_ratio" : "4:3",
+			"language" : "eng",
+			"frame_rate" : "25.000(25/1)",
+			"bit_rate" : "455973",
+			"profile" : "High"
+		}, {
+			"handler_name" : "\fSoundHandler",
+			"duration" : "27.925333",
+			"index" : 1,
+			"sample_rate" : "48000",
+			"codec_long_name" : "AAC (Advanced Audio Coding)",
+			"channels" : 2,
+			"creation_time" : "2016-04-20T08:12:59.000000Z",
+			"codec_name" : "aac",
+			"language" : "eng",
+			"codec_type" : "audio",
+			"bit_rate" : "61563",
+			"sample_fmt" : "fltp",
+			"profile" : "LC"
+		} ],
+		"format" : {
+			"duration" : "27.960000",
+			"minor_version" : "0",
+			"nb_streams" : 2,
+			"format_long_name" : "QuickTime / MOV",
+			"creation_time" : "2016-04-20T08:12:59.000000Z",
+			"compatible_brands" : "mp42avc1",
+			"bit_rate" : "521660",
+			"format_name" : "mov,mp4,m4a,3gp,3g2,mj2",
+			"major_brand" : "mp42",
+			"size" : "1823202"
+		},
+		"URL" : "NFS://isl01.mam.shy.bestv.com.cn:/ifs/data/CMS/TuXingTest/share:/video/7.ts"
+	}
+}

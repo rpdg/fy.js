@@ -1,7 +1,7 @@
 import opg from 'ts/opg.ts';
 import {Combo} from 'ts/ui/Combo' ;
-import Popup from "ts/ui/Popup";
-import Table from "ts/ui/Table";
+import Popup from 'ts/ui/Popup';
+import Table from 'ts/ui/Table';
 
 opg.api({
 	business: 'transcode/business/findAll', //业务
@@ -14,7 +14,7 @@ opg.api({
 	'newAsset!POST': 'produce/asset/newAsset', //新增内容
 });
 
-opg.api.newAsset.set('timeOut' , 600000);//10分钟
+opg.api.newAsset.set('timeOut', 600000);//10分钟
 
 //集数区间
 let iptEpisodeNum = $('#episodeNum');
@@ -42,12 +42,17 @@ $('#seriesFlag').on('change', function () {
 	}
 });
 
-$('#showName').on('focus' , function () {
-	let v = this.value , n = $('#managerName').val() ;
-	if(!v && n){
+/*$('#showName').on('focus', function () {
+	let v = this.value, n = $('#managerName').val();
+	if (!v && n) {
 		this.value = n;
 	}
+});*/
+
+$('#managerName').on('input change', function () {
+	$('#showName').val(this.value);
 });
+
 
 //上线时间
 $('#onlineTime').datetimepicker({
@@ -59,18 +64,18 @@ $('#onlineTime').datetimepicker({
 let busiCodesList = opg('#tdBusiness').checkBox({
 	api: opg.api.business,
 	name: 'busiCodesList[]',
-	value : 'bizCode',
+	value: 'bizCode',
 	labelClass: 'lbWidth150',
-	onCreate : ()=>{
-		let busiChksAll, busiChksLocal , busiChksCloud ;
+	onCreate: () => {
+		let busiChksAll, busiChksLocal, busiChksCloud;
 
 		busiChksAll = busiCodesList.jq.find(':checkbox');
 
-		busiChksAll.each((i , elem)=>{
-			if(elem.value.indexOf('cloud')>-1){
+		busiChksAll.each((i, elem) => {
+			if (elem.value.indexOf('cloud') > -1) {
 				elem.className = 'chkCloud';
 			}
-			else{
+			else {
 				elem.className = 'chkLocal';
 			}
 		});
@@ -78,20 +83,20 @@ let busiCodesList = opg('#tdBusiness').checkBox({
 		busiChksLocal = busiCodesList.jq.find('.chkLocal');
 		busiChksCloud = busiCodesList.jq.find('.chkCloud');
 
-		busiChksLocal.on('change' , function () {
+		busiChksLocal.on('change', function () {
 			let localChked = busiCodesList.jq.find('.chkLocal:checked');
 			console.log(localChked);
-			busiChksCloud.prop('disabled' , !!localChked.length);
+			busiChksCloud.prop('disabled', !!localChked.length);
 		});
 
-		busiChksCloud.on('change' , function () {
+		busiChksCloud.on('change', function () {
 			let cloudChked = busiCodesList.jq.find('.chkCloud:checked');
 			console.log(cloudChked);
-			busiChksLocal.prop('disabled' , !!cloudChked.length);
+			busiChksLocal.prop('disabled', !!cloudChked.length);
 		});
 
 		//console.log(busiChksAll, busiChksLocal , busiChksCloud);
-	}
+	},
 });
 
 
@@ -99,15 +104,15 @@ let busiCodesList = opg('#tdBusiness').checkBox({
 let contentTypeHash = {};
 let selContentType = opg('#contentType').listBox({
 	api: opg.api.contentType,
-	onAjaxEnd: (data)=>{
-		contentTypeHash = opg.convert.arrayToHash(data.results , 'id');
+	onAjaxEnd: (data) => {
+		contentTypeHash = opg.convert.arrayToHash(data.results, 'id');
 	},
 	onSelect: () => {
-		let id = selContentType.getValue() ;
-		if(!id) id=-1;
+		let id = selContentType.getValue();
+		if (!id) id = -1;
 		//
 		selContentCategory.update({id});
-	}
+	},
 });
 
 //栏目
@@ -187,41 +192,41 @@ Combo.makeClearableInput(copyrightProgramName, copyrightProgramId);
 $('#programLength').decimalMask('99999999');
 
 //
-window['doSave'] = function (pop: Popup, tb: Table , parentWin:Window) {
+window['doSave'] = function (pop: Popup, tb: Table, parentWin: Window) {
 	let param = $('#tbForm').fieldsToJson({
-		managerName :{
-			require :true ,
-			name : '内容名称' ,
+		managerName: {
+			require: true,
+			name: '内容名称',
 		},
-		showName :{
-			require :true ,
-			name : '展示名称' ,
+		showName: {
+			require: true,
+			name: '展示名称',
 		},
-		contentType :{
-			require :true ,
-			name : '内容类型' ,
+		contentType: {
+			require: true,
+			name: '内容类型',
 		},
-		onlineTime :{
-			require :true ,
+		onlineTime: {
+			require: true,
 			type: 'date',
-			name : '上线时间' ,
+			name: '上线时间',
 		},
-		programLength :{
-			require :true ,
-			name : '预估单集时长' ,
+		programLength: {
+			require: true,
+			name: '预估单集时长',
 			type: 'int',
 		},
-		movieType :{
-			require :true ,
-			name : '介质类型' ,
+		movieType: {
+			require: true,
+			name: '介质类型',
 		},
-		profile :{
-			require :true ,
-			name : '视频风格' ,
+		profile: {
+			require: true,
+			name: '视频风格',
 		},
-		busiCodesList :{
-			require :true ,
-			name : '可添加的业务' ,
+		busiCodesList: {
+			require: true,
+			name: '可添加的业务',
 		},
 	});
 	if (param) {
@@ -235,16 +240,16 @@ window['doSave'] = function (pop: Popup, tb: Table , parentWin:Window) {
 
 		param.contentType = contentTypeHash[param.contentType].name;
 
-		if(param.onlineTime.indexOf(' ')==-1)
+		if (param.onlineTime.indexOf(' ') == -1)
 			param.onlineTime += ' 00:00:00';
 
 		console.log(param);
 
 
-		opg.api.newAsset(param , (data)=>{
+		opg.api.newAsset(param, (data) => {
 			pop.close();
 			tb.update();
-			parentWin['doCatalog'](data.assetId , data.id , param.managerName);
+			parentWin['doCatalog'](data.assetId, data.id, param.managerName);
 		});
 	}
 };

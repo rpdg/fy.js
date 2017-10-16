@@ -186,7 +186,7 @@ class ServerFn {
 
 					if (meta.success) {
 						if (callback && typeof callback === 'function')
-							callback(json.data === undefined ? {} : json.data, textStatus, jqXHR);
+							callback.call(that, json.data === undefined ? {} : json.data, textStatus, jqXHR);
 					}
 					else {
 						that.handleError.call(that, meta.message, callback);

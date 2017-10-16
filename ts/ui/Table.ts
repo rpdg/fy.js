@@ -117,6 +117,9 @@ class Table extends AjaxDisplayObject {
 	pageTemplate?: string;
 	pagination?: Pagination;
 
+
+	fetching : boolean  ;
+
 	private pageCount: number;
 
 	constructor(jq: JQuery, cfg: any) {
@@ -148,6 +151,7 @@ class Table extends AjaxDisplayObject {
 		}
 
 
+		this.fetching = false;
 		this.resizable = cfg.resizable;
 
 		this._bindOption.template = makeTemplate.call(this, cfg);
@@ -266,10 +270,17 @@ class Table extends AjaxDisplayObject {
 		let pageCount = Math.ceil(rowCount / this._param.pageSize);
 		if (pageCount === 0) pageCount = 1;
 
+		//console.log(this._param , pageCount , this.pageCount , this.fetching);
 		if (this._param.pageNo > 1 && pageCount < this.pageCount) {
-			this._param.pageNo -= (this.pageCount - pageCount);
-			return setTimeout(() => this.update(), 10);
+			if(this.fetching)
+				this.fetching = false;
+			else {
+				this.fetching = true;
+				this._param.pageNo -= (this.pageCount - pageCount);
+				return setTimeout(() =>  this.update() , 0);
+			}
 		}
+
 
 		this.pageCount = pageCount;
 		let pageNum = this._param.pageNo;

@@ -1325,7 +1325,7 @@ interface JQueryStatic {
      * An empty function.
      * @see {@link https://api.jquery.com/jQuery.noop/}
      */
-    noop(): any;
+    noop(...rest:any[]): any;
 
     /**
      * Return a number representing the current time.

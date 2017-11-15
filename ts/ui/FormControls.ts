@@ -79,6 +79,10 @@ class ListBox extends AjaxDisplayObject implements IFormControls {
 
 	}
 
+	setValue(v : string | number) {
+		this.jq.recheckElement(v);
+	}
+
 	getValue(): string | number {
 		return this.jq.val();
 	}

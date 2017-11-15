@@ -117,6 +117,12 @@ $row-hover-bg : #edfaff;
 	border:  solid $border-color;
 	border-width: 1px 1px 0 1px ;
 	
+	.btn-danger,.btn-success,.btn-info,.btn-warning{
+		@extend .float-right;
+		@extend .btn-small;
+		margin-top: -3px;
+	}
+	
 	.btn-create{
 		@extend .float-right;
 		@extend .btn-small;

@@ -233,7 +233,7 @@ class PopUp extends DisplayObject {
 		this.cfg = cfg;
 	}
 
-	create(jq, cfg) {
+	create(jq: JQuery, cfg: any) : PopUp{
 		this.state = 'normal';
 		this.visible = false;
 
@@ -308,6 +308,8 @@ class PopUp extends DisplayObject {
 
 		if (cfg.show) this.open();
 
+
+		return this;
 	}
 
 	getSize() {

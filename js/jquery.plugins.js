@@ -99,6 +99,11 @@
 
 		return res;
 	};
+	validate.url = function (str) {
+		var re = /^(https?|ftp):\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(\#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i;
+		return re.test(str);
+	};
+
 
 	//复选框组作全选全非选的同步checkBox
 	$.fn.syncCheckBoxGroup = function (expr, context) {
@@ -260,6 +265,23 @@
 						if (objResult[ruleName]) {
 							if (!validate.time24(objResult[ruleName])) {
 								$('[name=' + ruleName + ']', this).iptError(rule.name + '不是合法的时间格式');
+								return;
+							}
+						}
+					}
+					else if (rule.type === 'ip') {
+						if (objResult[ruleName]) {
+							if (!validate.ip(objResult[ruleName])) {
+								$('[name=' + ruleName + ']', this).iptError(rule.name + '不是合法的IP格式');
+								return;
+							}
+						}
+					}
+
+					else if (rule.type === 'url') {
+						if (objResult[ruleName]) {
+							if (!validate.url(objResult[ruleName])) {
+								$('[name=' + ruleName + ']', this).iptError(rule.name + '不是合法的url格式');
 								return;
 							}
 						}

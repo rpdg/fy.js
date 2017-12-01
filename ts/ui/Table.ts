@@ -1,6 +1,17 @@
 import {AjaxDisplayObject, DisplayObject} from './DisplayOject';
-import {format} from 'ts/util/utils';
+import * as util from 'ts/util/utils';
 
+
+
+let jsonFormat = (function () {
+	let pattern = /\${(\w+[.]*\w*)\}(?!})/g;
+
+	return function (template: string, json: any) {
+		return template.replace(pattern, function (match, key, value) {
+			return json[key];
+		});
+	};
+})();
 function makeTemplate(sets) {
 
 	let tdTmp = [], render, name, i = 0, l = sets.columns ? sets.columns.length : 0;
@@ -317,7 +328,7 @@ class Table extends AjaxDisplayObject {
 				else
 					this.pageTemplate = '共<span class="bt">${rowCount}</span>条记录 , 第<span class="bf">${pageNum}</span> / <span class="bc">${pageCount}</span>页';
 
-				this.pageCounter.html(format.json(this.pageTemplate, {rowCount, pageNum, pageCount}));
+				this.pageCounter.html(jsonFormat(this.pageTemplate, {rowCount, pageNum, pageCount}));
 
 				let bf = this.pageCounter.find('.bf');
 				this.iptPageGo.val(pageNum);//.data('total' , pageCount);

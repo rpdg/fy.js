@@ -53,6 +53,7 @@ class ListBox extends AjaxDisplayObject implements IFormControls {
 		if (this.autoPrependBlank) {
 			let txt = (typeof this.autoPrependBlank === 'string') ? this.autoPrependBlank : '请选择';
 			this.jq.prepend(`<option value="">${txt}</option>`);
+			this._data.unshift({});
 		}
 
 		this._items = this.jq.find("option");

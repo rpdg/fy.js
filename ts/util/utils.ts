@@ -206,12 +206,12 @@ const convert = {
 			return arr;
 		}
 	},
-	hashToArray: (obj, convertor?: Function): Array => {
+	hashToArray: (obj, converter?: Function): Array => {
 		let arr = [];
 		for (let key in obj) {
 			let val = obj[key];
-			if (convertor)
-				val = convertor(val, key);
+			if (converter)
+				val = converter(val, key);
 
 			arr.push(val);
 		}
